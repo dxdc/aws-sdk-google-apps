@@ -1,0 +1,36 @@
+{
+  "env": {
+    "es6": true,
+    "es2017": true,
+    "browser": true
+  },
+  "root": true,
+  "extends": ["eslint:recommended", "plugin:json/recommended", "plugin:prettier/recommended"],
+  "globals": {},
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": ["prettier", "json", "googleappsscript"],
+  "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "semi": ["error", "always"],
+    "prefer-arrow-callback": "error",
+    "no-console": "off",
+    "prettier/prettier": ["error"],
+    "curly": ["error", "all"],
+    "dot-location": ["error", "property"]
+  },
+  "overrides": [
+    {
+      "files": ["src/*.js"],
+      "env": {
+        "googleappsscript/googleappsscript": true,
+        "jquery": false
+      },
+      "globals": {"AWS": "readonly"}
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "aws-sdk-google-apps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp",
+    "deploy": "gulp && clasp push",
+    "format": "prettier {.,src}/*.js *.json --write",
+    "lint": "eslint {.,src}/*.js",
+    "sdk": "echo \"Building SDK for AWS Services: $npm_config_sdk\" && node aws-sdk-js/dist-tools/browser-builder.js $npm_config_sdk > src-sdk/aws-sdk.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dxdc/aws-sdk-google-apps.git"
+  },
+  "author": "Daniel Caspi <dan@element26.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dxdc/aws-sdk-google-apps/issues"
+  },
+  "homepage": "https://github.com/dxdc/aws-sdk-google-apps#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "del": "^6.0.0",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-googleappsscript": "^1.0.3",
+    "eslint-plugin-json": "^3.0.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "gulp": "^4.0.2",
+    "gulp-include": "^2.4.1",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.3",
+    "prettier": "^2.3.0"
+  }
+}
