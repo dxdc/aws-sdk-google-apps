@@ -3,9 +3,10 @@
 [![mit license](https://badgen.net/badge/license/MIT/red)](https://github.com/dxdc/aws-sdk-google-apps/blob/master/LICENSE)
 [![Donate](https://badgen.net/badge/Donate/PayPal/91BE09)](https://paypal.me/ddcaspi)
 
-Native support for the entire AWS SDK for Javascript in Google Apps Script.
+Native support for the entire AWS SDK for JavaScript in Google Apps Script.
 
-Working examples for Simple Email Service (SES), S3, and Lambda. This project can easily accomodate *all* other AWS services, e.g.,
+Working examples for Simple Email Service (SES), S3, and Lambda. This project can easily accommodate _all_ other AWS services, e.g.,
+
 ```
 npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 ```
@@ -59,29 +60,29 @@ Several key changes to the AWS SDK core were required to make it compatible with
 Namely, Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` - instead, it requires the use of `UrlFetchApp` and `XmlService`. These patch files can be found in `src-sdk`.
 
 Note, the final patched build remains compatible in the browser, e.g.,
+
 ```diff
 -AWS.HttpClient.prototype = AWS.XHRClient.prototype;
 +AWS.HttpClient.prototype = typeof XMLHttpRequest === 'undefined' && typeof UrlFetchApp !== 'undefined' ? AWS.XHRGoogleClient.prototype : AWS.XHRClient.prototype;
 ```
+
 ## How to contribute
 
 Have an idea? Found a bug? Contributions and pull requests are welcome.
 
 ## Credits
 
-Acknowledgments to @lsegal for [initial research](https://github.com/aws/aws-sdk-js/issues/620), @sk16 for [modifying AWS.XHRClient for use with fetch](https://github.com/aws/aws-sdk-js/issues/1902), as well as the authors of existing repositories (e.g., [aws-apps-scripts](https://github.com/smithy545/aws-apps-scripts), [apps-script-aws-request](https://github.com/wmakeev/apps-script-aws-request
-)), for insight in how to solve this problem.
+Acknowledgements to @lsegal for [initial research](https://github.com/aws/aws-sdk-js/issues/620), @sk16 for [modifying AWS.XHRClient for use with fetch](https://github.com/aws/aws-sdk-js/issues/1902), as well as the authors of existing repositories (e.g., [aws-apps-scripts](https://github.com/smithy545/aws-apps-scripts), [apps-script-aws-request](https://github.com/wmakeev/apps-script-aws-request)), for insight in how to solve this problem.
 
 ## Support this project
 
 I try to reply to everyone needing help using these projects. Obviously, this takes time. However, if you get some profit from this or just want to encourage me to continue creating stuff, there are few ways you can do it:
 
--   Starring and sharing the projects you like :rocket:
--   [![PayPal][badge_paypal]][paypal-donations-dxdc] **PayPal**— You can make one-time donations to **dxdc** via PayPal.
--   **Venmo**— You can make one-time donations via Venmo.
-    ![Venmo QR Code](/images/venmo.png?raw=true 'Venmo QR Code')
--   **Bitcoin**— You can send me Bitcoin at this address: `33sT6xw3tZWAdP2oL4ygbH5TVpVMfk9VW7`
-
+- Starring and sharing the projects you like :rocket:
+- [![PayPal][badge_paypal]][paypal-donations-dxdc] **PayPal**— You can make one-time donations to **dxdc** via PayPal.
+- **Venmo**— You can make one-time donations via Venmo.
+  ![Venmo QR Code](/images/venmo.png?raw=true 'Venmo QR Code')
+- **Bitcoin**— You can send me Bitcoin at this address: `33sT6xw3tZWAdP2oL4ygbH5TVpVMfk9VW7`
 
 [badge_paypal]: https://img.shields.io/badge/Donate-PayPal-blue.svg
 [paypal-donations-dxdc]: https://paypal.me/ddcaspi

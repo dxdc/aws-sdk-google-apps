@@ -6,9 +6,10 @@
   "scripts": {
     "build": "gulp",
     "deploy": "gulp && clasp push",
-    "format": "prettier {.,src}/*.js *.json --write",
+    "format": "prettier {.,src}/*.js *.json *.md --write",
     "lint": "eslint {.,src}/*.js",
-    "sdk": "echo \"Building SDK for AWS Services: $npm_config_sdk\" && node aws-sdk-js/dist-tools/browser-builder.js $npm_config_sdk > src-sdk/aws-sdk.js"
+    "sdk": "echo \"Building SDK for AWS Services: $npm_config_sdk\" && node aws-sdk-js/dist-tools/browser-builder.js $npm_config_sdk > src-sdk/aws-sdk.js",
+    "spellcheck": "mdspell -r *.md"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "gulp-minify": "^3.1.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.1.3",
+    "markdown-spellcheck": "^1.3.1",
     "prettier": "^2.3.0"
   }
 }
