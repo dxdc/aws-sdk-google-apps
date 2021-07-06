@@ -1,4 +1,4 @@
-// AWS SDK for JavaScript v2.925.0
+// AWS SDK for JavaScript v2.940.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
@@ -5829,7 +5829,8 @@ module.exports={
     "name": "MigrationHub"
   },
   "cloudhsmv2": {
-    "name": "CloudHSMV2"
+    "name": "CloudHSMV2",
+    "cors": true
   },
   "glue": {
     "name": "Glue"
@@ -6354,7 +6355,8 @@ module.exports={
     "name": "IoTWireless"
   },
   "location": {
-    "name": "Location"
+    "name": "Location",
+    "cors": true
   },
   "wellarchitected": {
     "name": "WellArchitected"
@@ -6408,6 +6410,7 @@ module.exports={
     "name": "Proton"
   }
 }
+
 },{}],10:[function(require,module,exports){
 module.exports={
   "version": "2.0",
@@ -14959,7 +14962,7 @@ AWS.util.update(AWS, {
   /**
    * @constant
    */
-  VERSION: '2.925.0',
+  VERSION: '2.940.0',
 
   /**
    * @api private
@@ -17352,6 +17355,29 @@ AWS.EventListeners = {
       new AWS.ParamValidator(validation).validate(rules, req.params);
     });
 
+    add('COMPUTE_CHECKSUM', 'afterBuild', function COMPUTE_CHECKSUM(req) {
+      if (!req.service.api.operations) {
+        return;
+      }
+      var operation = req.service.api.operations[req.operation];
+      if (!operation) {
+        return;
+      }
+      var body = req.httpRequest.body;
+      var isNonStreamingPayload = body && (AWS.util.Buffer.isBuffer(body) || typeof body === 'string');
+      var headers = req.httpRequest.headers;
+      if (
+        operation.httpChecksumRequired &&
+        req.service.config.computeChecksums &&
+        isNonStreamingPayload &&
+        req.service.getSignerClass(req) === AWS.Signers.V4 &&
+        !headers['Content-MD5']
+      ) {
+        var md5 = AWS.util.crypto.md5(body, 'base64');
+        headers['Content-MD5'] = md5;
+      }
+    });
+
     addAsync('COMPUTE_SHA256', 'afterBuild', function COMPUTE_SHA256(req, done) {
       req.haltHandlersOnError();
       if (!req.service.api.operations) {
@@ -18496,6 +18522,7 @@ function Operation(name, operation, options) {
       (operation.endpointdiscovery.required ? 'REQUIRED' : 'OPTIONAL') :
     'NULL'
   );
+  property(this, 'httpChecksumRequired', operation.httpChecksumRequired, false);
 
   memoizedProperty(this, 'input', function() {
     if (!operation.input) {
@@ -23735,45 +23762,41 @@ AWS.util.update(AWS.S3.prototype, {
   },
 
   /**
-   * Checks whether checksums should be computed for the request.
-   * If the request requires checksums to be computed, this will always
-   * return true, otherwise it depends on whether {AWS.Config.computeChecksums}
-   * is set.
+   * Checks whether checksums should be computed for the request if it's not
+   * already set by {AWS.EventListeners.Core.COMPUTE_CHECKSUM}. It depends on
+   * whether {AWS.Config.computeChecksums} is set.
    *
    * @param req [AWS.Request] the request to check against
    * @return [Boolean] whether to compute checksums for a request.
    * @api private
    */
   willComputeChecksums: function willComputeChecksums(req) {
-    if (this.computableChecksumOperations[req.operation]) return true;
-    if (!this.config.computeChecksums) return false;
-
-    // TODO: compute checksums for Stream objects
-    if (!AWS.util.Buffer.isBuffer(req.httpRequest.body) &&
-        typeof req.httpRequest.body !== 'string') {
-      return false;
-    }
-
     var rules = req.service.api.operations[req.operation].input.members;
+    var body = req.httpRequest.body;
+    var needsContentMD5 = rules.ContentMD5 &&
+      !req.params.ContentMD5 &&
+      body &&
+      (AWS.util.Buffer.isBuffer(req.httpRequest.body) || typeof req.httpRequest.body === 'string');
 
     // Sha256 signing disabled, and not a presigned url
-    if (req.service.shouldDisableBodySigning(req) && !Object.prototype.hasOwnProperty.call(req.httpRequest.headers, 'presigned-expires')) {
-      if (rules.ContentMD5 && !req.params.ContentMD5) {
-        return true;
-      }
+    if (needsContentMD5 && req.service.shouldDisableBodySigning(req) && !req.isPresigned()) {
+      return true;
     }
 
-    // V4 signer uses SHA256 signatures so only compute MD5 if it is required
-    if (req.service.getSignerClass(req) === AWS.Signers.V4) {
-      if (rules.ContentMD5 && !rules.ContentMD5.required) return false;
+    // SigV2 and presign, for backwards compatibility purpose.
+    if (needsContentMD5 && this.getSignatureVersion(req) === 's3' && req.isPresigned()) {
+      return true;
     }
 
-    if (rules.ContentMD5 && !req.params.ContentMD5) return true;
+    return false;
   },
 
   /**
    * A listener that computes the Content-MD5 and sets it in the header.
-   * @see AWS.S3.willComputeChecksums
+   * This listener is to support S3-specific features like
+   * s3DisableBodySigning and SigV2 presign. Content MD5 logic for SigV4 is
+   * handled in AWS.EventListeners.Core.COMPUTE_CHECKSUM
+   *
    * @api private
    */
   computeContentMd5: function computeContentMd5(req) {
@@ -34165,7 +34188,7 @@ var LRUCache = /** @class */ (function () {
 }());
 exports.LRUCache = LRUCache;
 },{}],117:[function(require,module,exports){
-// AWS SDK for JavaScript v2.925.0
+// AWS SDK for JavaScript v2.940.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 require('./browser_loader');
