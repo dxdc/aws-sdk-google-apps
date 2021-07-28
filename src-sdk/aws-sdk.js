@@ -1,4 +1,4 @@
-// AWS SDK for JavaScript v2.940.0
+// AWS SDK for JavaScript v2.955.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
@@ -6408,9 +6408,20 @@ module.exports={
   },
   "proton": {
     "name": "Proton"
+  },
+  "route53recoverycluster": {
+    "prefix": "route53-recovery-cluster",
+    "name": "Route53RecoveryCluster"
+  },
+  "route53recoverycontrolconfig": {
+    "prefix": "route53-recovery-control-config",
+    "name": "Route53RecoveryControlConfig"
+  },
+  "route53recoveryreadiness": {
+    "prefix": "route53-recovery-readiness",
+    "name": "Route53RecoveryReadiness"
   }
 }
-
 },{}],10:[function(require,module,exports){
 module.exports={
   "version": "2.0",
@@ -14962,7 +14973,7 @@ AWS.util.update(AWS, {
   /**
    * @constant
    */
-  VERSION: '2.940.0',
+  VERSION: '2.955.0',
 
   /**
    * @api private
@@ -18271,6 +18282,9 @@ function translate(value, shape) {
 }
 
 function translateStructure(structure, shape) {
+  if (shape.isDocument) {
+    return structure;
+  }
   var struct = {};
   util.each(structure, function(name, value) {
     var memberShape = shape.members[name];
@@ -18333,6 +18347,7 @@ function translate(value, shape) {
 
 function translateStructure(structure, shape) {
   if (structure == null) return undefined;
+  if (shape.isDocument) return structure;
 
   var struct = {};
   var shapeMembers = shape.members;
@@ -18832,6 +18847,7 @@ function StructureShape(shape, options) {
     property(this, 'memberNames', []);
     property(this, 'required', []);
     property(this, 'isRequired', function() { return false; });
+    property(this, 'isDocument', Boolean(shape.document));
   }
 
   if (shape.members) {
@@ -34188,7 +34204,7 @@ var LRUCache = /** @class */ (function () {
 }());
 exports.LRUCache = LRUCache;
 },{}],117:[function(require,module,exports){
-// AWS SDK for JavaScript v2.940.0
+// AWS SDK for JavaScript v2.955.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 require('./browser_loader');
