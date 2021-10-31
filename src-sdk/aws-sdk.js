@@ -1,4 +1,4 @@
-// AWS SDK for JavaScript v2.967.0
+// AWS SDK for JavaScript v2.1018.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
@@ -2996,11 +2996,14 @@ module.exports={
           "ImageConfig": {
             "shape": "S2y"
           },
-          "CodeSigningConfigArn": {}
+          "CodeSigningConfigArn": {},
+          "Architectures": {
+            "shape": "S31"
+          }
         }
       },
       "output": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
     "DeleteAlias": {
@@ -3357,7 +3360,7 @@ module.exports={
         "type": "structure",
         "members": {
           "Configuration": {
-            "shape": "S31"
+            "shape": "S33"
           },
           "Code": {
             "type": "structure",
@@ -3372,7 +3375,7 @@ module.exports={
             "shape": "S2p"
           },
           "Concurrency": {
-            "shape": "S48"
+            "shape": "S4a"
           }
         }
       }
@@ -3457,7 +3460,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
     "GetFunctionEventInvokeConfig": {
@@ -3483,7 +3486,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S4g"
+        "shape": "S4i"
       }
     },
     "GetLayerVersion": {
@@ -3511,7 +3514,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S4k"
+        "shape": "S4m"
       }
     },
     "GetLayerVersionByArn": {
@@ -3533,7 +3536,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S4k"
+        "shape": "S4m"
       }
     },
     "GetLayerVersionPolicy": {
@@ -3888,7 +3891,7 @@ module.exports={
           "FunctionEventInvokeConfigs": {
             "type": "list",
             "member": {
-              "shape": "S4g"
+              "shape": "S4i"
             }
           },
           "NextMarker": {}
@@ -3928,7 +3931,7 @@ module.exports={
         "members": {
           "NextMarker": {},
           "Functions": {
-            "shape": "S5p"
+            "shape": "S5s"
           }
         }
       }
@@ -3999,6 +4002,10 @@ module.exports={
             "location": "querystring",
             "locationName": "MaxItems",
             "type": "integer"
+          },
+          "CompatibleArchitecture": {
+            "location": "querystring",
+            "locationName": "CompatibleArchitecture"
           }
         }
       },
@@ -4009,7 +4016,7 @@ module.exports={
           "LayerVersions": {
             "type": "list",
             "member": {
-              "shape": "S5x"
+              "shape": "S60"
             }
           }
         }
@@ -4036,6 +4043,10 @@ module.exports={
             "location": "querystring",
             "locationName": "MaxItems",
             "type": "integer"
+          },
+          "CompatibleArchitecture": {
+            "location": "querystring",
+            "locationName": "CompatibleArchitecture"
           }
         }
       },
@@ -4051,7 +4062,7 @@ module.exports={
                 "LayerName": {},
                 "LayerArn": {},
                 "LatestMatchingVersion": {
-                  "shape": "S5x"
+                  "shape": "S60"
                 }
               }
             }
@@ -4172,7 +4183,7 @@ module.exports={
         "members": {
           "NextMarker": {},
           "Versions": {
-            "shape": "S5p"
+            "shape": "S5s"
           }
         }
       }
@@ -4206,16 +4217,19 @@ module.exports={
             }
           },
           "CompatibleRuntimes": {
-            "shape": "S4n"
+            "shape": "S4p"
           },
-          "LicenseInfo": {}
+          "LicenseInfo": {},
+          "CompatibleArchitectures": {
+            "shape": "S4r"
+          }
         }
       },
       "output": {
         "type": "structure",
         "members": {
           "Content": {
-            "shape": "S4l"
+            "shape": "S4n"
           },
           "LayerArn": {},
           "LayerVersionArn": {},
@@ -4225,9 +4239,12 @@ module.exports={
             "type": "long"
           },
           "CompatibleRuntimes": {
-            "shape": "S4n"
+            "shape": "S4p"
           },
-          "LicenseInfo": {}
+          "LicenseInfo": {},
+          "CompatibleArchitectures": {
+            "shape": "S4r"
+          }
         }
       }
     },
@@ -4252,7 +4269,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
     "PutFunctionCodeSigningConfig": {
@@ -4310,7 +4327,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S48"
+        "shape": "S4a"
       }
     },
     "PutFunctionEventInvokeConfig": {
@@ -4345,7 +4362,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S4g"
+        "shape": "S4i"
       }
     },
     "PutProvisionedConcurrencyConfig": {
@@ -4662,11 +4679,14 @@ module.exports={
           "DryRun": {
             "type": "boolean"
           },
-          "RevisionId": {}
+          "RevisionId": {},
+          "Architectures": {
+            "shape": "S31"
+          }
         }
       },
       "output": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
     "UpdateFunctionConfiguration": {
@@ -4721,7 +4741,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
     "UpdateFunctionEventInvokeConfig": {
@@ -4755,7 +4775,7 @@ module.exports={
         }
       },
       "output": {
-        "shape": "S4g"
+        "shape": "S4i"
       }
     }
   },
@@ -5029,6 +5049,10 @@ module.exports={
       "member": {}
     },
     "S31": {
+      "type": "list",
+      "member": {}
+    },
+    "S33": {
       "type": "structure",
       "members": {
         "FunctionName": {},
@@ -5075,7 +5099,7 @@ module.exports={
               "members": {
                 "ErrorCode": {},
                 "Message": {
-                  "shape": "S39"
+                  "shape": "S3b"
                 }
               }
             }
@@ -5125,21 +5149,24 @@ module.exports={
               "members": {
                 "ErrorCode": {},
                 "Message": {
-                  "shape": "S39"
+                  "shape": "S3b"
                 }
               }
             }
           }
         },
         "SigningProfileVersionArn": {},
-        "SigningJobArn": {}
+        "SigningJobArn": {},
+        "Architectures": {
+          "shape": "S31"
+        }
       }
     },
-    "S39": {
+    "S3b": {
       "type": "string",
       "sensitive": true
     },
-    "S48": {
+    "S4a": {
       "type": "structure",
       "members": {
         "ReservedConcurrentExecutions": {
@@ -5147,7 +5174,7 @@ module.exports={
         }
       }
     },
-    "S4g": {
+    "S4i": {
       "type": "structure",
       "members": {
         "LastModified": {
@@ -5165,11 +5192,11 @@ module.exports={
         }
       }
     },
-    "S4k": {
+    "S4m": {
       "type": "structure",
       "members": {
         "Content": {
-          "shape": "S4l"
+          "shape": "S4n"
         },
         "LayerArn": {},
         "LayerVersionArn": {},
@@ -5179,12 +5206,15 @@ module.exports={
           "type": "long"
         },
         "CompatibleRuntimes": {
-          "shape": "S4n"
+          "shape": "S4p"
         },
-        "LicenseInfo": {}
+        "LicenseInfo": {},
+        "CompatibleArchitectures": {
+          "shape": "S4r"
+        }
       }
     },
-    "S4l": {
+    "S4n": {
       "type": "structure",
       "members": {
         "Location": {},
@@ -5196,17 +5226,21 @@ module.exports={
         "SigningJobArn": {}
       }
     },
-    "S4n": {
+    "S4p": {
       "type": "list",
       "member": {}
     },
-    "S5p": {
+    "S4r": {
+      "type": "list",
+      "member": {}
+    },
+    "S5s": {
       "type": "list",
       "member": {
-        "shape": "S31"
+        "shape": "S33"
       }
     },
-    "S5x": {
+    "S60": {
       "type": "structure",
       "members": {
         "LayerVersionArn": {},
@@ -5216,9 +5250,12 @@ module.exports={
         "Description": {},
         "CreatedDate": {},
         "CompatibleRuntimes": {
-          "shape": "S4n"
+          "shape": "S4p"
         },
-        "LicenseInfo": {}
+        "LicenseInfo": {},
+        "CompatibleArchitectures": {
+          "shape": "S4r"
+        }
       }
     }
   }
@@ -6432,6 +6469,34 @@ module.exports={
   "snowdevicemanagement": {
     "prefix": "snow-device-management",
     "name": "SnowDeviceManagement"
+  },
+  "memorydb": {
+    "name": "MemoryDB"
+  },
+  "opensearch": {
+    "name": "OpenSearch"
+  },
+  "kafkaconnect": {
+    "name": "KafkaConnect"
+  },
+  "voiceid": {
+    "prefix": "voice-id",
+    "name": "VoiceID"
+  },
+  "wisdom": {
+    "name": "Wisdom"
+  },
+  "account": {
+    "name": "Account"
+  },
+  "cloudcontrol": {
+    "name": "CloudControl"
+  },
+  "grafana": {
+    "name": "Grafana"
+  },
+  "panorama": {
+    "name": "Panorama"
   }
 }
 },{}],10:[function(require,module,exports){
@@ -8030,10 +8095,10 @@ module.exports={
         "requestUri": "/{Bucket}?notification"
       },
       "input": {
-        "shape": "S67"
+        "shape": "S68"
       },
       "output": {
-        "shape": "S68"
+        "shape": "S69"
       },
       "deprecated": true
     },
@@ -8043,10 +8108,10 @@ module.exports={
         "requestUri": "/{Bucket}?notification"
       },
       "input": {
-        "shape": "S67"
+        "shape": "S68"
       },
       "output": {
-        "shape": "S6j"
+        "shape": "S6k"
       }
     },
     "GetBucketOwnershipControls": {
@@ -8074,7 +8139,7 @@ module.exports={
         "type": "structure",
         "members": {
           "OwnershipControls": {
-            "shape": "S6z"
+            "shape": "S70"
           }
         },
         "payload": "OwnershipControls"
@@ -8171,7 +8236,7 @@ module.exports={
         "type": "structure",
         "members": {
           "ReplicationConfiguration": {
-            "shape": "S7c"
+            "shape": "S7d"
           }
         },
         "payload": "ReplicationConfiguration"
@@ -8294,16 +8359,16 @@ module.exports={
         "type": "structure",
         "members": {
           "RedirectAllRequestsTo": {
-            "shape": "S8f"
+            "shape": "S8g"
           },
           "IndexDocument": {
-            "shape": "S8i"
+            "shape": "S8j"
           },
           "ErrorDocument": {
-            "shape": "S8k"
+            "shape": "S8l"
           },
           "RoutingRules": {
-            "shape": "S8l"
+            "shape": "S8m"
           }
         }
       }
@@ -8643,7 +8708,7 @@ module.exports={
         "type": "structure",
         "members": {
           "LegalHold": {
-            "shape": "S9k"
+            "shape": "S9l"
           }
         },
         "payload": "LegalHold"
@@ -8674,7 +8739,7 @@ module.exports={
         "type": "structure",
         "members": {
           "ObjectLockConfiguration": {
-            "shape": "S9n"
+            "shape": "S9o"
           }
         },
         "payload": "ObjectLockConfiguration"
@@ -8718,7 +8783,7 @@ module.exports={
         "type": "structure",
         "members": {
           "Retention": {
-            "shape": "S9v"
+            "shape": "S9w"
           }
         },
         "payload": "Retention"
@@ -8844,7 +8909,7 @@ module.exports={
         "type": "structure",
         "members": {
           "PublicAccessBlockConfiguration": {
-            "shape": "Sa2"
+            "shape": "Sa3"
           }
         },
         "payload": "PublicAccessBlockConfiguration"
@@ -9359,14 +9424,14 @@ module.exports={
                   "shape": "S37"
                 },
                 "Initiator": {
-                  "shape": "Sb3"
+                  "shape": "Sb4"
                 }
               }
             },
             "flattened": true
           },
           "CommonPrefixes": {
-            "shape": "Sb4"
+            "shape": "Sb5"
           },
           "EncodingType": {}
         }
@@ -9482,7 +9547,7 @@ module.exports={
             "type": "integer"
           },
           "CommonPrefixes": {
-            "shape": "Sb4"
+            "shape": "Sb5"
           },
           "EncodingType": {}
         }
@@ -9544,7 +9609,7 @@ module.exports={
           "Marker": {},
           "NextMarker": {},
           "Contents": {
-            "shape": "Sbm"
+            "shape": "Sbn"
           },
           "Name": {},
           "Prefix": {},
@@ -9553,7 +9618,7 @@ module.exports={
             "type": "integer"
           },
           "CommonPrefixes": {
-            "shape": "Sb4"
+            "shape": "Sb5"
           },
           "EncodingType": {}
         }
@@ -9622,7 +9687,7 @@ module.exports={
             "type": "boolean"
           },
           "Contents": {
-            "shape": "Sbm"
+            "shape": "Sbn"
           },
           "Name": {},
           "Prefix": {},
@@ -9631,7 +9696,7 @@ module.exports={
             "type": "integer"
           },
           "CommonPrefixes": {
-            "shape": "Sb4"
+            "shape": "Sb5"
           },
           "EncodingType": {},
           "KeyCount": {
@@ -9736,7 +9801,7 @@ module.exports={
             "flattened": true
           },
           "Initiator": {
-            "shape": "Sb3"
+            "shape": "Sb4"
           },
           "Owner": {
             "shape": "S37"
@@ -9799,7 +9864,7 @@ module.exports={
             "locationName": "x-amz-acl"
           },
           "AccessControlPolicy": {
-            "shape": "Sc4",
+            "shape": "Sc5",
             "locationName": "AccessControlPolicy",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10210,7 +10275,7 @@ module.exports={
             "locationName": "Content-MD5"
           },
           "NotificationConfiguration": {
-            "shape": "S68",
+            "shape": "S69",
             "locationName": "NotificationConfiguration",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10243,7 +10308,7 @@ module.exports={
             "locationName": "Bucket"
           },
           "NotificationConfiguration": {
-            "shape": "S6j",
+            "shape": "S6k",
             "locationName": "NotificationConfiguration",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10282,7 +10347,7 @@ module.exports={
             "locationName": "x-amz-expected-bucket-owner"
           },
           "OwnershipControls": {
-            "shape": "S6z",
+            "shape": "S70",
             "locationName": "OwnershipControls",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10349,7 +10414,7 @@ module.exports={
             "locationName": "Content-MD5"
           },
           "ReplicationConfiguration": {
-            "shape": "S7c",
+            "shape": "S7d",
             "locationName": "ReplicationConfiguration",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10431,7 +10496,7 @@ module.exports={
             "locationName": "Content-MD5"
           },
           "Tagging": {
-            "shape": "Sct",
+            "shape": "Scu",
             "locationName": "Tagging",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10520,16 +10585,16 @@ module.exports={
             "type": "structure",
             "members": {
               "ErrorDocument": {
-                "shape": "S8k"
+                "shape": "S8l"
               },
               "IndexDocument": {
-                "shape": "S8i"
+                "shape": "S8j"
               },
               "RedirectAllRequestsTo": {
-                "shape": "S8f"
+                "shape": "S8g"
               },
               "RoutingRules": {
-                "shape": "S8l"
+                "shape": "S8m"
               }
             }
           },
@@ -10759,7 +10824,7 @@ module.exports={
             "locationName": "x-amz-acl"
           },
           "AccessControlPolicy": {
-            "shape": "Sc4",
+            "shape": "Sc5",
             "locationName": "AccessControlPolicy",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10844,7 +10909,7 @@ module.exports={
             "locationName": "Key"
           },
           "LegalHold": {
-            "shape": "S9k",
+            "shape": "S9l",
             "locationName": "LegalHold",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10896,7 +10961,7 @@ module.exports={
             "locationName": "Bucket"
           },
           "ObjectLockConfiguration": {
-            "shape": "S9n",
+            "shape": "S9o",
             "locationName": "ObjectLockConfiguration",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -10953,7 +11018,7 @@ module.exports={
             "locationName": "Key"
           },
           "Retention": {
-            "shape": "S9v",
+            "shape": "S9w",
             "locationName": "Retention",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -11024,7 +11089,7 @@ module.exports={
             "locationName": "Content-MD5"
           },
           "Tagging": {
-            "shape": "Sct",
+            "shape": "Scu",
             "locationName": "Tagging",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -11073,7 +11138,7 @@ module.exports={
             "locationName": "Content-MD5"
           },
           "PublicAccessBlockConfiguration": {
-            "shape": "Sa2",
+            "shape": "Sa3",
             "locationName": "PublicAccessBlockConfiguration",
             "xmlNamespace": {
               "uri": "http://s3.amazonaws.com/doc/2006-03-01/"
@@ -11143,12 +11208,12 @@ module.exports={
                 ],
                 "members": {
                   "InputSerialization": {
-                    "shape": "Sdj"
+                    "shape": "Sdk"
                   },
                   "ExpressionType": {},
                   "Expression": {},
                   "OutputSerialization": {
-                    "shape": "Sdy"
+                    "shape": "Sdz"
                   }
                 }
               },
@@ -11182,7 +11247,7 @@ module.exports={
                         "shape": "S3a"
                       },
                       "Tagging": {
-                        "shape": "Sct"
+                        "shape": "Scu"
                       },
                       "UserMetadata": {
                         "type": "list",
@@ -11279,10 +11344,10 @@ module.exports={
             }
           },
           "InputSerialization": {
-            "shape": "Sdj"
+            "shape": "Sdk"
           },
           "OutputSerialization": {
-            "shape": "Sdy"
+            "shape": "Sdz"
           },
           "ScanRange": {
             "type": "structure",
@@ -12345,6 +12410,7 @@ module.exports={
             "Tag": {
               "shape": "S3m"
             },
+            "AccessPointArn": {},
             "And": {
               "type": "structure",
               "members": {
@@ -12353,14 +12419,15 @@ module.exports={
                   "shape": "S3p",
                   "flattened": true,
                   "locationName": "Tag"
-                }
+                },
+                "AccessPointArn": {}
               }
             }
           }
         }
       }
     },
-    "S67": {
+    "S68": {
       "type": "structure",
       "required": [
         "Bucket"
@@ -12376,7 +12443,7 @@ module.exports={
         }
       }
     },
-    "S68": {
+    "S69": {
       "type": "structure",
       "members": {
         "TopicConfiguration": {
@@ -12384,7 +12451,7 @@ module.exports={
           "members": {
             "Id": {},
             "Events": {
-              "shape": "S6b",
+              "shape": "S6c",
               "locationName": "Event"
             },
             "Event": {
@@ -12401,7 +12468,7 @@ module.exports={
               "deprecated": true
             },
             "Events": {
-              "shape": "S6b",
+              "shape": "S6c",
               "locationName": "Event"
             },
             "Queue": {}
@@ -12415,7 +12482,7 @@ module.exports={
               "deprecated": true
             },
             "Events": {
-              "shape": "S6b",
+              "shape": "S6c",
               "locationName": "Event"
             },
             "CloudFunction": {},
@@ -12424,12 +12491,12 @@ module.exports={
         }
       }
     },
-    "S6b": {
+    "S6c": {
       "type": "list",
       "member": {},
       "flattened": true
     },
-    "S6j": {
+    "S6k": {
       "type": "structure",
       "members": {
         "TopicConfigurations": {
@@ -12447,11 +12514,11 @@ module.exports={
                 "locationName": "Topic"
               },
               "Events": {
-                "shape": "S6b",
+                "shape": "S6c",
                 "locationName": "Event"
               },
               "Filter": {
-                "shape": "S6m"
+                "shape": "S6n"
               }
             }
           },
@@ -12472,11 +12539,11 @@ module.exports={
                 "locationName": "Queue"
               },
               "Events": {
-                "shape": "S6b",
+                "shape": "S6c",
                 "locationName": "Event"
               },
               "Filter": {
-                "shape": "S6m"
+                "shape": "S6n"
               }
             }
           },
@@ -12497,11 +12564,11 @@ module.exports={
                 "locationName": "CloudFunction"
               },
               "Events": {
-                "shape": "S6b",
+                "shape": "S6c",
                 "locationName": "Event"
               },
               "Filter": {
-                "shape": "S6m"
+                "shape": "S6n"
               }
             }
           },
@@ -12509,7 +12576,7 @@ module.exports={
         }
       }
     },
-    "S6m": {
+    "S6n": {
       "type": "structure",
       "members": {
         "Key": {
@@ -12532,7 +12599,7 @@ module.exports={
         }
       }
     },
-    "S6z": {
+    "S70": {
       "type": "structure",
       "required": [
         "Rules"
@@ -12554,7 +12621,7 @@ module.exports={
         }
       }
     },
-    "S7c": {
+    "S7d": {
       "type": "structure",
       "required": [
         "Role",
@@ -12665,7 +12732,7 @@ module.exports={
                     "members": {
                       "Status": {},
                       "Time": {
-                        "shape": "S7y"
+                        "shape": "S7z"
                       }
                     }
                   },
@@ -12677,7 +12744,7 @@ module.exports={
                     "members": {
                       "Status": {},
                       "EventThreshold": {
-                        "shape": "S7y"
+                        "shape": "S7z"
                       }
                     }
                   }
@@ -12695,7 +12762,7 @@ module.exports={
         }
       }
     },
-    "S7y": {
+    "S7z": {
       "type": "structure",
       "members": {
         "Minutes": {
@@ -12703,7 +12770,7 @@ module.exports={
         }
       }
     },
-    "S8f": {
+    "S8g": {
       "type": "structure",
       "required": [
         "HostName"
@@ -12713,7 +12780,7 @@ module.exports={
         "Protocol": {}
       }
     },
-    "S8i": {
+    "S8j": {
       "type": "structure",
       "required": [
         "Suffix"
@@ -12722,7 +12789,7 @@ module.exports={
         "Suffix": {}
       }
     },
-    "S8k": {
+    "S8l": {
       "type": "structure",
       "required": [
         "Key"
@@ -12731,7 +12798,7 @@ module.exports={
         "Key": {}
       }
     },
-    "S8l": {
+    "S8m": {
       "type": "list",
       "member": {
         "locationName": "RoutingRule",
@@ -12760,13 +12827,13 @@ module.exports={
         }
       }
     },
-    "S9k": {
+    "S9l": {
       "type": "structure",
       "members": {
         "Status": {}
       }
     },
-    "S9n": {
+    "S9o": {
       "type": "structure",
       "members": {
         "ObjectLockEnabled": {},
@@ -12789,7 +12856,7 @@ module.exports={
         }
       }
     },
-    "S9v": {
+    "S9w": {
       "type": "structure",
       "members": {
         "Mode": {},
@@ -12798,7 +12865,7 @@ module.exports={
         }
       }
     },
-    "Sa2": {
+    "Sa3": {
       "type": "structure",
       "members": {
         "BlockPublicAcls": {
@@ -12819,14 +12886,14 @@ module.exports={
         }
       }
     },
-    "Sb3": {
+    "Sb4": {
       "type": "structure",
       "members": {
         "ID": {},
         "DisplayName": {}
       }
     },
-    "Sb4": {
+    "Sb5": {
       "type": "list",
       "member": {
         "type": "structure",
@@ -12836,7 +12903,7 @@ module.exports={
       },
       "flattened": true
     },
-    "Sbm": {
+    "Sbn": {
       "type": "list",
       "member": {
         "type": "structure",
@@ -12857,7 +12924,7 @@ module.exports={
       },
       "flattened": true
     },
-    "Sc4": {
+    "Sc5": {
       "type": "structure",
       "members": {
         "Grants": {
@@ -12869,7 +12936,7 @@ module.exports={
         }
       }
     },
-    "Sct": {
+    "Scu": {
       "type": "structure",
       "required": [
         "TagSet"
@@ -12880,7 +12947,7 @@ module.exports={
         }
       }
     },
-    "Sdj": {
+    "Sdk": {
       "type": "structure",
       "members": {
         "CSV": {
@@ -12910,7 +12977,7 @@ module.exports={
         }
       }
     },
-    "Sdy": {
+    "Sdz": {
       "type": "structure",
       "members": {
         "CSV": {
@@ -14328,7 +14395,7 @@ var PromisesDependency;
  *
  * @!attribute computeChecksums
  *   @return [Boolean] whether to compute checksums for payload bodies when
- *     the service accepts it (currently supported in S3 only).
+ *     the service accepts it (currently supported in S3 and SQS only).
  *
  * @!attribute convertResponseTypes
  *   @return [Boolean] whether types are converted when parsing response data.
@@ -14985,7 +15052,7 @@ AWS.util.update(AWS, {
   /**
    * @constant
    */
-  VERSION: '2.967.0',
+  VERSION: '2.1018.0',
 
   /**
    * @api private
@@ -17393,7 +17460,6 @@ AWS.EventListeners = {
         operation.httpChecksumRequired &&
         req.service.config.computeChecksums &&
         isNonStreamingPayload &&
-        req.service.getSignerClass(req) === AWS.Signers.V4 &&
         !headers['Content-MD5']
       ) {
         var md5 = AWS.util.crypto.md5(body, 'base64');
@@ -17770,7 +17836,7 @@ AWS.EventListeners = {
           ['EAI_NONAME', 'EAI_NODATA'].indexOf(AWS.util.getSystemErrorName(err.errno) >= 0);
       }
       if (err.code === 'NetworkingError' && isDNSError(err)) {
-        var message = 'Inaccessible host: `' + err.hostname +
+        var message = 'Inaccessible host: `' + err.hostname + '\' at port `' + err.port +
           '\'. This service may not be available in the `' + err.region +
           '\' region.';
         this.response.error = AWS.util.error(new Error(message), {
@@ -19815,30 +19881,24 @@ function populateBody(req) {
     var params = {};
     var payloadShape = input.members[input.payload];
     params = req.params[input.payload];
-    if (params === undefined) return;
 
     if (payloadShape.type === 'structure') {
-      req.httpRequest.body = builder.build(params, payloadShape);
+      req.httpRequest.body = builder.build(params || {}, payloadShape);
       applyContentTypeHeader(req);
-    } else { // non-JSON payload
+    } else if (params !== undefined) {
+      // non-JSON payload
       req.httpRequest.body = params;
       if (payloadShape.type === 'binary' || payloadShape.isStreaming) {
         applyContentTypeHeader(req, true);
       }
     }
   } else {
-    var body = builder.build(req.params, input);
-    if (body !== '{}' || req.httpRequest.method !== 'GET') { //don't send empty body for GET method
-      req.httpRequest.body = body;
-    }
+    req.httpRequest.body = builder.build(req.params, input);
     applyContentTypeHeader(req);
   }
 }
 
 function applyContentTypeHeader(req, isBinary) {
-  var operation = req.service.api.operations[req.operation];
-  var input = operation.input;
-
   if (!req.httpRequest.headers['Content-Type']) {
     var type = isBinary ? 'binary/octet-stream' : 'application/json';
     req.httpRequest.headers['Content-Type'] = type;
@@ -19848,8 +19908,8 @@ function applyContentTypeHeader(req, isBinary) {
 function buildRequest(req) {
   Rest.buildRequest(req);
 
-  // never send body payload on HEAD/DELETE
-  if (['HEAD', 'DELETE'].indexOf(req.httpRequest.method) < 0) {
+  // never send body payload on GET/HEAD/DELETE
+  if (['GET', 'HEAD', 'DELETE'].indexOf(req.httpRequest.method) < 0) {
     populateBody(req);
   }
 }
@@ -20114,6 +20174,12 @@ var regionConfig = require('./region_config_data.json');
 
 function generateRegionPrefix(region) {
   if (!region) return null;
+  if (isFipsRegion(region)) {
+    if (isFipsCnRegion(region)) return 'fips-cn-*';
+    if (isFipsUsGovRegion(region)) return 'fips-us-gov-*';
+    if (region.startsWith('fips-accesspoint-')) return 'fips-accesspoint-*';
+    return 'fips-*';
+  }
 
   var parts = region.split('-');
   if (parts.length < 3) return null;
@@ -20167,6 +20233,12 @@ function configureEndpoint(service) {
         );
       }
 
+      // set FIPS signingRegion and endpoint.
+      if (isFipsRegion(service.config.region)) {
+        config = util.copy(config);
+        service.signingRegion = getRealRegion(service.config.region);
+      }
+
       // set global endpoint
       service.isGlobalEndpoint = !!config.globalEndpoint;
       if (config.signingRegion) {
@@ -20201,12 +20273,43 @@ function getEndpointSuffix(region) {
   return defaultSuffix;
 }
 
+function isFipsRegion(region) {
+  return region && (region.startsWith('fips-') || region.endsWith('-fips'));
+}
+
+function isFipsUsGovRegion(region) {
+  return (
+    region &&
+    region.startsWith('fips-us-gov-') ||
+    (region.startsWith('us-gov-') && region.endsWith('-fips'))
+  );
+}
+
+function isFipsCnRegion(region) {
+  return (
+    region &&
+    region.startsWith('fips-cn-') ||
+    (region.startsWith('cn-') && region.endsWith('-fips'))
+  );
+}
+
+function getRealRegion(region) {
+  return isFipsRegion(region)
+    ? ['fips-aws-global', 'aws-fips'].includes(region)
+      ? 'us-east-1'
+      : region === 'fips-aws-us-gov-global'
+      ? 'us-gov-west-1'
+      : region.replace(/fips-(dkr-|prod-|accesspoint-)?|-fips/, '')
+    : region;
+}
+
 /**
  * @api private
  */
 module.exports = {
   configureEndpoint: configureEndpoint,
-  getEndpointSuffix: getEndpointSuffix
+  getEndpointSuffix: getEndpointSuffix,
+  getRealRegion: getRealRegion,
 };
 
 },{"./region_config_data.json":63,"./util":83}],63:[function(require,module,exports){
@@ -20214,6 +20317,11 @@ module.exports={
   "rules": {
     "*/*": {
       "endpoint": "{service}.{region}.amazonaws.com"
+    },
+    "fips-*/*": "fipsStandard",
+    "fips-us-gov-*/*": "fipsStandard",
+    "fips-cn-*/*": {
+      "endpoint": "{service}-fips.{region}.amazonaws.com.cn"
     },
     "cn-*/*": {
       "endpoint": "{service}.{region}.amazonaws.com.cn"
@@ -20273,6 +20381,58 @@ module.exports={
     "*/sdb": {
       "endpoint": "{service}.{region}.amazonaws.com",
       "signatureVersion": "v2"
+    },
+
+    "fips-*/api.ecr": "fips.api.ecr",
+    "fips-us-gov-*/api.ecr": "fips.api.ecr",
+    "fips-*/api.sagemaker": "fips.api.sagemaker",
+    "fips-us-gov-*/api.sagemaker": "fips.api.sagemaker",
+    "fips-*/batch": "fipsDotPrefix",
+    "fips-*/eks": "fipsDotPrefix",
+    "fips-*/models.lex": "fips.models.lex",
+    "fips-us-gov-*/models.lex": "fips.models.lex",
+    "fips-*/runtime.lex": "fips.runtime.lex",
+    "fips-us-gov-*/runtime.lex": "fips.runtime.lex",
+    "fips-*/runtime.sagemaker": {
+      "endpoint": "runtime-fips.sagemaker.{region}.amazonaws.com"
+    },
+    "fips-*/streams.dynamodb": {
+      "endpoint": "dynamodb-fips.{region}.amazonaws.com"
+    },
+    "fips-*/route53": "fipsWithoutRegion",
+    "fips-*/transcribe": "fipsDotPrefix",
+    "fips-us-gov-*/transcribe": "fipsDotPrefix",
+    "fips-*/waf": "fipsWithoutRegion",
+    "fips-accesspoint-*/*": {
+      "endpoint": "{service}-accesspoint-fips.{region}.amazonaws.com"
+    },
+    "fips-us-gov-*/acm-pca": "fipsWithServiceOnly",
+    "fips-us-gov-*/batch": "fipsWithServiceOnly",
+    "fips-us-gov-*/config": "fipsWithServiceOnly",
+    "fips-us-gov-*/eks": "fipsWithServiceOnly",
+    "fips-us-gov-*/elasticmapreduce": "fipsWithServiceOnly",
+    "fips-us-gov-*/identitystore": "fipsWithServiceOnly",
+    "fips-us-gov-*/dynamodb": "fipsWithServiceOnly",
+    "fips-us-gov-*/elasticloadbalancing": "fipsWithServiceOnly",
+    "fips-us-gov-*/guardduty": "fipsWithServiceOnly",
+    "fips-us-gov-*/monitoring": "fipsWithServiceOnly",
+    "fips-aws-us-gov-global/organizations": "fipsWithServiceOnly",
+    "fips-us-gov-*/resource-groups": "fipsWithServiceOnly",
+    "fips-aws-us-gov-global/route53": {
+      "endpoint": "route53.us-gov.amazonaws.com"
+    },
+    "fips-us-gov-*/runtime.sagemaker": "fipsWithServiceOnly",
+    "fips-us-gov-*/servicecatalog-appregistry": "fipsWithServiceOnly",
+    "fips-us-gov-*/servicequotas": "fipsWithServiceOnly",
+    "fips-us-gov-*/ssm": "fipsWithServiceOnly",
+    "fips-us-gov-*/sts": "fipsWithServiceOnly",
+    "fips-us-gov-west-1/states": "fipsWithServiceOnly",
+    "fips-us-gov-*/support": "fipsWithServiceOnly",
+    "fips-us-gov-*/streams.dynamodb": {
+      "endpoint": "dynamodb.{region}.amazonaws.com"
+    },
+    "fips-us-iso-east-1/elasticfilesystem": {
+      "endpoint": "elasticfilesystem-fips.{region}.c2s.ic.gov"
     }
   },
 
@@ -20290,6 +20450,30 @@ module.exports={
     "s3signature": {
       "endpoint": "{service}.{region}.amazonaws.com",
       "signatureVersion": "s3"
+    },
+    "fipsStandard": {
+      "endpoint": "{service}-fips.{region}.amazonaws.com"
+    },
+    "fipsDotPrefix": {
+      "endpoint": "fips.{service}.{region}.amazonaws.com"
+    },
+    "fipsWithoutRegion": {
+      "endpoint": "{service}-fips.amazonaws.com"
+    },
+    "fips.api.ecr": {
+      "endpoint": "ecr-fips.{region}.amazonaws.com"
+    },
+    "fips.api.sagemaker": {
+      "endpoint": "api-fips.sagemaker.{region}.amazonaws.com"
+    },
+    "fips.models.lex": {
+      "endpoint": "models-fips.lex.{region}.amazonaws.com"
+    },
+    "fips.runtime.lex": {
+      "endpoint": "runtime-fips.lex.{region}.amazonaws.com"
+    },
+    "fipsWithServiceOnly": {
+      "endpoint": "{service}.{region}.amazonaws.com"
     }
   }
 }
@@ -20611,12 +20795,10 @@ AWS.Request = inherit({
     var region = service.config.region;
     var customUserAgent = service.config.customUserAgent;
 
-    if (service.isGlobalEndpoint) {
-      if (service.signingRegion) {
-        region = service.signingRegion;
-      } else {
-        region = 'us-east-1';
-      }
+    if (service.signingRegion) {
+      region = service.signingRegion;
+    } else if (service.isGlobalEndpoint) {
+      region = 'us-east-1';
     }
 
     this.domain = domain && domain.active;
@@ -23129,7 +23311,7 @@ AWS.Service = inherit({
 
     var e = endpoint;
     e = e.replace(/\{service\}/g, this.api.endpointPrefix);
-    e = e.replace(/\{region\}/g, this.config.region);
+    e = e.replace(/\{region\}/g, regionConfig.getRealRegion(this.config.region));
     e = e.replace(/\{scheme\}/g, this.config.sslEnabled ? 'https' : 'http');
     return e;
   },
@@ -23772,21 +23954,6 @@ AWS.util.update(AWS.S3.prototype, {
           contentType.replace(/(;\s*charset=)(.+)$/, replaceFn);
       }
     }
-  },
-
-  /**
-   * @api private
-   */
-  computableChecksumOperations: {
-    putBucketCors: true,
-    putBucketLifecycle: true,
-    putBucketLifecycleConfiguration: true,
-    putBucketTagging: true,
-    deleteObjects: true,
-    putBucketReplication: true,
-    putObjectLegalHold: true,
-    putObjectRetention: true,
-    putObjectLockConfiguration: true
   },
 
   /**
@@ -25687,7 +25854,7 @@ AWS.Signers.V4 = inherit(AWS.Signers.RequestSigner, {
 
   hexEncodedBodyHash: function hexEncodedBodyHash() {
     var request = this.request;
-    if (this.isPresigned() && this.serviceName === 's3' && !request.body) {
+    if (this.isPresigned() && (['s3', 's3-object-lambda'].indexOf(this.serviceName) > -1) && !request.body) {
       return 'UNSIGNED-PAYLOAD';
     } else if (request.headers['X-Amz-Content-Sha256']) {
       return request.headers['X-Amz-Content-Sha256'];
@@ -34216,7 +34383,7 @@ var LRUCache = /** @class */ (function () {
 }());
 exports.LRUCache = LRUCache;
 },{}],117:[function(require,module,exports){
-// AWS SDK for JavaScript v2.967.0
+// AWS SDK for JavaScript v2.1018.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 require('./browser_loader');
