@@ -11,11 +11,76 @@ Working examples for Simple Email Service (SES), S3, and Lambda. This project ca
 npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 ```
 
-## Setup
+## Library deployment
 
-1. Copy & paste all the files from `dist/` into your project.
+1. Add the existing Google Apps Script project [as a Library](https://developers.google.com/apps-script/guides/libraries#add_a_library_to_your_script_project)
 
-2. See `Examples.js` and `Config.js` for working examples.
+- Script ID `AKfycbyyoGHiXbL3izGspxtkUTf4TRPhYbsbpx8AkZPe89iwkpy0OLvxPFrM5kpdQMmmTR18`
+- Choose an identifier, e.g., `AWSLIB`
+- Versions of the Google Apps Script project map to tags on this Git repository
+
+2. Initialize your AWS config settings and implement one of this library's [S3](dist/S3.js), [Lambda](dist/Lambda.js), or [SES](dist/Ses.js) functions. [Examples.js](dist/Examples.js) shows some working examples.
+
+```js
+const AWS_CONFIG = {
+  accessKey: 'AK0ZXZD0KGNG4KG6REBP', // use your own AWS key
+  secretKey: 'EXrPgHC41HEW2YownLUnJLgh6bMsrmW1uva1ic24', // use your own AWS key
+  region: 'us-east-1',
+};
+
+// example function to retrieve S3 object
+async function getS3ObjectTest() {
+  AWSLIB.initConfig(AWS_CONFIG);
+  var result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
+  if (result === false) {
+    return false;
+  }
+
+  var blob = Utilities.newBlob(result.Body, result.ContentType);
+  // Logger.log(blob.getDataAsString());
+  return blob;
+}
+```
+
+3. Methods for common S3, Lambda, and SES services have been implemented. However, direct access to library AWS SDK methods is also available via the `AWS` property on your chosen library identifier, e.g.:
+
+```js
+// Create a new service object
+var s3 = new AWSLIB.AWS.S3({
+  apiVersion: '2006-03-01',
+  params: { Bucket: albumBucketName },
+});
+```
+
+## Advanced deployment
+
+1. Customize the AWS SDK if additional services are needed
+
+2. Copy & paste all the files from `dist/` into your project.
+
+- `Examples.js` and `Config.js` are placeholders, which should be adapted with your code.
+
+### Customized AWS SDK
+
+The AWS SDK can be customized for specific API versions and/or services.
+
+This project defaults to the following services: `ses,s3,lambda`.
+
+To customize the codebase for your project:
+
+```shell
+$ cd aws-sdk-js
+$ npm install
+$ cd ..
+$ npm install
+$ npm run sdk --sdk=all
+# can also be customized, e.g.
+# npm run sdk --sdk=ses,ec2,dynamodb-2011-12-05,dynamodb-2012-08-10
+$ npm run build
+```
+
+Services can also be customized using a comma-delimited list of services.
+AWS has a [full list](https://github.com/aws/aws-sdk-js/tree/master/apis) of identifiers and api versions available.
 
 ### Create your own library
 
@@ -30,24 +95,6 @@ npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 5. Copy your library Script ID from `File → Project properties → Script ID`
 
 6. Reference this Script ID as a library in other projects.
-
-## Customize SDK for Specific Services
-
-The AWS SDK can be customized for specific API versions and/or services.
-
-This project defaults to the following services: `ses,s3,lambda`.
-
-To optimize the codebase for your project:
-
-1. `npm install` inside `aws-sdk-js`
-
-2. `npm run sdk --sdk=<services>` using a comma-delimited list of services.
-
-> e.g., `npm run sdk --sdk=ses,ec2,dynamodb-2011-12-05,dynamodb-2012-08-10` or `npm run sdk --sdk=all`
-
-3. `npm run build`
-
-> Service identifiers and API versions are available in the service-specific configuration files at https://github.com/aws/aws-sdk-js/tree/master/apis.
 
 ## Background
 
