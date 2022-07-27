@@ -15,7 +15,7 @@ npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 
 1. Add the existing Google Apps Script project [as a Library](https://developers.google.com/apps-script/guides/libraries#add_a_library_to_your_script_project)
 
-- Script ID `AKfycbyyoGHiXbL3izGspxtkUTf4TRPhYbsbpx8AkZPe89iwkpy0OLvxPFrM5kpdQMmmTR18`
+- Script ID `1J6iN9mJE-NK6LGTlZcngsflJEx59tE3ZOW4-2cdHbgw0So2MmEcRZxKG`
 - Choose an identifier, e.g., `AWSLIB`
 - Versions of the Google Apps Script project map to tags on this Git repository
 
