@@ -5,7 +5,7 @@
 
 Native support for the entire AWS SDK for JavaScript in Google Apps Script.
 
-Working examples for Simple Email Service (SES), S3, and Lambda. This project can easily accommodate _all_ other AWS services, e.g.,
+Working examples for Simple Email Service (SES), S3, Lambda, and EC2. This project can easily accommodate _all_ other AWS services, e.g.,
 
 ```
 npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
@@ -19,7 +19,7 @@ npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 - Choose an identifier, e.g., `AWSLIB`
 - Versions of the Google Apps Script project map to tags on this Git repository
 
-2. Initialize your AWS config settings and implement one of this library's [S3](dist/S3.js), [Lambda](dist/Lambda.js), or [SES](dist/Ses.js) functions. [Examples.js](dist/Examples.js) shows some working examples.
+2. Initialize your AWS config settings and implement one of this library's [S3](dist/S3.js), [Lambda](dist/Lambda.js), [SES](dist/Ses.js), or [EC2](dist/EC2.js) functions. [Examples.js](dist/Examples.js) shows some working examples.
 
 ```js
 const AWS_CONFIG = {
@@ -42,7 +42,7 @@ async function getS3ObjectTest() {
 }
 ```
 
-3. Methods for common S3, Lambda, and SES services have been implemented. However, direct access to library AWS SDK methods is also available via the `AWS` property on your chosen library identifier, e.g.:
+3. Methods for common S3, Lambda, SES, and EC2 services have been implemented. However, direct access to library AWS SDK methods is also available via the `AWS` property on your chosen library identifier, e.g.:
 
 ```js
 // Create a new service object
@@ -64,7 +64,7 @@ var s3 = new AWSLIB.AWS.S3({
 
 The AWS SDK can be customized for specific API versions and/or services.
 
-This project defaults to the following services: `ses,s3,lambda`.
+This project defaults to the following services: `ses,s3,lambda,ec2`.
 
 To customize the codebase for your project:
 

@@ -64,3 +64,33 @@ async function invokeLambdaTest() {
   Logger.log(result);
   return result;
 }
+
+async function listEC2InstancesTest() {
+  initConfig(AWS_CONFIG_TEST);
+  var result = await listEC2Instances('us-west-2');
+  var instances = [];
+
+  if (result !== false) {
+    if (result.hasOwnProperty('reservationSet') && result.reservationSet.hasOwnProperty('instancesSet')) {
+      instances = result.reservationSet.instancesSet;
+    }
+  }
+
+  Logger.log(`${instances.length} instance${instances.length === 1 ? '' : 's'}`);
+  return instances;
+}
+
+async function listSecurityGroupsTest() {
+  initConfig(AWS_CONFIG_TEST);
+  var result = await listSecurityGroups('us-west-2');
+  var groups = [];
+
+  if (result !== false) {
+    if (result.hasOwnProperty('securityGroupInfo')) {
+      groups = result.securityGroupInfo;
+    }
+  }
+
+  Logger.log(`${groups.length} security group${groups.length === 1 ? '' : 's'}`);
+  return groups;
+}
