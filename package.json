@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/dxdc/aws-sdk-google-apps#readme",
   "devDependencies": {
-    "@google/clasp": "^2.4.1",
+    "@google/clasp": "^2.4.2",
     "del": "^6.1.1",
-    "eslint": "^8.19.0",
+    "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-googleappsscript": "^1.0.4",
     "eslint-plugin-json": "^3.1.0",
