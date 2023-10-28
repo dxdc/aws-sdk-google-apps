@@ -12,6 +12,7 @@ function initConfig(config) {
     credentials: {
       accessKeyId: config.accessKey,
       secretAccessKey: config.secretKey,
+      sessionToken: config.sessionToken
     },
   });
 }
