@@ -4,14 +4,22 @@ const AWS_CONFIG_TEST = {
   region: 'us-east-1',
 };
 
-function initConfig(config) {
+function initConfig({ region, accessKey, secretKey, sessionToken, ...rest }) {
   AWS.config = new AWS.Config();
+
+  const credentials = {
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+  };
+
+  if (sessionToken) {
+    credentials.sessionToken = sessionToken;
+  }
+
   AWS.config.update({
-    region: config.region,
+    region,
     sslEnabled: true,
-    credentials: {
-      accessKeyId: config.accessKey,
-      secretAccessKey: config.secretKey,
-    },
+    credentials,
+    ...rest,
   });
 }
