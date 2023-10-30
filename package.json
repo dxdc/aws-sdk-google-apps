@@ -24,11 +24,11 @@
   "devDependencies": {
     "@google/clasp": "^2.4.2",
     "del": "^6.1.1",
-    "eslint": "^8.50.0",
+    "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-googleappsscript": "^1.0.5",
     "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "gulp": "^4.0.2",
     "gulp-include": "^2.4.1",
     "gulp-minify": "^3.1.0",
