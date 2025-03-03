@@ -36,3 +36,25 @@ function getS3Object(bucketName, key) {
       return false;
     });
 }
+
+function putS3Object(bucketName, key, data) {
+  var s3Promise = new AWS.S3({
+    apiVersion: '2006-03-01',
+    params: { Bucket: bucketName },
+  })
+    .putObject({
+      Bucket: bucketName,
+      Key: key,
+      Body: data,
+    })
+    .promise();
+
+  return s3Promise
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
+}
