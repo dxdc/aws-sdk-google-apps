@@ -9,11 +9,11 @@ async function setTimeout() {
 
 // Polyfill for Blob (using Utilities.newBlob)
 if (typeof Blob === 'undefined') {
-  var Blob = function (parts, options) {
-    var contentType = options && options.type ? options.type : 'application/octet-stream';
+  var Blob = (parts, options) => {
+    const contentType = options && options.type ? options.type : 'application/octet-stream';
     // For maximal compatibility, handle parts that may be non-strings by converting them
-    var data = parts
-      .map(function (part) {
+    const data = parts
+      .map((part) => {
         return typeof part === 'string' ? part : part.toString();
       })
       .join('');
@@ -23,16 +23,16 @@ if (typeof Blob === 'undefined') {
 
 // Polyfill for atob and btoa (base64 encoding/decoding)
 if (typeof atob === 'undefined') {
-  function atob(base64) {
+  var atob = (base64) => {
     // Decodes base64 into a string
     return Utilities.newBlob(Utilities.base64Decode(base64)).getDataAsString();
-  }
+  };
 }
 if (typeof btoa === 'undefined') {
-  function btoa(str) {
+  var btoa = (str) => {
     // Encodes a string into base64
     return Utilities.base64Encode(str);
-  }
+  };
 }
 
 // Polyfill for TextEncoder and TextDecoder for UTF-8 conversions
@@ -54,11 +54,11 @@ if (typeof TextDecoder === 'undefined') {
 // Polyfill for URL.createObjectURL and URL.revokeObjectURL
 if (typeof URL === 'undefined') {
   var URL = {
-    createObjectURL: function (blob) {
+    createObjectURL: (blob) => {
       // Returns a data URI as a minimal substitute
       return 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
     },
-    revokeObjectURL: function (url) {
+    revokeObjectURL: () => {
       // No operation needed in Apps Script
     },
   };
@@ -69,7 +69,7 @@ if (typeof Buffer === 'undefined') {
   var Buffer = function (arr) {
     this.data = arr;
   };
-  Buffer.from = function (input, encoding) {
+  Buffer.from = (input, encoding) => {
     if (typeof input === 'string') {
       if (encoding === 'base64') {
         // Decode base64 into a byte array
@@ -83,7 +83,7 @@ if (typeof Buffer === 'undefined') {
     }
     return input;
   };
-  Buffer.isBuffer = function (obj) {
+  Buffer.isBuffer = (obj) => {
     return obj instanceof Buffer;
   };
 }

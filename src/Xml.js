@@ -1,9 +1,9 @@
 function getElementsByTagName(element, tagName) {
-  var data = [];
-  var descendants = element.getDescendants();
-  for (var i in descendants) {
-    var el = descendants[i].asElement();
-    if (el !== null && el.getName() == tagName) {
+  const data = [];
+  const descendants = element.getDescendants();
+  for (let i = 0; i < descendants.length; i++) {
+    const el = descendants[i].asElement();
+    if (el !== null && el.getName() === tagName) {
       data.push(el.getValue());
     }
   }
@@ -12,16 +12,16 @@ function getElementsByTagName(element, tagName) {
 }
 
 function xmlElementToJson(element) {
-  var result = null;
+  let result = null;
   element.getChildren().forEach((child) => {
-    var key = child.getName();
+    const key = child.getName();
     if (result === null) {
       result = key === 'item' || key === 'member' ? [] : {};
     }
-    var value = xmlElementToJson(child);
+    const value = xmlElementToJson(child);
     if (result instanceof Array) {
       result.push(value);
-    } else if (result.hasOwnProperty(key)) {
+    } else if (Object.prototype.hasOwnProperty.call(result, key)) {
       if (result[key] instanceof Array) {
         result[key].push(value);
       } else {
@@ -31,11 +31,11 @@ function xmlElementToJson(element) {
       result[key] = value;
     }
   });
-  var text = element.getText();
+  const text = element.getText();
   if (text) {
-    text = text.trim();
-    if (text !== '') {
-      result = text;
+    const trimmed = text.trim();
+    if (trimmed !== '') {
+      result = trimmed;
     }
   }
   return result;

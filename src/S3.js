@@ -1,15 +1,13 @@
 function listS3Objects(bucketName, prefix) {
-  var s3Promise = new AWS.S3({
+  const s3 = new AWS.S3({
     apiVersion: '2006-03-01',
     params: { Bucket: bucketName },
-  })
-    .listObjects({ Delimiter: '/', Prefix: prefix })
-    .promise();
+  });
 
-  return s3Promise
-    .then((data) => {
-      return data;
-    })
+  return s3
+    .listObjects({ Delimiter: '/', Prefix: prefix })
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -17,20 +15,18 @@ function listS3Objects(bucketName, prefix) {
 }
 
 function getS3Object(bucketName, key) {
-  var s3Promise = new AWS.S3({
+  const s3 = new AWS.S3({
     apiVersion: '2006-03-01',
     params: { Bucket: bucketName },
-  })
+  });
+
+  return s3
     .getObject({
       Bucket: bucketName,
       Key: key,
     })
-    .promise();
-
-  return s3Promise
-    .then((data) => {
-      return data;
-    })
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -38,21 +34,19 @@ function getS3Object(bucketName, key) {
 }
 
 function putS3Object(bucketName, key, data) {
-  var s3Promise = new AWS.S3({
+  const s3 = new AWS.S3({
     apiVersion: '2006-03-01',
     params: { Bucket: bucketName },
-  })
+  });
+
+  return s3
     .putObject({
       Bucket: bucketName,
       Key: key,
       Body: data,
     })
-    .promise();
-
-  return s3Promise
-    .then((data) => {
-      return data;
-    })
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

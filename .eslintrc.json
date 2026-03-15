@@ -30,7 +30,11 @@
         "googleappsscript/googleappsscript": true,
         "jquery": false
       },
-      "globals": {"AWS": "readonly"}
+      "globals": { "AWS": "readonly" },
+      "rules": {
+        "no-unused-vars": "off",
+        "no-undef": "off"
+      }
     }
   ]
 }

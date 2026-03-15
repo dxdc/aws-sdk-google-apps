@@ -1,15 +1,13 @@
 function listEC2Instances(region = null) {
-  var ec2Promise = new AWS.EC2({
+  const ec2 = new AWS.EC2({
     apiVersion: '2016-11-15',
     region: region || AWS.config.region,
-  })
-    .describeInstances()
-    .promise();
+  });
 
-  return ec2Promise
-    .then((data) => {
-      return data;
-    })
+  return ec2
+    .describeInstances()
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -17,17 +15,15 @@ function listEC2Instances(region = null) {
 }
 
 function listSecurityGroups(region = null) {
-  var ec2Promise = new AWS.EC2({
+  const ec2 = new AWS.EC2({
     apiVersion: '2016-11-15',
     region: region || AWS.config.region,
-  })
-    .describeSecurityGroups()
-    .promise();
+  });
 
-  return ec2Promise
-    .then((data) => {
-      return data;
-    })
+  return ec2
+    .describeSecurityGroups()
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

@@ -38,12 +38,10 @@ function sendEmail(toEmails, ccEmails, bccEmails, fromEmail, replyToEmails, subj
     ReplyToAddresses: replyToEmails,
   };
 
-  // Create the promise and SES service object
-  var sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
-  return sendPromise
-    .then((data) => {
-      return data;
-    })
+  return new AWS.SES({ apiVersion: '2010-12-01' })
+    .sendEmail(params)
+    .promise()
+    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -58,13 +56,13 @@ function splitEmails_(emails) {
 }
 
 function simpleMakePlainText_(html) {
-  var document = XmlService.parse(html);
-  var body = getElementsByTagName(document, 'body');
+  const document = XmlService.parse(html);
+  let body = getElementsByTagName(document, 'body');
   if (body.length < 1) {
     body.push(document.getRootElement().getValue());
   }
 
-  var output = body[0]
+  const output = body[0]
     .replace(/\n\s*\n/g, '\n\n')
     .replace(/[ \t]+/g, ' ')
     .replace(/\n{2,}/g, '\n\n');

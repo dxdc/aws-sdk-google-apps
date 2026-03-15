@@ -1,6 +1,6 @@
 async function sendEmailTest() {
   initConfig(AWS_CONFIG_TEST);
-  var result = await sendEmail(
+  const result = await sendEmail(
     'Your Name <you@example.com>', // to
     '', // cc
     '', // bcc
@@ -20,15 +20,15 @@ async function sendEmailTest() {
 
 async function listS3ObjectsTest() {
   initConfig(AWS_CONFIG_TEST);
-  var result = await listS3Objects('myBucket', 'folder1/');
-  var files = [];
-  var folders = [];
+  const result = await listS3Objects('myBucket', 'folder1/');
+  let files = [];
+  let folders = [];
 
   if (result !== false) {
-    if (result.hasOwnProperty('CommonPrefixes')) {
+    if (Object.prototype.hasOwnProperty.call(result, 'CommonPrefixes')) {
       folders = result.CommonPrefixes instanceof Array ? result.CommonPrefixes.map((item) => item.Prefix) : [result.CommonPrefixes.Prefix];
     }
-    if (result.hasOwnProperty('Contents')) {
+    if (Object.prototype.hasOwnProperty.call(result, 'Contents')) {
       files = result.Contents instanceof Array ? result.Contents : [result.Contents];
     }
   }
@@ -39,24 +39,24 @@ async function listS3ObjectsTest() {
 
 async function getS3ObjectTest() {
   initConfig(AWS_CONFIG_TEST);
-  var result = await getS3Object('myBucket', 'folder1/file.jpg');
+  const result = await getS3Object('myBucket', 'folder1/file.jpg');
   if (result === false) {
     return false;
   }
 
-  var blob = Utilities.newBlob(result.Body, result.ContentType);
+  const blob = Utilities.newBlob(result.Body, result.ContentType);
   // Logger.log(blob.getDataAsString());
   return blob;
 }
 
 async function invokeLambdaTest() {
   initConfig(AWS_CONFIG_TEST);
-  var payload = {
+  const payload = {
     key1: 'value1',
     key2: 'value2',
     key3: 'value3',
   };
-  var result = await invokeLambda('helloWorld', payload);
+  const result = await invokeLambda('helloWorld', payload);
   if (result === false) {
     return false;
   }
@@ -67,11 +67,14 @@ async function invokeLambdaTest() {
 
 async function listEC2InstancesTest() {
   initConfig(AWS_CONFIG_TEST);
-  var result = await listEC2Instances('us-west-2');
-  var instances = [];
+  const result = await listEC2Instances('us-west-2');
+  let instances = [];
 
   if (result !== false) {
-    if (result.hasOwnProperty('reservationSet') && result.reservationSet.hasOwnProperty('instancesSet')) {
+    if (
+      Object.prototype.hasOwnProperty.call(result, 'reservationSet') &&
+      Object.prototype.hasOwnProperty.call(result.reservationSet, 'instancesSet')
+    ) {
       instances = result.reservationSet.instancesSet;
     }
   }
@@ -82,11 +85,11 @@ async function listEC2InstancesTest() {
 
 async function listSecurityGroupsTest() {
   initConfig(AWS_CONFIG_TEST);
-  var result = await listSecurityGroups('us-west-2');
-  var groups = [];
+  const result = await listSecurityGroups('us-west-2');
+  let groups = [];
 
   if (result !== false) {
-    if (result.hasOwnProperty('securityGroupInfo')) {
+    if (Object.prototype.hasOwnProperty.call(result, 'securityGroupInfo')) {
       groups = result.securityGroupInfo;
     }
   }
