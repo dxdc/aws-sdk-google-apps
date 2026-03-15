@@ -39,7 +39,6 @@ function invokeLambda(functionName, payload, options) {
   return new AWS.Lambda({ apiVersion: '2015-03-31' })
     .invoke(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

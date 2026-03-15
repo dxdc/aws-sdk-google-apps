@@ -4,8 +4,8 @@
  * @type {{accessKey: string, secretKey: string, region: string}}
  */
 const AWS_CONFIG_TEST = {
-  accessKey: 'AK0ZXZD0KGNG4KG6REBP', // use your own AWS key
-  secretKey: 'EXrPgHC41HEW2YownLUnJLgh6bMsrmW1uva1ic24', // use your own AWS key
+  accessKey: 'AKIAIOSFODNN7EXAMPLE', // replace with your own AWS key
+  secretKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', // replace with your own AWS key
   region: 'us-east-1',
 };
 

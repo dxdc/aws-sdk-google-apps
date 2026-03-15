@@ -18,9 +18,8 @@ function listS3Objects(bucketName, prefix) {
   });
 
   return s3
-    .listObjects({ Delimiter: '/', Prefix: prefix })
+    .listObjects({ Delimiter: '/', Prefix: prefix || '' })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -52,7 +51,6 @@ function getS3Object(bucketName, key) {
       Key: key,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -106,7 +104,6 @@ function putS3Object(bucketName, key, data, options) {
   return s3
     .putObject(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -135,7 +132,6 @@ function deleteS3Object(bucketName, key) {
       Key: key,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -163,10 +159,9 @@ function copyS3Object(sourceBucket, sourceKey, destBucket, destKey) {
     .copyObject({
       Bucket: destBucket,
       Key: destKey,
-      CopySource: `${sourceBucket}/${sourceKey}`,
+      CopySource: `${sourceBucket}/${encodeURIComponent(sourceKey).replace(/%2F/g, '/')}`,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

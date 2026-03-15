@@ -95,7 +95,6 @@ function sendEmail(optionsOrTo, ccEmails, bccEmails, fromEmail, replyToEmails, s
   return new AWS.SES({ apiVersion: '2010-12-01' })
     .sendEmail(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -122,16 +121,22 @@ function splitEmails_(emails) {
  * @private
  */
 function simpleMakePlainText_(html) {
-  const document = XmlService.parse(html);
-  let body = getElementsByTagName(document, 'body');
-  if (body.length < 1) {
-    body.push(document.getRootElement().getValue());
+  try {
+    const document = XmlService.parse(html);
+    let body = getElementsByTagName(document, 'body');
+    if (body.length < 1) {
+      body.push(document.getRootElement().getValue());
+    }
+
+    return body[0]
+      .replace(/\n\s*\n/g, '\n\n')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{2,}/g, '\n\n');
+  } catch (e) {
+    // HTML is not valid XML; strip tags as a fallback
+    return html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
-
-  const output = body[0]
-    .replace(/\n\s*\n/g, '\n\n')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{2,}/g, '\n\n');
-
-  return output;
 }

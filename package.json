@@ -2,7 +2,7 @@
   "name": "aws-sdk-google-apps",
   "version": "2.0.1",
   "description": "Native support for the AWS SDK in Google Apps Script",
-  "main": "index.js",
+  "main": "build.js",
   "engines": {
     "node": ">=18"
   },
@@ -13,7 +13,6 @@
     "format:check": "prettier {.,src,test}/*.js *.json *.md --check",
     "lint": "eslint {.,src}/*.js",
     "sdk": "echo \"Building SDK for AWS Services: $npm_config_sdk\" && node aws-sdk-js/dist-tools/browser-builder.js $npm_config_sdk > src-sdk/aws-sdk.js",
-
     "test": "jest",
     "test:coverage": "jest --coverage"
   },

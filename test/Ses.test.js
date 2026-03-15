@@ -162,4 +162,25 @@ describe('SES', () => {
       expect(sandbox._mockSendEmail).toHaveBeenCalled();
     });
   });
+
+  describe('simpleMakePlainText_', () => {
+    test('falls back to tag stripping when HTML is not valid XML', () => {
+      // XmlService.parse will throw on malformed HTML
+      sandbox.XmlService.parse.mockImplementation(() => {
+        throw new Error('Content is not allowed in prolog');
+      });
+
+      const result = sandbox.simpleMakePlainText_('<p>Hello <b>world</b></p>');
+      expect(result).toBe('Hello world');
+    });
+
+    test('strips tags gracefully for unclosed HTML', () => {
+      sandbox.XmlService.parse.mockImplementation(() => {
+        throw new Error('XML parsing error');
+      });
+
+      const result = sandbox.simpleMakePlainText_('<p>Unclosed paragraph');
+      expect(result).toBe('Unclosed paragraph');
+    });
+  });
 });

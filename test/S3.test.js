@@ -160,12 +160,31 @@ describe('S3', () => {
       });
     });
 
+    test('URL-encodes special characters in source key', async () => {
+      await sandbox.copyS3Object('src-bucket', 'path/file with spaces.txt', 'dst-bucket', 'dest.txt');
+      expect(sandbox._mocks.mockCopyObject).toHaveBeenCalledWith(
+        expect.objectContaining({
+          CopySource: 'src-bucket/path/file%20with%20spaces.txt',
+        }),
+      );
+    });
+
     test('returns false on error', async () => {
       sandbox._mocks.mockCopyObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Copy error')),
       });
       const result = await sandbox.copyS3Object('src', 'key', 'dst', 'key2');
       expect(result).toBe(false);
+    });
+  });
+
+  describe('listS3Objects edge cases', () => {
+    test('defaults prefix to empty string when omitted', async () => {
+      await sandbox.listS3Objects('my-bucket');
+      expect(sandbox._mocks.mockListObjects).toHaveBeenCalledWith({
+        Delimiter: '/',
+        Prefix: '',
+      });
     });
   });
 });

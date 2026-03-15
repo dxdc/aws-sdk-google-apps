@@ -19,7 +19,6 @@ function listEC2Instances(region = null) {
   return ec2
     .describeInstances()
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -47,7 +46,6 @@ function listSecurityGroups(region = null) {
   return ec2
     .describeSecurityGroups()
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

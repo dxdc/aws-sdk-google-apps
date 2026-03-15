@@ -44,7 +44,6 @@ function sendSQSMessage(queueUrl, messageBody, options) {
   return new AWS.SQS({ apiVersion: '2012-11-05' })
     .sendMessage(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -91,7 +90,6 @@ function receiveSQSMessages(queueUrl, options) {
   return new AWS.SQS({ apiVersion: '2012-11-05' })
     .receiveMessage(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -118,7 +116,6 @@ function deleteSQSMessage(queueUrl, receiptHandle) {
       ReceiptHandle: receiptHandle,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

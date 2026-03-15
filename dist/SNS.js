@@ -39,7 +39,6 @@ function publishSNS(topicArn, message, options) {
   return new AWS.SNS({ apiVersion: '2010-03-31' })
     .publish(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

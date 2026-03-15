@@ -18,7 +18,6 @@ function getDynamoDBItem(tableName, key) {
       Key: key,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -46,7 +45,6 @@ function putDynamoDBItem(tableName, item) {
       Item: item,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -70,7 +68,6 @@ function deleteDynamoDBItem(tableName, key) {
       Key: key,
     })
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
@@ -116,7 +113,6 @@ function queryDynamoDB(tableName, keyConditionExpression, expressionValues, opti
   return new AWS.DynamoDB({ apiVersion: '2012-08-10' })
     .query(params)
     .promise()
-    .then((data) => data)
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;

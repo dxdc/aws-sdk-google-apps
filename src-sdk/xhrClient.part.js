@@ -18,9 +18,6 @@ AWS.XHRGoogleClient = AWS.util.inherit({
       }
     });
 
-    // not implemented
-    var credentials = httpOptions.xhrWithCredentials ? 'include' : 'omit';
-
     try {
       var options = {
         method: httpRequest.method,
@@ -32,11 +29,6 @@ AWS.XHRGoogleClient = AWS.util.inherit({
 
       var response = UrlFetchApp.fetch(href, options);
       var responseCode = response.getResponseCode();
-      var responseText = response.getContentText();
-
-      if (responseCode / 100 !== 2) {
-        throw Error(responseText);
-      }
 
       emitter.statusCode = responseCode;
       emitter.headers = self.parseHeaders(response.getHeaders());
@@ -73,7 +65,9 @@ AWS.XHRGoogleClient = AWS.util.inherit({
       if (!buffer) {
         buffer = new AWS.util.Buffer(blob.getDataAsString());
       }
-    } catch (e) {}
+    } catch (e) {
+      Logger.log(e);
+    }
 
     if (buffer) {
       emitter.emit('data', buffer);
