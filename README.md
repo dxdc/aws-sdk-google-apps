@@ -38,21 +38,21 @@ Any AWS service can also be used directly via the `AWS` object (see [Advanced us
 
 ```js
 const AWS_CONFIG = {
-  accessKey: 'YOUR_ACCESS_KEY', // use your own AWS key
-  secretKey: 'YOUR_SECRET_KEY', // use your own AWS key
+  accessKeyId: 'YOUR_ACCESS_KEY', // use your own AWS key
+  secretAccessKey: 'YOUR_SECRET_KEY', // use your own AWS key
   region: 'us-east-1',
 };
 
 // Example: retrieve an S3 object
 async function getS3ObjectExample() {
   AWSLIB.initConfig(AWS_CONFIG);
-  const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
-  if (result === false) {
-    return false;
+  try {
+    const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
+    return Utilities.newBlob(result.Body, result.ContentType);
+  } catch (err) {
+    Logger.log(err, err.stack);
+    return null;
   }
-
-  const blob = Utilities.newBlob(result.Body, result.ContentType);
-  return blob;
 }
 
 // Example: send an email via SES
@@ -67,16 +67,18 @@ async function sendEmailExample() {
   return result;
 }
 
-// Example: DynamoDB query
+// Example: DynamoDB query with reserved word handling
 async function queryExample() {
   AWSLIB.initConfig(AWS_CONFIG);
   const result = await AWSLIB.queryDynamoDB(
     'Orders',
     'userId = :uid',
+    { ':uid': { S: 'user-123' }, ':active': { S: 'active' } },
     {
-      ':uid': { S: 'user-123' },
+      limit: 10,
+      expressionNames: { '#s': 'status' },
+      filterExpression: '#s = :active',
     },
-    { limit: 10 },
   );
   return result;
 }
@@ -193,8 +195,8 @@ Never commit real AWS credentials to version control. Use Google Apps Script's [
 ```js
 const props = PropertiesService.getScriptProperties();
 const config = {
-  accessKey: props.getProperty('AWS_ACCESS_KEY'),
-  secretKey: props.getProperty('AWS_SECRET_KEY'),
+  accessKeyId: props.getProperty('AWS_ACCESS_KEY_ID'),
+  secretAccessKey: props.getProperty('AWS_SECRET_ACCESS_KEY'),
   region: 'us-east-1',
 };
 initConfig(config);

@@ -4,8 +4,8 @@ const vm = require('vm');
 function loadS3() {
   const code = fs.readFileSync(`${__dirname}/../src/S3.js`, 'utf8');
 
-  const mockListObjects = jest.fn().mockReturnValue({
-    promise: () => Promise.resolve({ Contents: [{ Key: 'file1.txt' }] }),
+  const mockListObjectsV2 = jest.fn().mockReturnValue({
+    promise: () => Promise.resolve({ Contents: [{ Key: 'file1.txt' }], KeyCount: 1, IsTruncated: false }),
   });
   const mockGetObject = jest.fn().mockReturnValue({
     promise: () => Promise.resolve({ Body: 'data', ContentType: 'text/plain' }),
@@ -24,7 +24,7 @@ function loadS3() {
     ...global,
     AWS: {
       S3: jest.fn().mockReturnValue({
-        listObjects: mockListObjects,
+        listObjectsV2: mockListObjectsV2,
         getObject: mockGetObject,
         putObject: mockPutObject,
         deleteObject: mockDeleteObject,
@@ -32,7 +32,7 @@ function loadS3() {
       }),
     },
     Logger: { log: jest.fn() },
-    _mocks: { mockListObjects, mockGetObject, mockPutObject, mockDeleteObject, mockCopyObject },
+    _mocks: { mockListObjectsV2, mockGetObject, mockPutObject, mockDeleteObject, mockCopyObject },
   };
 
   vm.createContext(sandbox);
@@ -48,28 +48,52 @@ describe('S3', () => {
   });
 
   describe('listS3Objects', () => {
-    test('lists objects in a bucket with prefix', async () => {
-      const result = await sandbox.listS3Objects('my-bucket', 'prefix/');
-      expect(result).toEqual({ Contents: [{ Key: 'file1.txt' }] });
-      expect(sandbox.AWS.S3).toHaveBeenCalledWith(
-        expect.objectContaining({
-          apiVersion: '2006-03-01',
-          params: { Bucket: 'my-bucket' },
-        }),
-      );
-      expect(sandbox._mocks.mockListObjects).toHaveBeenCalledWith({
+    test('lists objects with options', async () => {
+      const result = await sandbox.listS3Objects('my-bucket', { prefix: 'images/' });
+      expect(result).toEqual({ Contents: [{ Key: 'file1.txt' }], KeyCount: 1, IsTruncated: false });
+      expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
         Delimiter: '/',
-        Prefix: 'prefix/',
+        Prefix: 'images/',
       });
     });
 
-    test('returns false on error', async () => {
-      sandbox._mocks.mockListObjects.mockReturnValueOnce({
+    test('defaults prefix to empty string and delimiter to /', async () => {
+      await sandbox.listS3Objects('my-bucket');
+      expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
+        Delimiter: '/',
+        Prefix: '',
+      });
+    });
+
+    test('passes continuationToken and maxKeys', async () => {
+      await sandbox.listS3Objects('my-bucket', {
+        prefix: 'dir/',
+        maxKeys: 10,
+        continuationToken: 'abc123',
+        startAfter: 'dir/start.txt',
+      });
+      expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
+        Delimiter: '/',
+        Prefix: 'dir/',
+        MaxKeys: 10,
+        ContinuationToken: 'abc123',
+        StartAfter: 'dir/start.txt',
+      });
+    });
+
+    test('allows overriding delimiter', async () => {
+      await sandbox.listS3Objects('my-bucket', { delimiter: '' });
+      expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
+        Delimiter: '',
+        Prefix: '',
+      });
+    });
+
+    test('throws on error', async () => {
+      sandbox._mocks.mockListObjectsV2.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Access denied')),
       });
-      const result = await sandbox.listS3Objects('my-bucket', '/');
-      expect(result).toBe(false);
-      expect(sandbox.Logger.log).toHaveBeenCalled();
+      await expect(sandbox.listS3Objects('my-bucket')).rejects.toThrow('Access denied');
     });
   });
 
@@ -83,12 +107,11 @@ describe('S3', () => {
       });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockGetObject.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('Not found')),
+        promise: () => Promise.reject(new Error('NoSuchKey')),
       });
-      const result = await sandbox.getS3Object('my-bucket', 'missing.txt');
-      expect(result).toBe(false);
+      await expect(sandbox.getS3Object('my-bucket', 'missing.txt')).rejects.toThrow('NoSuchKey');
     });
   });
 
@@ -121,12 +144,11 @@ describe('S3', () => {
       );
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockPutObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Forbidden')),
       });
-      const result = await sandbox.putS3Object('my-bucket', 'file.txt', 'data');
-      expect(result).toBe(false);
+      await expect(sandbox.putS3Object('my-bucket', 'file.txt', 'data')).rejects.toThrow('Forbidden');
     });
   });
 
@@ -140,12 +162,11 @@ describe('S3', () => {
       });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockDeleteObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Access denied')),
       });
-      const result = await sandbox.deleteS3Object('my-bucket', 'file.txt');
-      expect(result).toBe(false);
+      await expect(sandbox.deleteS3Object('my-bucket', 'file.txt')).rejects.toThrow('Access denied');
     });
   });
 
@@ -169,22 +190,11 @@ describe('S3', () => {
       );
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockCopyObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Copy error')),
       });
-      const result = await sandbox.copyS3Object('src', 'key', 'dst', 'key2');
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('listS3Objects edge cases', () => {
-    test('defaults prefix to empty string when omitted', async () => {
-      await sandbox.listS3Objects('my-bucket');
-      expect(sandbox._mocks.mockListObjects).toHaveBeenCalledWith({
-        Delimiter: '/',
-        Prefix: '',
-      });
+      await expect(sandbox.copyS3Object('src', 'key', 'dst', 'key2')).rejects.toThrow('Copy error');
     });
   });
 });

@@ -1,7 +1,7 @@
 /**
  * Send an email using Amazon SES.
  *
- * Accepts both the legacy positional argument style and a modern options object.
+ * Accepts both a modern options object and the legacy positional argument style.
  *
  * @param {Object|string} optionsOrTo - Options object, or 'to' email(s) for legacy usage.
  * @param {string|string[]} optionsOrTo.to - Recipient email address(es).
@@ -12,10 +12,11 @@
  * @param {string} optionsOrTo.subject - Email subject line.
  * @param {string} optionsOrTo.html - HTML body content.
  * @param {string} [optionsOrTo.text] - Plain text body (auto-generated from HTML if omitted).
- * @returns {Promise<Object|false>} The SES sendEmail response (includes MessageId), or false on error.
+ * @returns {Promise<Object>} The SES sendEmail response (includes MessageId).
+ * @throws {Error} AWS SDK errors (e.g., MessageRejected, InvalidParameterValue).
  *
  * @example
- * // Modern options-object style (recommended):
+ * // Options-object style (recommended):
  * const result = await sendEmail({
  *   to: 'recipient@example.com',
  *   from: 'sender@example.com',
@@ -23,6 +24,7 @@
  *   html: '<h1>Hello!</h1><p>Sent via AWS SES.</p>',
  * });
  *
+ * @example
  * // Legacy positional style (still supported):
  * const result = await sendEmail(
  *   'to@example.com', 'cc@example.com', '', 'from@example.com',
@@ -92,13 +94,7 @@ function sendEmail(optionsOrTo, ccEmails, bccEmails, fromEmail, replyToEmails, s
     ReplyToAddresses: replyTo,
   };
 
-  return new AWS.SES({ apiVersion: '2010-12-01' })
-    .sendEmail(params)
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+  return new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
 }
 
 /**
@@ -116,6 +112,7 @@ function splitEmails_(emails) {
 
 /**
  * Convert HTML to plain text by extracting body content.
+ * Falls back to regex tag stripping if the HTML is not valid XML.
  * @param {string} html - HTML string to convert.
  * @returns {string} Plain text extracted from the HTML.
  * @private

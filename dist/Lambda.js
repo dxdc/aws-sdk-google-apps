@@ -6,16 +6,16 @@
  * @param {Object} [options] - Optional invocation parameters.
  * @param {string} [options.invocationType='RequestResponse'] - 'RequestResponse' (sync), 'Event' (async), or 'DryRun'.
  * @param {string} [options.qualifier] - Function version or alias to invoke.
- * @returns {Promise<Object|false>} The Lambda invoke response (includes StatusCode, Payload), or false on error.
+ * @returns {Promise<Object>} The Lambda invoke response (includes StatusCode, Payload).
+ * @throws {Error} AWS SDK errors (e.g., ResourceNotFoundException, InvalidRequestContentException).
  *
  * @example
- * // Simple invocation
  * const result = await invokeLambda('myFunction', { key: 'value' });
+ * Logger.log(result.Payload);
  *
+ * @example
  * // Async (fire-and-forget) invocation
- * const result = await invokeLambda('myFunction', { key: 'value' }, {
- *   invocationType: 'Event',
- * });
+ * await invokeLambda('myFunction', { key: 'value' }, { invocationType: 'Event' });
  */
 function invokeLambda(functionName, payload, options) {
   if (typeof payload !== 'undefined' && typeof payload !== 'string') {
@@ -36,11 +36,5 @@ function invokeLambda(functionName, payload, options) {
     }
   }
 
-  return new AWS.Lambda({ apiVersion: '2015-03-31' })
-    .invoke(params)
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+  return new AWS.Lambda({ apiVersion: '2015-03-31' }).invoke(params).promise();
 }

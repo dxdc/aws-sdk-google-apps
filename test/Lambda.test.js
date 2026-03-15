@@ -29,48 +29,45 @@ describe('Lambda', () => {
     sandbox = loadLambda();
   });
 
-  test('invokes a lambda function with object payload', async () => {
-    const result = await sandbox.invokeLambda('myFunction', { key: 'value' });
+  test('invokes a function with object payload', async () => {
+    const result = await sandbox.invokeLambda('myFunc', { key: 'value' });
     expect(result).toEqual({ StatusCode: 200, Payload: '{"result":"ok"}' });
     expect(sandbox._mockInvoke).toHaveBeenCalledWith({
-      FunctionName: 'myFunction',
+      FunctionName: 'myFunc',
       Payload: '{"key":"value"}',
     });
   });
 
-  test('invokes a lambda function with string payload', async () => {
-    await sandbox.invokeLambda('myFunction', 'raw-string');
+  test('invokes a function with string payload', async () => {
+    await sandbox.invokeLambda('myFunc', '{"raw":"json"}');
     expect(sandbox._mockInvoke).toHaveBeenCalledWith({
-      FunctionName: 'myFunction',
-      Payload: 'raw-string',
+      FunctionName: 'myFunc',
+      Payload: '{"raw":"json"}',
     });
   });
 
-  test('invokes a lambda function without payload', async () => {
-    await sandbox.invokeLambda('myFunction');
+  test('invokes without payload', async () => {
+    await sandbox.invokeLambda('myFunc');
     expect(sandbox._mockInvoke).toHaveBeenCalledWith({
-      FunctionName: 'myFunction',
+      FunctionName: 'myFunc',
       Payload: undefined,
     });
   });
 
   test('passes invocationType option', async () => {
-    await sandbox.invokeLambda('myFunction', 'payload', { invocationType: 'Event' });
+    await sandbox.invokeLambda('myFunc', {}, { invocationType: 'Event' });
     expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ InvocationType: 'Event' }));
   });
 
   test('passes qualifier option', async () => {
-    await sandbox.invokeLambda('myFunction', 'payload', { qualifier: 'v1' });
-    expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ Qualifier: 'v1' }));
+    await sandbox.invokeLambda('myFunc', {}, { qualifier: 'v2' });
+    expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ Qualifier: 'v2' }));
   });
 
-  test('returns false on error', async () => {
+  test('throws on error', async () => {
     sandbox._mockInvoke.mockReturnValueOnce({
-      promise: () => Promise.reject(new Error('Lambda error')),
+      promise: () => Promise.reject(new Error('ResourceNotFoundException')),
     });
-
-    const result = await sandbox.invokeLambda('badFunction');
-    expect(result).toBe(false);
-    expect(sandbox.Logger.log).toHaveBeenCalled();
+    await expect(sandbox.invokeLambda('missing')).rejects.toThrow('ResourceNotFoundException');
   });
 });

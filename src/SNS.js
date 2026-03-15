@@ -6,16 +6,12 @@
  * @param {Object} [options] - Optional publish parameters.
  * @param {string} [options.subject] - Subject line (for email-based subscriptions).
  * @param {Object} [options.messageAttributes] - SNS message attributes.
- * @returns {Promise<Object|false>} The SNS publish response (includes MessageId), or false on error.
+ * @returns {Promise<Object>} The SNS publish response (includes MessageId).
+ * @throws {Error} AWS SDK errors (e.g., NotFoundException, InvalidParameterException).
  *
  * @example
  * const result = await publishSNS('arn:aws:sns:us-east-1:123456789:MyTopic', 'Hello!');
- *
- * // With structured message
- * const result = await publishSNS('arn:aws:sns:us-east-1:123456789:MyTopic',
- *   { default: 'Hello!', email: 'Hello via email!' },
- *   { subject: 'Notification' }
- * );
+ * Logger.log(result.MessageId);
  */
 function publishSNS(topicArn, message, options) {
   if (typeof message !== 'string') {
@@ -36,11 +32,5 @@ function publishSNS(topicArn, message, options) {
     }
   }
 
-  return new AWS.SNS({ apiVersion: '2010-03-31' })
-    .publish(params)
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+  return new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
 }

@@ -5,10 +5,10 @@ function loadSQS() {
   const code = fs.readFileSync(`${__dirname}/../src/SQS.js`, 'utf8');
 
   const mockSendMessage = jest.fn().mockReturnValue({
-    promise: () => Promise.resolve({ MessageId: 'sqs-msg-123' }),
+    promise: () => Promise.resolve({ MessageId: 'msg-456' }),
   });
   const mockReceiveMessage = jest.fn().mockReturnValue({
-    promise: () => Promise.resolve({ Messages: [{ Body: 'test', ReceiptHandle: 'handle-1' }] }),
+    promise: () => Promise.resolve({ Messages: [{ Body: 'hello', ReceiptHandle: 'rh-1' }] }),
   });
   const mockDeleteMessage = jest.fn().mockReturnValue({
     promise: () => Promise.resolve({}),
@@ -40,96 +40,89 @@ describe('SQS', () => {
   });
 
   describe('sendSQSMessage', () => {
-    test('sends string message', async () => {
-      const result = await sandbox.sendSQSMessage('https://sqs.example.com/queue', 'Hello');
-      expect(result).toEqual({ MessageId: 'sqs-msg-123' });
+    test('sends a string message', async () => {
+      const result = await sandbox.sendSQSMessage('https://sqs.us-east-1.amazonaws.com/123/Q', 'hello');
+      expect(result).toEqual({ MessageId: 'msg-456' });
       expect(sandbox._mocks.mockSendMessage).toHaveBeenCalledWith({
-        QueueUrl: 'https://sqs.example.com/queue',
-        MessageBody: 'Hello',
+        QueueUrl: 'https://sqs.us-east-1.amazonaws.com/123/Q',
+        MessageBody: 'hello',
       });
     });
 
-    test('sends object message (auto-serialized)', async () => {
-      await sandbox.sendSQSMessage('https://sqs.example.com/queue', { key: 'val' });
-      expect(sandbox._mocks.mockSendMessage).toHaveBeenCalledWith({
-        QueueUrl: 'https://sqs.example.com/queue',
-        MessageBody: '{"key":"val"}',
-      });
+    test('JSON-serializes object messages', async () => {
+      await sandbox.sendSQSMessage('url', { key: 'value' });
+      expect(sandbox._mocks.mockSendMessage).toHaveBeenCalledWith(expect.objectContaining({ MessageBody: '{"key":"value"}' }));
     });
 
-    test('passes FIFO options', async () => {
-      await sandbox.sendSQSMessage('https://sqs.example.com/queue.fifo', 'msg', {
-        messageGroupId: 'group-1',
-        messageDeduplicationId: 'dedup-1',
+    test('passes FIFO queue options', async () => {
+      await sandbox.sendSQSMessage('url.fifo', 'msg', {
         delaySeconds: 10,
+        messageGroupId: 'group1',
+        messageDeduplicationId: 'dedup1',
       });
       expect(sandbox._mocks.mockSendMessage).toHaveBeenCalledWith(
         expect.objectContaining({
-          MessageGroupId: 'group-1',
-          MessageDeduplicationId: 'dedup-1',
           DelaySeconds: 10,
+          MessageGroupId: 'group1',
+          MessageDeduplicationId: 'dedup1',
         }),
       );
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockSendMessage.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('SQS error')),
+        promise: () => Promise.reject(new Error('InvalidMessageContents')),
       });
-      const result = await sandbox.sendSQSMessage('url', 'msg');
-      expect(result).toBe(false);
+      await expect(sandbox.sendSQSMessage('url', 'msg')).rejects.toThrow('InvalidMessageContents');
     });
   });
 
   describe('receiveSQSMessages', () => {
     test('receives messages with defaults', async () => {
-      const result = await sandbox.receiveSQSMessages('https://sqs.example.com/queue');
+      const result = await sandbox.receiveSQSMessages('url');
       expect(result.Messages).toHaveLength(1);
       expect(sandbox._mocks.mockReceiveMessage).toHaveBeenCalledWith({
-        QueueUrl: 'https://sqs.example.com/queue',
+        QueueUrl: 'url',
         MaxNumberOfMessages: 1,
       });
     });
 
-    test('passes options (maxMessages, waitTimeSeconds, visibilityTimeout)', async () => {
-      await sandbox.receiveSQSMessages('https://sqs.example.com/queue', {
-        maxMessages: 5,
-        waitTimeSeconds: 10,
-        visibilityTimeout: 30,
-      });
+    test('passes maxMessages and waitTimeSeconds', async () => {
+      await sandbox.receiveSQSMessages('url', { maxMessages: 5, waitTimeSeconds: 10 });
       expect(sandbox._mocks.mockReceiveMessage).toHaveBeenCalledWith({
-        QueueUrl: 'https://sqs.example.com/queue',
+        QueueUrl: 'url',
         MaxNumberOfMessages: 5,
         WaitTimeSeconds: 10,
-        VisibilityTimeout: 30,
       });
     });
 
-    test('returns false on error', async () => {
+    test('passes visibilityTimeout', async () => {
+      await sandbox.receiveSQSMessages('url', { visibilityTimeout: 30 });
+      expect(sandbox._mocks.mockReceiveMessage).toHaveBeenCalledWith(expect.objectContaining({ VisibilityTimeout: 30 }));
+    });
+
+    test('throws on error', async () => {
       sandbox._mocks.mockReceiveMessage.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('SQS error')),
+        promise: () => Promise.reject(new Error('QueueDoesNotExist')),
       });
-      const result = await sandbox.receiveSQSMessages('url');
-      expect(result).toBe(false);
+      await expect(sandbox.receiveSQSMessages('url')).rejects.toThrow('QueueDoesNotExist');
     });
   });
 
   describe('deleteSQSMessage', () => {
-    test('deletes message by receipt handle', async () => {
-      const result = await sandbox.deleteSQSMessage('https://sqs.example.com/queue', 'handle-1');
-      expect(result).toEqual({});
+    test('deletes a message by receipt handle', async () => {
+      await sandbox.deleteSQSMessage('url', 'receipt-handle-1');
       expect(sandbox._mocks.mockDeleteMessage).toHaveBeenCalledWith({
-        QueueUrl: 'https://sqs.example.com/queue',
-        ReceiptHandle: 'handle-1',
+        QueueUrl: 'url',
+        ReceiptHandle: 'receipt-handle-1',
       });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockDeleteMessage.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('SQS error')),
+        promise: () => Promise.reject(new Error('ReceiptHandleIsInvalid')),
       });
-      const result = await sandbox.deleteSQSMessage('url', 'handle');
-      expect(result).toBe(false);
+      await expect(sandbox.deleteSQSMessage('url', 'bad')).rejects.toThrow('ReceiptHandleIsInvalid');
     });
   });
 });

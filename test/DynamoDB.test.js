@@ -14,7 +14,7 @@ function loadDynamoDB() {
     promise: () => Promise.resolve({}),
   });
   const mockQuery = jest.fn().mockReturnValue({
-    promise: () => Promise.resolve({ Items: [], Count: 0 }),
+    promise: () => Promise.resolve({ Items: [{ userId: { S: 'user-123' } }], Count: 1 }),
   });
 
   const sandbox = {
@@ -44,97 +44,130 @@ describe('DynamoDB', () => {
   });
 
   describe('getDynamoDBItem', () => {
-    test('gets item by key', async () => {
-      const result = await sandbox.getDynamoDBItem('TestTable', { userId: { S: 'user-123' } });
+    test('gets an item by key', async () => {
+      const result = await sandbox.getDynamoDBItem('Users', { userId: { S: 'user-123' } });
       expect(result.Item.name.S).toBe('Alice');
       expect(sandbox._mocks.mockGetItem).toHaveBeenCalledWith({
-        TableName: 'TestTable',
+        TableName: 'Users',
         Key: { userId: { S: 'user-123' } },
       });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockGetItem.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('DDB error')),
+        promise: () => Promise.reject(new Error('ResourceNotFoundException')),
       });
-      const result = await sandbox.getDynamoDBItem('TestTable', {});
-      expect(result).toBe(false);
+      await expect(sandbox.getDynamoDBItem('Missing', { id: { S: '1' } })).rejects.toThrow('ResourceNotFoundException');
     });
   });
 
   describe('putDynamoDBItem', () => {
-    test('puts item in table', async () => {
-      const item = { userId: { S: 'user-123' }, name: { S: 'Bob' } };
-      const result = await sandbox.putDynamoDBItem('TestTable', item);
-      expect(result).toEqual({});
+    test('puts an item', async () => {
+      const item = { userId: { S: 'user-123' }, name: { S: 'Alice' } };
+      await sandbox.putDynamoDBItem('Users', item);
       expect(sandbox._mocks.mockPutItem).toHaveBeenCalledWith({
-        TableName: 'TestTable',
+        TableName: 'Users',
         Item: item,
       });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockPutItem.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('DDB error')),
+        promise: () => Promise.reject(new Error('ValidationException')),
       });
-      const result = await sandbox.putDynamoDBItem('TestTable', {});
-      expect(result).toBe(false);
+      await expect(sandbox.putDynamoDBItem('T', {})).rejects.toThrow('ValidationException');
     });
   });
 
   describe('deleteDynamoDBItem', () => {
-    test('deletes item by key', async () => {
-      const result = await sandbox.deleteDynamoDBItem('TestTable', { userId: { S: 'user-123' } });
-      expect(result).toEqual({});
+    test('deletes an item by key', async () => {
+      await sandbox.deleteDynamoDBItem('Users', { userId: { S: 'user-123' } });
+      expect(sandbox._mocks.mockDeleteItem).toHaveBeenCalledWith({
+        TableName: 'Users',
+        Key: { userId: { S: 'user-123' } },
+      });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mocks.mockDeleteItem.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('DDB error')),
+        promise: () => Promise.reject(new Error('ConditionalCheckFailedException')),
       });
-      const result = await sandbox.deleteDynamoDBItem('TestTable', {});
-      expect(result).toBe(false);
+      await expect(sandbox.deleteDynamoDBItem('T', { id: { S: '1' } })).rejects.toThrow('ConditionalCheckFailedException');
     });
   });
 
   describe('queryDynamoDB', () => {
-    test('queries with key condition', async () => {
-      const result = await sandbox.queryDynamoDB('TestTable', 'userId = :uid', { ':uid': { S: '123' } });
-      expect(result).toEqual({ Items: [], Count: 0 });
+    test('queries with basic params', async () => {
+      const result = await sandbox.queryDynamoDB('Users', 'userId = :uid', { ':uid': { S: 'user-123' } });
+      expect(result.Count).toBe(1);
       expect(sandbox._mocks.mockQuery).toHaveBeenCalledWith({
-        TableName: 'TestTable',
+        TableName: 'Users',
         KeyConditionExpression: 'userId = :uid',
-        ExpressionAttributeValues: { ':uid': { S: '123' } },
+        ExpressionAttributeValues: { ':uid': { S: 'user-123' } },
       });
     });
 
-    test('passes options (indexName, limit, scanForward)', async () => {
+    test('passes indexName, limit, scanForward options', async () => {
       await sandbox.queryDynamoDB(
-        'TestTable',
-        'pk = :pk',
-        { ':pk': { S: 'val' } },
+        'Users',
+        'userId = :uid',
+        { ':uid': { S: '123' } },
         {
           indexName: 'GSI1',
-          limit: 5,
+          limit: 10,
           scanForward: false,
         },
       );
-      expect(sandbox._mocks.mockQuery).toHaveBeenCalledWith({
-        TableName: 'TestTable',
-        KeyConditionExpression: 'pk = :pk',
-        ExpressionAttributeValues: { ':pk': { S: 'val' } },
-        IndexName: 'GSI1',
-        Limit: 5,
-        ScanIndexForward: false,
-      });
+      expect(sandbox._mocks.mockQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          IndexName: 'GSI1',
+          Limit: 10,
+          ScanIndexForward: false,
+        }),
+      );
     });
 
-    test('returns false on error', async () => {
+    test('passes expressionNames and filterExpression', async () => {
+      await sandbox.queryDynamoDB(
+        'Users',
+        'userId = :uid',
+        { ':uid': { S: '123' }, ':active': { S: 'active' } },
+        {
+          expressionNames: { '#s': 'status' },
+          filterExpression: '#s = :active',
+        },
+      );
+      expect(sandbox._mocks.mockQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ExpressionAttributeNames: { '#s': 'status' },
+          FilterExpression: '#s = :active',
+        }),
+      );
+    });
+
+    test('passes projectionExpression and exclusiveStartKey', async () => {
+      await sandbox.queryDynamoDB(
+        'Users',
+        'userId = :uid',
+        { ':uid': { S: '123' } },
+        {
+          projectionExpression: 'userId, #n',
+          exclusiveStartKey: { userId: { S: 'last-key' } },
+        },
+      );
+      expect(sandbox._mocks.mockQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ProjectionExpression: 'userId, #n',
+          ExclusiveStartKey: { userId: { S: 'last-key' } },
+        }),
+      );
+    });
+
+    test('throws on error', async () => {
       sandbox._mocks.mockQuery.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error('Query error')),
+        promise: () => Promise.reject(new Error('ValidationException')),
       });
-      const result = await sandbox.queryDynamoDB('TestTable', 'pk = :pk', {});
-      expect(result).toBe(false);
+      await expect(sandbox.queryDynamoDB('T', 'k = :v', { ':v': { S: '1' } })).rejects.toThrow('ValidationException');
     });
   });
 });

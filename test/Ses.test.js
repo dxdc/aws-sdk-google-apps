@@ -88,24 +88,14 @@ describe('SES', () => {
       expect(result).toEqual({ MessageId: 'test-message-id' });
     });
 
-    test('returns false on error', async () => {
+    test('throws on error', async () => {
       sandbox._mockSendEmail.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('SES error')),
       });
 
-      const result = await sandbox.sendEmail(
-        'to@example.com',
-        '',
-        '',
-        'from@example.com',
-        '',
-        'Subj',
-        '<html><body>Hi</body></html>',
-        'Hi',
-      );
-
-      expect(result).toBe(false);
-      expect(sandbox.Logger.log).toHaveBeenCalled();
+      await expect(
+        sandbox.sendEmail('to@example.com', '', '', 'from@example.com', '', 'Subj', '<html><body>Hi</body></html>', 'Hi'),
+      ).rejects.toThrow('SES error');
     });
   });
 
@@ -165,7 +155,6 @@ describe('SES', () => {
 
   describe('simpleMakePlainText_', () => {
     test('falls back to tag stripping when HTML is not valid XML', () => {
-      // XmlService.parse will throw on malformed HTML
       sandbox.XmlService.parse.mockImplementation(() => {
         throw new Error('Content is not allowed in prolog');
       });

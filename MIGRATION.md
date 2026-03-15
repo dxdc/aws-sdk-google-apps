@@ -1,5 +1,104 @@
 # Migration Guide
 
+## Migrating from v2.x to v3.0
+
+### Breaking changes
+
+#### 1. Error handling: errors now throw instead of returning `false`
+
+All service wrappers now let AWS SDK errors propagate. Replace `=== false` checks with `try/catch`:
+
+```js
+// Old (v2):
+const result = await getS3Object('bucket', 'key');
+if (result === false) {
+  return false;
+}
+
+// New (v3):
+try {
+  const result = await getS3Object('bucket', 'key');
+  // use result
+} catch (err) {
+  Logger.log(err.code); // e.g., 'NoSuchKey', 'AccessDenied'
+  Logger.log(err.statusCode); // e.g., 404, 403
+  Logger.log(err.retryable); // true for throttling/server errors
+}
+```
+
+#### 2. Config: property names changed to match AWS SDK
+
+```js
+// Old (v2):
+initConfig({ accessKey: '...', secretKey: '...', region: 'us-east-1' });
+
+// New (v3):
+initConfig({ accessKeyId: '...', secretAccessKey: '...', region: 'us-east-1' });
+```
+
+#### 3. S3: `listS3Objects` now uses `listObjectsV2` with options
+
+```js
+// Old (v2):
+const result = await listS3Objects('bucket', 'prefix/');
+
+// New (v3):
+const result = await listS3Objects('bucket', { prefix: 'prefix/' });
+
+// New: pagination support
+if (result.IsTruncated) {
+  const next = await listS3Objects('bucket', {
+    prefix: 'prefix/',
+    continuationToken: result.NextContinuationToken,
+  });
+}
+```
+
+#### 4. EC2: functions now take an options object
+
+```js
+// Old (v2):
+const result = await listEC2Instances('us-west-2');
+
+// New (v3):
+const result = await listEC2Instances({ region: 'us-west-2' });
+
+// New: filter support
+const result = await listEC2Instances({
+  filters: [{ Name: 'instance-state-name', Values: ['running'] }],
+});
+```
+
+### New features in v3.0
+
+#### DynamoDB query enhancements
+
+Reserved word handling, filtering, and pagination are now supported:
+
+```js
+const result = await queryDynamoDB(
+  'Orders',
+  'userId = :uid',
+  {
+    ':uid': { S: 'user-123' },
+    ':active': { S: 'active' },
+  },
+  {
+    expressionNames: { '#s': 'status' },
+    filterExpression: '#s = :active',
+    projectionExpression: 'orderId, total',
+    limit: 25,
+    exclusiveStartKey: lastKey,
+  },
+);
+```
+
+#### XHR client improvements
+
+Non-2xx HTTP responses are now passed to the AWS SDK instead of being thrown as generic errors. This enables the SDK's built-in retry logic for throttling (429) and server errors (500, 503).
+
+---
+
 ## Migrating from v1.x to v2.0
 
 ### Breaking changes

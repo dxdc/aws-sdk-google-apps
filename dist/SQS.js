@@ -8,7 +8,8 @@
  * @param {Object} [options.messageAttributes] - SQS message attributes.
  * @param {string} [options.messageGroupId] - Required for FIFO queues.
  * @param {string} [options.messageDeduplicationId] - Required for FIFO queues without content-based dedup.
- * @returns {Promise<Object|false>} The SQS sendMessage response (includes MessageId), or false on error.
+ * @returns {Promise<Object>} The SQS sendMessage response (includes MessageId).
+ * @throws {Error} AWS SDK errors (e.g., InvalidMessageContents).
  *
  * @example
  * const result = await sendSQSMessage('https://sqs.us-east-1.amazonaws.com/123456789/MyQueue', {
@@ -41,13 +42,7 @@ function sendSQSMessage(queueUrl, messageBody, options) {
     }
   }
 
-  return new AWS.SQS({ apiVersion: '2012-11-05' })
-    .sendMessage(params)
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+  return new AWS.SQS({ apiVersion: '2012-11-05' }).sendMessage(params).promise();
 }
 
 /**
@@ -58,14 +53,12 @@ function sendSQSMessage(queueUrl, messageBody, options) {
  * @param {number} [options.maxMessages=1] - Maximum number of messages to receive (1-10).
  * @param {number} [options.waitTimeSeconds] - Long-poll wait time in seconds (0-20).
  * @param {number} [options.visibilityTimeout] - Override the queue's default visibility timeout.
- * @returns {Promise<Object|false>} The SQS receiveMessage response (includes Messages array), or false on error.
+ * @returns {Promise<Object>} The SQS receiveMessage response (includes Messages array).
+ * @throws {Error} AWS SDK errors.
  *
  * @example
- * const result = await receiveSQSMessages('https://sqs.us-east-1.amazonaws.com/123456789/MyQueue', {
- *   maxMessages: 5,
- *   waitTimeSeconds: 10,
- * });
- * if (result !== false && result.Messages) {
+ * const result = await receiveSQSMessages(queueUrl, { maxMessages: 5, waitTimeSeconds: 10 });
+ * if (result.Messages) {
  *   result.Messages.forEach((msg) => Logger.log(msg.Body));
  * }
  */
@@ -87,13 +80,7 @@ function receiveSQSMessages(queueUrl, options) {
     }
   }
 
-  return new AWS.SQS({ apiVersion: '2012-11-05' })
-    .receiveMessage(params)
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+  return new AWS.SQS({ apiVersion: '2012-11-05' }).receiveMessage(params).promise();
 }
 
 /**
@@ -101,11 +88,12 @@ function receiveSQSMessages(queueUrl, options) {
  *
  * @param {string} queueUrl - The URL of the SQS queue.
  * @param {string} receiptHandle - The receipt handle of the message to delete (from receiveMessage).
- * @returns {Promise<Object|false>} The SQS deleteMessage response, or false on error.
+ * @returns {Promise<Object>} The SQS deleteMessage response.
+ * @throws {Error} AWS SDK errors (e.g., ReceiptHandleIsInvalid).
  *
  * @example
  * const msgs = await receiveSQSMessages(queueUrl);
- * if (msgs !== false && msgs.Messages) {
+ * if (msgs.Messages) {
  *   await deleteSQSMessage(queueUrl, msgs.Messages[0].ReceiptHandle);
  * }
  */
@@ -115,9 +103,5 @@ function deleteSQSMessage(queueUrl, receiptHandle) {
       QueueUrl: queueUrl,
       ReceiptHandle: receiptHandle,
     })
-    .promise()
-    .catch((err) => {
-      Logger.log(err, err.stack);
-      return false;
-    });
+    .promise();
 }

@@ -1,6 +1,6 @@
 {
   "name": "aws-sdk-google-apps",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Native support for the AWS SDK in Google Apps Script",
   "main": "build.js",
   "engines": {

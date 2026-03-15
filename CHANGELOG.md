@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.0.0
+
+### Breaking changes
+
+- **Error handling**: Service wrappers no longer catch errors and return `false`. Errors from the AWS SDK now propagate naturally, giving callers access to `.code`, `.statusCode`, `.retryable`, and `.message`. Use `try/catch` to handle errors.
+- **Config**: `initConfig()` now uses standard AWS SDK property names (`accessKeyId`, `secretAccessKey`) instead of the non-standard `accessKey`/`secretKey`.
+- **S3**: `listS3Objects(bucket, prefix)` is now `listS3Objects(bucket, options)` using `listObjectsV2` API. Supports `prefix`, `delimiter`, `maxKeys`, `continuationToken`, `startAfter`.
+- **EC2**: `listEC2Instances(region)` and `listSecurityGroups(region)` now take an options object with `region`, `filters`, `instanceIds`/`groupIds`, `maxResults`, `nextToken`.
+
+### Added
+
+- S3: `listObjectsV2` support with pagination (`continuationToken`, `maxKeys`, `startAfter`)
+- S3: configurable `delimiter` option (default `'/'`, set to `''` for flat listing)
+- EC2: filter support (`filters`, `instanceIds`, `groupIds`, `groupNames`)
+- EC2: pagination support (`maxResults`, `nextToken`)
+- DynamoDB: `expressionNames` for reserved word handling
+- DynamoDB: `filterExpression` for post-query filtering
+- DynamoDB: `projectionExpression` for selecting specific attributes
+- DynamoDB: `exclusiveStartKey` for pagination
+- XHR client: non-2xx HTTP responses are now passed to the SDK for proper retry handling (429, 500, 503)
+
+### Changed
+
+- All service wrappers: removed no-op `.then((data) => data)` promise chains
+- SES `simpleMakePlainText_`: falls back to regex tag stripping when HTML is not valid XML
+- S3 `copyS3Object`: URL-encodes special characters in source key
+- S3 `listS3Objects`: defaults prefix to empty string instead of `undefined`
+- XHR client `finishRequest`: logs errors instead of silently swallowing them
+- Replaced non-standard example credentials with AWS-standard `AKIAIOSFODNN7EXAMPLE`
+- Cleaned up `.gitignore` (removed ~60 lines of irrelevant boilerplate)
+- Fixed `package.json` `main` field (pointed to nonexistent `index.js`)
+
 ## 2.0.1
 
 ### Added

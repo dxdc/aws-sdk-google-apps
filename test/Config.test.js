@@ -18,8 +18,6 @@ function loadConfig() {
   };
 
   vm.createContext(sandbox);
-  // AWS_CONFIG_TEST uses const, so it stays block-scoped inside the VM.
-  // We test initConfig behavior directly instead.
   vm.runInContext(code, sandbox);
   return sandbox;
 }
@@ -34,8 +32,8 @@ describe('Config', () => {
   test('initConfig creates new AWS.Config and calls update', () => {
     sandbox.initConfig({
       region: 'us-west-2',
-      accessKey: 'AKID',
-      secretKey: 'SECRET',
+      accessKeyId: 'AKID',
+      secretAccessKey: 'SECRET',
     });
 
     expect(sandbox.AWS.Config).toHaveBeenCalled();
@@ -44,8 +42,8 @@ describe('Config', () => {
   test('initConfig sets region and credentials', () => {
     sandbox.initConfig({
       region: 'eu-west-1',
-      accessKey: 'AK',
-      secretKey: 'SK',
+      accessKeyId: 'AK',
+      secretAccessKey: 'SK',
     });
 
     expect(sandbox._updateMock).toHaveBeenCalledWith(
@@ -65,8 +63,8 @@ describe('Config', () => {
 
     sandbox.initConfig({
       region: 'us-east-1',
-      accessKey: 'AK',
-      secretKey: 'SK',
+      accessKeyId: 'AK',
+      secretAccessKey: 'SK',
       sessionToken: 'TOKEN123',
     });
 
@@ -84,8 +82,8 @@ describe('Config', () => {
 
     sandbox.initConfig({
       region: 'us-east-1',
-      accessKey: 'AK',
-      secretKey: 'SK',
+      accessKeyId: 'AK',
+      secretAccessKey: 'SK',
     });
 
     const callArgs = sandbox._updateMock.mock.calls[0][0];
@@ -97,8 +95,8 @@ describe('Config', () => {
 
     sandbox.initConfig({
       region: 'us-east-1',
-      accessKey: 'AK',
-      secretKey: 'SK',
+      accessKeyId: 'AK',
+      secretAccessKey: 'SK',
       maxRetries: 3,
     });
 
