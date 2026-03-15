@@ -1,3 +1,15 @@
+/**
+ * List all EC2 instances in a given region.
+ *
+ * @param {string} [region=null] - AWS region to query. Falls back to the configured default region.
+ * @returns {Promise<Object|false>} The EC2 describeInstances response, or false on error.
+ *
+ * @example
+ * const result = await listEC2Instances('us-west-2');
+ * if (result !== false && result.reservationSet) {
+ *   Logger.log(result.reservationSet.instancesSet);
+ * }
+ */
 function listEC2Instances(region = null) {
   const ec2 = new AWS.EC2({
     apiVersion: '2016-11-15',
@@ -14,6 +26,18 @@ function listEC2Instances(region = null) {
     });
 }
 
+/**
+ * List all security groups in a given region.
+ *
+ * @param {string} [region=null] - AWS region to query. Falls back to the configured default region.
+ * @returns {Promise<Object|false>} The EC2 describeSecurityGroups response, or false on error.
+ *
+ * @example
+ * const result = await listSecurityGroups('us-east-1');
+ * if (result !== false && result.securityGroupInfo) {
+ *   Logger.log(result.securityGroupInfo);
+ * }
+ */
 function listSecurityGroups(region = null) {
   const ec2 = new AWS.EC2({
     apiVersion: '2016-11-15',

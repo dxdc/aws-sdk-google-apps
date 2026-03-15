@@ -1,9 +1,23 @@
+/**
+ * Find all descendants of a Google Apps Script XML element matching a tag name.
+ *
+ * Used internally by the AWS SDK XML parser patch to extract values from
+ * XML responses (e.g., EC2 DescribeInstances).
+ *
+ * @param {GoogleAppsScript.XML_Service.Element|GoogleAppsScript.XML_Service.Document} element - The root element or document to search.
+ * @param {string} tagName - The XML tag name to search for.
+ * @returns {string[]} Array of text values from matching elements.
+ *
+ * @example
+ * const doc = XmlService.parse('<root><item>a</item><item>b</item></root>');
+ * const items = getElementsByTagName(doc, 'item'); // ['a', 'b']
+ */
 function getElementsByTagName(element, tagName) {
-  var data = [];
-  var descendants = element.getDescendants();
-  for (var i in descendants) {
-    var el = descendants[i].asElement();
-    if (el !== null && el.getName() == tagName) {
+  const data = [];
+  const descendants = element.getDescendants();
+  for (let i = 0; i < descendants.length; i++) {
+    const el = descendants[i].asElement();
+    if (el !== null && el.getName() === tagName) {
       data.push(el.getValue());
     }
   }
@@ -11,17 +25,33 @@ function getElementsByTagName(element, tagName) {
   return data;
 }
 
+/**
+ * Recursively convert a Google Apps Script XML element to a JavaScript object.
+ *
+ * - Elements named 'item' or 'member' are collected into arrays.
+ * - Duplicate sibling keys are automatically merged into arrays.
+ * - Text-only elements return their trimmed string value.
+ * - Empty elements return null.
+ *
+ * @param {GoogleAppsScript.XML_Service.Element} element - The XML element to convert.
+ * @returns {Object|Array|string|null} The converted JavaScript representation.
+ *
+ * @example
+ * const doc = XmlService.parse('<root><name>John</name><age>30</age></root>');
+ * const json = xmlElementToJson(doc.getRootElement());
+ * // { name: 'John', age: '30' }
+ */
 function xmlElementToJson(element) {
-  var result = null;
+  let result = null;
   element.getChildren().forEach((child) => {
-    var key = child.getName();
+    const key = child.getName();
     if (result === null) {
       result = key === 'item' || key === 'member' ? [] : {};
     }
-    var value = xmlElementToJson(child);
+    const value = xmlElementToJson(child);
     if (result instanceof Array) {
       result.push(value);
-    } else if (result.hasOwnProperty(key)) {
+    } else if (Object.prototype.hasOwnProperty.call(result, key)) {
       if (result[key] instanceof Array) {
         result[key].push(value);
       } else {
@@ -31,11 +61,11 @@ function xmlElementToJson(element) {
       result[key] = value;
     }
   });
-  var text = element.getText();
+  const text = element.getText();
   if (text) {
-    text = text.trim();
-    if (text !== '') {
-      result = text;
+    const trimmed = text.trim();
+    if (trimmed !== '') {
+      result = trimmed;
     }
   }
   return result;

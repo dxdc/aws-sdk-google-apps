@@ -1,15 +1,30 @@
 # aws-sdk-google-apps
 
 [![mit license](https://badgen.net/badge/license/MIT/red)](https://github.com/dxdc/aws-sdk-google-apps/blob/master/LICENSE)
+[![CI](https://github.com/dxdc/aws-sdk-google-apps/actions/workflows/ci.yml/badge.svg)](https://github.com/dxdc/aws-sdk-google-apps/actions/workflows/ci.yml)
 [![Donate](https://badgen.net/badge/Donate/PayPal/91BE09)](https://paypal.me/ddcaspi)
 
 Native support for the entire AWS SDK for JavaScript in Google Apps Script.
 
-Working examples for Simple Email Service (SES), S3, Lambda, and EC2. This project can easily accommodate _all_ other AWS services, e.g.,
+Working examples for S3, SES, Lambda, EC2, DynamoDB, SNS, and SQS. This project can easily accommodate _all_ other AWS services, e.g.,
 
 ```
-npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
+npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb,sns,sqs && npm run build
 ```
+
+## Supported services
+
+| Service      | Functions                                                                       |
+| ------------ | ------------------------------------------------------------------------------- |
+| **S3**       | `listS3Objects`, `getS3Object`, `putS3Object`, `deleteS3Object`, `copyS3Object` |
+| **SES**      | `sendEmail` (supports options-object or positional args)                        |
+| **Lambda**   | `invokeLambda` (sync, async, dry-run)                                           |
+| **EC2**      | `listEC2Instances`, `listSecurityGroups`                                        |
+| **DynamoDB** | `getDynamoDBItem`, `putDynamoDBItem`, `deleteDynamoDBItem`, `queryDynamoDB`     |
+| **SNS**      | `publishSNS`                                                                    |
+| **SQS**      | `sendSQSMessage`, `receiveSQSMessages`, `deleteSQSMessage`                      |
+
+Any AWS service can also be used directly via the `AWS` object (see [Advanced usage](#advanced-usage)).
 
 ## Library deployment
 
@@ -19,34 +34,61 @@ npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb && npm run build
 - Choose an identifier, e.g., `AWSLIB`
 - Versions of the Google Apps Script project map to tags on this Git repository
 
-2. Initialize your AWS config settings and implement one of this library's [S3](dist/S3.js), [Lambda](dist/Lambda.js), [SES](dist/Ses.js), or [EC2](dist/EC2.js) functions. [Examples.js](dist/Examples.js) shows some working examples.
+2. Initialize your AWS config settings and use any of the service wrapper functions. See [Examples.js](src/Examples.js) for full examples.
 
 ```js
 const AWS_CONFIG = {
-  accessKey: 'AK0ZXZD0KGNG4KG6REBP', // use your own AWS key
-  secretKey: 'EXrPgHC41HEW2YownLUnJLgh6bMsrmW1uva1ic24', // use your own AWS key
+  accessKey: 'YOUR_ACCESS_KEY', // use your own AWS key
+  secretKey: 'YOUR_SECRET_KEY', // use your own AWS key
   region: 'us-east-1',
 };
 
-// example function to retrieve S3 object
-async function getS3ObjectTest() {
+// Example: retrieve an S3 object
+async function getS3ObjectExample() {
   AWSLIB.initConfig(AWS_CONFIG);
-  var result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
+  const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
   if (result === false) {
     return false;
   }
 
-  var blob = Utilities.newBlob(result.Body, result.ContentType);
-  // Logger.log(blob.getDataAsString());
+  const blob = Utilities.newBlob(result.Body, result.ContentType);
   return blob;
+}
+
+// Example: send an email via SES
+async function sendEmailExample() {
+  AWSLIB.initConfig(AWS_CONFIG);
+  const result = await AWSLIB.sendEmail({
+    to: 'recipient@example.com',
+    from: 'sender@example.com',
+    subject: 'Hello from GAS',
+    html: '<h1>Hello!</h1><p>Sent via AWS SES.</p>',
+  });
+  return result;
+}
+
+// Example: DynamoDB query
+async function queryExample() {
+  AWSLIB.initConfig(AWS_CONFIG);
+  const result = await AWSLIB.queryDynamoDB(
+    'Orders',
+    'userId = :uid',
+    {
+      ':uid': { S: 'user-123' },
+    },
+    { limit: 10 },
+  );
+  return result;
 }
 ```
 
-3. Methods for common S3, Lambda, SES, and EC2 services have been implemented. However, direct access to library AWS SDK methods is also available via the `AWS` property on your chosen library identifier, e.g.:
+### Advanced usage
+
+Direct access to the AWS SDK is available via the `AWS` property on your chosen library identifier:
 
 ```js
-// Create a new service object
-var s3 = new AWSLIB.AWS.S3({
+// Create a new service object directly
+const s3 = new AWSLIB.AWS.S3({
   apiVersion: '2006-03-01',
   params: { Bucket: albumBucketName },
 });
@@ -75,7 +117,7 @@ $ cd ..
 $ npm install
 $ npm run sdk --sdk=all
 # can also be customized, e.g.
-# npm run sdk --sdk=ses,ec2,dynamodb-2011-12-05,dynamodb-2012-08-10
+# npm run sdk --sdk=ses,ec2,dynamodb-2011-12-05,dynamodb-2012-08-10,sns,sqs
 $ npm run build
 ```
 
@@ -96,6 +138,59 @@ AWS has a [full list](https://github.com/aws/aws-sdk-js/tree/master/apis) of ide
 
 6. Reference this Script ID as a library in other projects.
 
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Setup
+
+```shell
+$ npm install
+```
+
+### Build
+
+```shell
+$ npm run build     # Build dist/ from src/ and src-sdk/
+$ npm test          # Run unit tests
+$ npm run lint      # Run ESLint
+$ npm run format    # Format code with Prettier
+```
+
+### CI/CD
+
+This project includes a GitHub Actions CI pipeline that runs on every push and pull request:
+
+- **Lint & Format** — ESLint and Prettier checks
+- **Spellcheck** — Markdown spell checking
+- **Build** — Full build verification with output validation
+- **Unit Tests** — Jest test suite
+
+Dependabot is configured for automated weekly dependency updates.
+
+## Security notes
+
+### Crypto polyfill
+
+The `Crypto.js` polyfill uses `Math.random()` which is **NOT cryptographically secure**. The AWS SDK uses `crypto.getRandomValues()` for generating unique request IDs (not for encryption or key generation), so this is acceptable for that use case. Do not use this polyfill for security-sensitive operations.
+
+### Credentials
+
+Never commit real AWS credentials to version control. Use Google Apps Script's [Properties Service](https://developers.google.com/apps-script/reference/properties/properties-service) to store sensitive values:
+
+```js
+const props = PropertiesService.getScriptProperties();
+const config = {
+  accessKey: props.getProperty('AWS_ACCESS_KEY'),
+  secretKey: props.getProperty('AWS_SECRET_KEY'),
+  region: 'us-east-1',
+};
+initConfig(config);
+```
+
 ## Background
 
 Several other projects exist for interfacing between the AWS API and Google Apps Script. However, these projects have very limited support for the full suite of AWS services offered. This is the first project which invokes the AWS SDK directly.
@@ -104,7 +199,7 @@ Several other projects exist for interfacing between the AWS API and Google Apps
 
 Several key changes to the AWS SDK core were required to make it compatible with the Google Apps Script framework.
 
-Namely, Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` - instead, it requires the use of `UrlFetchApp` and `XmlService`. These patch files can be found in `src-sdk`.
+Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` — instead, it requires the use of `UrlFetchApp` and `XmlService`. Additional polyfills are provided for `setTimeout`/`clearTimeout`, `setInterval`/`clearInterval`, `console`, `Blob`, `Buffer`, `TextEncoder`/`TextDecoder`, `atob`/`btoa`, `URL`, `navigator`, and `crypto.getRandomValues`. These patch files can be found in `src-sdk` and `src/Polyfill.js`.
 
 Note, the final patched build remains compatible in the browser, e.g.,
 

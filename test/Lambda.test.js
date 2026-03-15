@@ -54,6 +54,16 @@ describe('Lambda', () => {
     });
   });
 
+  test('passes invocationType option', async () => {
+    await sandbox.invokeLambda('myFunction', 'payload', { invocationType: 'Event' });
+    expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ InvocationType: 'Event' }));
+  });
+
+  test('passes qualifier option', async () => {
+    await sandbox.invokeLambda('myFunction', 'payload', { qualifier: 'v1' });
+    expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ Qualifier: 'v1' }));
+  });
+
   test('returns false on error', async () => {
     sandbox._mockInvoke.mockReturnValueOnce({
       promise: () => Promise.reject(new Error('Lambda error')),
