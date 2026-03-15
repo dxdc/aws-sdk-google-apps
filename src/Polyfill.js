@@ -160,3 +160,13 @@ if (typeof navigator === 'undefined') {
     userAgent: 'GoogleAppsScript',
   };
 }
+
+// ---------- process polyfill ----------
+// AWS SDK reads process.env for AWS_PROFILE, AWS_EXECUTION_ENV, etc.
+// Ensure process and process.env exist so these lookups return undefined
+// rather than throwing a ReferenceError.
+if (typeof process === 'undefined') {
+  var process = { env: {}, version: 'v0.0.0' };
+} else if (typeof process.env === 'undefined') {
+  process.env = {};
+}

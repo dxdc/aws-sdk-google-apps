@@ -29,23 +29,6 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-  spellcheck:
-    name: Spellcheck
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - run: npm ci
-
-      - name: Spellcheck markdown
-        continue-on-error: true
-        run: npm run spellcheck
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -70,6 +53,13 @@ jobs:
             test -f "dist/$f" || (echo "$f not found in dist/" && exit 1)
           done
           echo "Build output verified successfully"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 14
 
   test:
     name: Unit Tests

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.1
+
+### Added
+
+- `process`/`process.env` polyfill — prevents `ReferenceError` when the SDK reads environment variables for credential chain detection
+- CI build artifact upload — `dist/` is now uploaded as a GitHub Actions artifact on every build
+
+### Changed
+
+- CI pipeline: removed `markdown-spellcheck` (unreliable with formatted markdown)
+- Vulnerability count: reduced from 3 to 0 by removing `markdown-spellcheck` and its 87 transitive dependencies
+- Improved custom services documentation with Athena/CloudFormation examples
+
+### Removed
+
+- `markdown-spellcheck` dependency and `.spelling` dictionary
+
 ## 2.0.0
 
 ### Added
@@ -17,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SES options-object pattern: `sendEmail()` now accepts a single options object (backward-compatible with positional arguments)
 - Lambda options: `invokeLambda()` now supports `invocationType` and `qualifier` options
 - S3 `putS3Object` options: supports `contentType`, `cacheControl`, and `metadata`
-- GitHub Actions CI pipeline: lint, format check, spellcheck, build verification, unit tests on every push and PR
+- GitHub Actions CI pipeline: lint, format check, build verification, unit tests on every push and PR
 - Dependabot for automated weekly dependency updates
 - Unit test suite: 108 tests across 12 test suites using Jest
 - Build integration test: validates SDK patches are correctly applied in dist output

@@ -156,4 +156,23 @@ describe('Polyfill', () => {
       expect(sandbox.Buffer.isBuffer({})).toBe(false);
     });
   });
+
+  describe('process polyfill', () => {
+    test('process object exists', () => {
+      expect(typeof sandbox.process).toBe('object');
+    });
+
+    test('process.env is an object', () => {
+      expect(typeof sandbox.process.env).toBe('object');
+    });
+
+    test('process.env returns undefined for missing keys', () => {
+      expect(sandbox.process.env.AWS_PROFILE).toBeUndefined();
+      expect(sandbox.process.env.AWS_EXECUTION_ENV).toBeUndefined();
+    });
+
+    test('process.version is a string', () => {
+      expect(typeof sandbox.process.version).toBe('string');
+    });
+  });
 });

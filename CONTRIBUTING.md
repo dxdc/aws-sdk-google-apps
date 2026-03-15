@@ -37,7 +37,6 @@ npm test
 | `npm run lint`          | Check code with ESLint                   |
 | `npm run format`        | Format code with Prettier                |
 | `npm run format:check`  | Check formatting without modifying files |
-| `npm run spellcheck`    | Spellcheck markdown files                |
 | `npm run sdk --sdk=...` | Rebuild AWS SDK with custom services     |
 
 ## Project structure

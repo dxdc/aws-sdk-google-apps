@@ -106,23 +106,33 @@ const s3 = new AWSLIB.AWS.S3({
 
 The AWS SDK can be customized for specific API versions and/or services.
 
-This project defaults to the following services: `ses,s3,lambda,ec2`.
+This project defaults to the following services: `ses,s3,lambda,ec2,dynamodb,sns,sqs`.
 
-To customize the codebase for your project:
+To add a service, rebuild the SDK with it included:
 
 ```shell
 $ cd aws-sdk-js
 $ npm install
 $ cd ..
 $ npm install
-$ npm run sdk --sdk=all
-# can also be customized, e.g.
-# npm run sdk --sdk=ses,ec2,dynamodb-2011-12-05,dynamodb-2012-08-10,sns,sqs
-$ npm run build
+$ npm run sdk --sdk=ses,s3,lambda,ec2,dynamodb,sns,sqs,athena && npm run build
 ```
 
-Services can also be customized using a comma-delimited list of services.
-AWS has a [full list](https://github.com/aws/aws-sdk-js/tree/master/apis) of identifiers and api versions available.
+Commonly requested additions include **Athena**, **CloudFormation**, **CloudWatch**, and **Secrets Manager**. Any service supported by the [AWS SDK v2 API list](https://github.com/aws/aws-sdk-js/tree/master/apis) can be included. Use `--sdk=all` to include every service (larger bundle size).
+
+Once rebuilt, access the service via the `AWS` object:
+
+```js
+// Example: Athena query
+AWSLIB.initConfig(AWS_CONFIG);
+const athena = new AWSLIB.AWS.Athena();
+const result = await athena
+  .startQueryExecution({
+    QueryString: 'SELECT * FROM my_table LIMIT 10',
+    ResultConfiguration: { OutputLocation: 's3://my-bucket/results/' },
+  })
+  .promise();
+```
 
 ### Create your own library
 
@@ -165,8 +175,7 @@ $ npm run format    # Format code with Prettier
 This project includes a GitHub Actions CI pipeline that runs on every push and pull request:
 
 - **Lint & Format** — ESLint and Prettier checks
-- **Spellcheck** — Markdown spell checking
-- **Build** — Full build verification with output validation
+- **Build** — Full build with output validation and artifact upload
 - **Unit Tests** — Jest test suite
 
 Dependabot is configured for automated weekly dependency updates.
@@ -199,7 +208,7 @@ Several other projects exist for interfacing between the AWS API and Google Apps
 
 Several key changes to the AWS SDK core were required to make it compatible with the Google Apps Script framework.
 
-Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` — instead, it requires the use of `UrlFetchApp` and `XmlService`. Additional polyfills are provided for `setTimeout`/`clearTimeout`, `setInterval`/`clearInterval`, `console`, `Blob`, `Buffer`, `TextEncoder`/`TextDecoder`, `atob`/`btoa`, `URL`, `navigator`, and `crypto.getRandomValues`. These patch files can be found in `src-sdk` and `src/Polyfill.js`.
+Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` — instead, it requires the use of `UrlFetchApp` and `XmlService`. Additional polyfills are provided for `setTimeout`/`clearTimeout`, `setInterval`/`clearInterval`, `console`, `Blob`, `Buffer`, `TextEncoder`/`TextDecoder`, `atob`/`btoa`, `URL`, `navigator`, `process`/`process.env`, and `crypto.getRandomValues`. These patch files can be found in `src-sdk` and `src/Polyfill.js`.
 
 Note, the final patched build remains compatible in the browser, e.g.,
 
