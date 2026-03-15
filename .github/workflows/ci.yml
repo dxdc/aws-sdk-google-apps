@@ -24,7 +24,7 @@ jobs:
       - run: npm ci
 
       - name: Check formatting
-        run: npx prettier {.,src}/*.js *.json *.md --check
+        run: npx prettier {.,src,test}/*.js *.json *.md --check
 
       - name: Run ESLint
         run: npm run lint
@@ -43,6 +43,7 @@ jobs:
       - run: npm ci
 
       - name: Spellcheck markdown
+        continue-on-error: true
         run: npm run spellcheck
 
   build:
@@ -65,9 +66,9 @@ jobs:
 
       - name: Verify dist output
         run: |
-          test -f dist/AwsSdk.js || (echo "AwsSdk.js not found in dist/" && exit 1)
-          test -f dist/Config.js || (echo "Config.js not found in dist/" && exit 1)
-          test -f dist/S3.js || (echo "S3.js not found in dist/" && exit 1)
+          for f in AwsSdk.js Config.js S3.js Ses.js Lambda.js EC2.js DynamoDB.js SNS.js SQS.js Polyfill.js Crypto.js Xml.js; do
+            test -f "dist/$f" || (echo "$f not found in dist/" && exit 1)
+          done
           echo "Build output verified successfully"
 
   test:

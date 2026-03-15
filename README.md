@@ -208,9 +208,13 @@ Note, the final patched build remains compatible in the browser, e.g.,
 +AWS.HttpClient.prototype = typeof XMLHttpRequest === 'undefined' && typeof UrlFetchApp !== 'undefined' ? AWS.XHRGoogleClient.prototype : AWS.XHRClient.prototype;
 ```
 
+## AWS SDK v3
+
+This project uses AWS SDK v2, which entered maintenance mode in September 2024. See [MIGRATION.md](MIGRATION.md) for a detailed analysis of why v3 is not currently feasible for Google Apps Script and what the options are going forward.
+
 ## How to contribute
 
-Have an idea? Found a bug? Contributions and pull requests are welcome.
+Have an idea? Found a bug? Contributions and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## Credits
 
