@@ -4,128 +4,179 @@
 [![CI](https://github.com/dxdc/aws-sdk-google-apps/actions/workflows/ci.yml/badge.svg)](https://github.com/dxdc/aws-sdk-google-apps/actions/workflows/ci.yml)
 [![Donate](https://badgen.net/badge/Donate/PayPal/91BE09)](https://paypal.me/ddcaspi)
 
-Native support for the entire AWS SDK for JavaScript in Google Apps Script.
+Use AWS services directly from Google Apps Script. Wraps the full [AWS SDK for JavaScript v2](https://github.com/aws/aws-sdk-js) with a Google Apps Script-compatible HTTP client, so any AWS service works out of the box.
 
-Working examples for S3, SES, Lambda, EC2, DynamoDB, SNS, and SQS. This project can easily accommodate _all_ other AWS services, e.g.,
+Includes ready-to-use helper functions for the most common services:
 
-```
-npm run sdk --sdk=ses,s3,ec2,lambda,dynamodb,sns,sqs && npm run build
-```
+| Service      | Functions                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **S3**       | `listS3Objects`, `getS3Object`, `putS3Object`, `deleteS3Object`, `copyS3Object`, `headS3Object`, `getPresignedS3Url` |
+| **SES**      | `sendEmail`                                                                                                          |
+| **Lambda**   | `invokeLambda`                                                                                                       |
+| **EC2**      | `listEC2Instances`, `listSecurityGroups`                                                                             |
+| **DynamoDB** | `getDynamoDBItem`, `putDynamoDBItem`, `updateDynamoDBItem`, `deleteDynamoDBItem`, `queryDynamoDB`, `scanDynamoDB`    |
+| **SNS**      | `publishSNS`                                                                                                         |
+| **SQS**      | `sendSQSMessage`, `receiveSQSMessages`, `deleteSQSMessage`                                                           |
+| **STS**      | `assumeRole`, `getCallerIdentity`                                                                                    |
 
-## Supported services
+Need a service not listed? You can use **any** AWS service directly via the `AWS` object (see [Direct SDK access](#direct-sdk-access)).
 
-| Service      | Functions                                                                       |
-| ------------ | ------------------------------------------------------------------------------- |
-| **S3**       | `listS3Objects`, `getS3Object`, `putS3Object`, `deleteS3Object`, `copyS3Object` |
-| **SES**      | `sendEmail` (supports options-object or positional args)                        |
-| **Lambda**   | `invokeLambda` (sync, async, dry-run)                                           |
-| **EC2**      | `listEC2Instances`, `listSecurityGroups`                                        |
-| **DynamoDB** | `getDynamoDBItem`, `putDynamoDBItem`, `deleteDynamoDBItem`, `queryDynamoDB`     |
-| **SNS**      | `publishSNS`                                                                    |
-| **SQS**      | `sendSQSMessage`, `receiveSQSMessages`, `deleteSQSMessage`                      |
+## Quick start
 
-Any AWS service can also be used directly via the `AWS` object (see [Advanced usage](#advanced-usage)).
+### Option 1: Add as a library (easiest)
 
-## Library deployment
+1. In your Google Apps Script project, go to **Libraries** (the `+` button in the sidebar)
+2. Enter the Script ID: `1J6iN9mJE-NK6LGTlZcngsflJEx59tE3ZOW4-2cdHbgw0So2MmEcRZxKG`
+3. Pick a version and choose an identifier (e.g., `AWSLIB`)
 
-1. Add the existing Google Apps Script project [as a Library](https://developers.google.com/apps-script/guides/libraries#add_a_library_to_your_script_project)
-
-- Script ID `1J6iN9mJE-NK6LGTlZcngsflJEx59tE3ZOW4-2cdHbgw0So2MmEcRZxKG`
-- Choose an identifier, e.g., `AWSLIB`
-- Versions of the Google Apps Script project map to tags on this Git repository
-
-2. Initialize your AWS config settings and use any of the service wrapper functions. See [Examples.js](src/Examples.js) for full examples.
+Then use it:
 
 ```js
-const AWS_CONFIG = {
-  accessKeyId: 'YOUR_ACCESS_KEY', // use your own AWS key
-  secretAccessKey: 'YOUR_SECRET_KEY', // use your own AWS key
-  region: 'us-east-1',
-};
-
-// Example: retrieve an S3 object
-async function getS3ObjectExample() {
-  AWSLIB.initConfig(AWS_CONFIG);
-  const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
-  if (result === false) {
-    return false;
-  }
-  return Utilities.newBlob(result.Body, result.ContentType);
-}
-
-// Example: send an email via SES
-async function sendEmailExample() {
-  AWSLIB.initConfig(AWS_CONFIG);
-  const result = await AWSLIB.sendEmail({
-    to: 'recipient@example.com',
-    from: 'sender@example.com',
-    subject: 'Hello from GAS',
-    html: '<h1>Hello!</h1><p>Sent via AWS SES.</p>',
+function myFunction() {
+  AWSLIB.initConfig({
+    accessKeyId: 'YOUR_ACCESS_KEY',
+    secretAccessKey: 'YOUR_SECRET_KEY',
+    region: 'us-east-1',
   });
-  return result;
-}
 
-// Example: DynamoDB query with reserved word handling
-async function queryExample() {
-  AWSLIB.initConfig(AWS_CONFIG);
-  const result = await AWSLIB.queryDynamoDB(
-    'Orders',
-    'userId = :uid',
-    { ':uid': { S: 'user-123' }, ':active': { S: 'active' } },
-    {
-      limit: 10,
-      expressionNames: { '#s': 'status' },
-      filterExpression: '#s = :active',
-    },
-  );
-  return result;
+  // Download a file from S3
+  const result = AWSLIB.getS3Object('my-bucket', 'path/to/file.txt');
+  if (result === false) return; // error already logged
+  Logger.log(result.Body);
 }
 ```
 
-### Advanced usage
+### Option 2: Copy into your project
 
-Direct access to the AWS SDK is available via the `AWS` property on your chosen library identifier:
+Copy all files from `dist/` into your Google Apps Script project. This gives you direct access to all functions without the `AWSLIB.` prefix.
+
+## Usage examples
+
+### Store credentials safely
+
+Use [Script Properties](https://developers.google.com/apps-script/reference/properties/properties-service) instead of hardcoding credentials:
 
 ```js
-// Create a new service object directly
-const s3 = new AWSLIB.AWS.S3({
-  apiVersion: '2006-03-01',
-  params: { Bucket: albumBucketName },
+const props = PropertiesService.getScriptProperties();
+initConfig({
+  accessKeyId: props.getProperty('AWS_ACCESS_KEY_ID'),
+  secretAccessKey: props.getProperty('AWS_SECRET_ACCESS_KEY'),
+  region: 'us-east-1',
 });
 ```
 
-## Advanced deployment
+### S3: files and objects
 
-1. Customize the AWS SDK if additional services are needed
+```js
+// List files in a folder
+const listing = await listS3Objects('my-bucket', { prefix: 'images/' });
+Logger.log(listing.Contents); // array of objects
 
-2. Copy & paste all the files from `dist/` into your project.
+// Download a file
+const file = await getS3Object('my-bucket', 'report.pdf');
+const blob = Utilities.newBlob(file.Body, file.ContentType);
 
-- `Examples.js` and `Config.js` are placeholders, which should be adapted with your code.
+// Upload a file
+await putS3Object('my-bucket', 'data.csv', csvContent, {
+  contentType: 'text/csv',
+});
 
-### Customized AWS SDK
+// Check if a file exists (without downloading it)
+const meta = await headS3Object('my-bucket', 'maybe-exists.txt');
+if (meta !== false) {
+  Logger.log(`File is ${meta.ContentLength} bytes`);
+}
 
-The AWS SDK can be customized for specific API versions and/or services.
+// Generate a temporary download link (valid for 1 hour)
+const url = getPresignedS3Url('my-bucket', 'report.pdf');
+Logger.log(url); // anyone with this URL can download for 1 hour
 
-This project defaults to the following services: `ses,s3,lambda,ec2,dynamodb,sns,sqs`.
-
-To add a service, rebuild the SDK with it included:
-
-```shell
-$ cd aws-sdk-js
-$ npm install
-$ cd ..
-$ npm install
-$ npm run sdk --sdk=ses,s3,lambda,ec2,dynamodb,sns,sqs,athena && npm run build
+// Generate a temporary upload link
+const uploadUrl = getPresignedS3Url('my-bucket', 'uploads/file.txt', {
+  operation: 'putObject',
+  expires: 900,
+  contentType: 'text/plain',
+});
 ```
 
-Commonly requested additions include **Athena**, **CloudFormation**, **CloudWatch**, and **Secrets Manager**. Any service supported by the [AWS SDK v2 API list](https://github.com/aws/aws-sdk-js/tree/master/apis) can be included. Use `--sdk=all` to include every service (larger bundle size).
+### SES: send email
 
-Once rebuilt, access the service via the `AWS` object:
+```js
+await sendEmail({
+  to: 'recipient@example.com',
+  from: 'sender@verified-domain.com',
+  subject: 'Hello from Google Apps Script',
+  html: '<h1>Hello!</h1><p>Sent via AWS SES.</p>',
+});
+```
+
+### DynamoDB: read and write data
+
+```js
+// Write an item
+await putDynamoDBItem('Users', {
+  userId: { S: 'user-123' },
+  name: { S: 'Alice' },
+  age: { N: '30' },
+});
+
+// Read an item
+const item = await getDynamoDBItem('Users', { userId: { S: 'user-123' } });
+Logger.log(item.Item.name.S); // "Alice"
+
+// Update specific fields
+await updateDynamoDBItem('Users', { userId: { S: 'user-123' } }, 'SET age = :age', { ':age': { N: '31' } });
+
+// Query with filters (handles reserved words like "status")
+const results = await queryDynamoDB(
+  'Orders',
+  'userId = :uid',
+  {
+    ':uid': { S: 'user-123' },
+    ':active': { S: 'active' },
+  },
+  {
+    expressionNames: { '#s': 'status' },
+    filterExpression: '#s = :active',
+    limit: 10,
+  },
+);
+```
+
+### Lambda: invoke functions
+
+```js
+const result = await invokeLambda('myFunction', { key: 'value' });
+Logger.log(result.Payload);
+
+// Fire-and-forget (async)
+await invokeLambda('myFunction', payload, { invocationType: 'Event' });
+```
+
+### STS: cross-account access
+
+```js
+// Assume a role in another AWS account
+const assumed = await assumeRole('arn:aws:iam::987654321098:role/CrossAccountRole', 'gas-session');
+
+// Re-initialize with temporary credentials
+initConfig({
+  accessKeyId: assumed.Credentials.AccessKeyId,
+  secretAccessKey: assumed.Credentials.SecretAccessKey,
+  sessionToken: assumed.Credentials.SessionToken,
+  region: 'us-east-1',
+});
+// All subsequent calls now use the assumed role
+```
+
+### Direct SDK access
+
+Any AWS service works, not just the helpers above. Access the SDK directly via the `AWS` object:
 
 ```js
 // Example: Athena query
-AWSLIB.initConfig(AWS_CONFIG);
-const athena = new AWSLIB.AWS.Athena();
+initConfig(AWS_CONFIG);
+const athena = new AWS.Athena();
 const result = await athena
   .startQueryExecution({
     QueryString: 'SELECT * FROM my_table LIMIT 10',
@@ -134,92 +185,73 @@ const result = await athena
   .promise();
 ```
 
-### Create your own library
+When used as a library, prefix with your identifier: `new AWSLIB.AWS.Athena()`.
 
-1. Create a new project in Google Scripts.
+## Error handling
 
-2. Copy & paste all the files from `dist/` into your project file and save it.
+All helper functions return `false` on error and log the error details via `Logger.log`. Check for `false` to handle errors:
 
-3. Go `File → Manage versions` and click `Save new version`.
+```js
+const result = await getS3Object('my-bucket', 'file.txt');
+if (result === false) {
+  // Error was already logged; handle it here
+  return;
+}
+// Use result normally
+```
 
-4. You can `Share` and make it public.
+## Customizing included services
 
-5. Copy your library Script ID from `File → Project properties → Script ID`
+The default build includes: S3, SES, Lambda, EC2, DynamoDB, SNS, SQS, STS.
 
-6. Reference this Script ID as a library in other projects.
+To add more services (e.g., Athena, CloudWatch), rebuild the SDK:
+
+```shell
+cd aws-sdk-js && npm install && cd ..
+npm install
+npm run sdk --sdk=ses,s3,lambda,ec2,dynamodb,sns,sqs,sts,athena,cloudwatch
+npm run build
+```
+
+Use `--sdk=all` to include every AWS service (larger bundle). Any service in the [AWS SDK v2 API list](https://github.com/aws/aws-sdk-js/tree/master/apis) can be included.
 
 ## Development
-
-### Prerequisites
-
-- Node.js 18+
-- npm
 
 ### Setup
 
 ```shell
-$ npm install
+npm install
 ```
 
-### Build
+### Commands
 
 ```shell
-$ npm run build     # Build dist/ from src/ and src-sdk/
-$ npm test          # Run unit tests
-$ npm run lint      # Run ESLint
-$ npm run format    # Format code with Prettier
+npm run build       # Build dist/ from src/ and src-sdk/
+npm test            # Run unit tests
+npm run lint        # ESLint
+npm run format      # Prettier
 ```
 
 ### CI/CD
 
-This project includes a GitHub Actions CI pipeline that runs on every push and pull request:
+GitHub Actions runs lint, build, and tests on every push and pull request. A separate scheduled workflow checks for aws-sdk-js updates weekly and opens a PR if a new version is available.
 
-- **Lint & Format** — ESLint and Prettier checks
-- **Build** — Full build with output validation and artifact upload
-- **Unit Tests** — Jest test suite
+### Create your own library
 
-Dependabot is configured for automated weekly dependency updates.
+1. Create a new Google Apps Script project
+2. Copy all files from `dist/` into it
+3. Go to **Project Settings** and copy the **Script ID**
+4. In other projects, add this Script ID as a library
 
 ## Security notes
 
-### Crypto polyfill
+**Credentials**: Never hardcode AWS credentials. Use [Script Properties](https://developers.google.com/apps-script/reference/properties/properties-service) or STS temporary credentials.
 
-The `Crypto.js` polyfill uses `Math.random()` which is **NOT cryptographically secure**. The AWS SDK uses `crypto.getRandomValues()` for generating unique request IDs (not for encryption or key generation), so this is acceptable for that use case. Do not use this polyfill for security-sensitive operations.
-
-### Credentials
-
-Never commit real AWS credentials to version control. Use Google Apps Script's [Properties Service](https://developers.google.com/apps-script/reference/properties/properties-service) to store sensitive values:
-
-```js
-const props = PropertiesService.getScriptProperties();
-const config = {
-  accessKeyId: props.getProperty('AWS_ACCESS_KEY_ID'),
-  secretAccessKey: props.getProperty('AWS_SECRET_ACCESS_KEY'),
-  region: 'us-east-1',
-};
-initConfig(config);
-```
-
-## Background
-
-Several other projects exist for interfacing between the AWS API and Google Apps Script. However, these projects have very limited support for the full suite of AWS services offered. This is the first project which invokes the AWS SDK directly.
-
-### SDK Core modifications
-
-Several key changes to the AWS SDK core were required to make it compatible with the Google Apps Script framework.
-
-Google Apps Script does not have support for `window`, `XMLHttpRequest`, and `DOMParser` — instead, it requires the use of `UrlFetchApp` and `XmlService`. Additional polyfills are provided for `setTimeout`/`clearTimeout`, `setInterval`/`clearInterval`, `console`, `Blob`, `Buffer`, `TextEncoder`/`TextDecoder`, `atob`/`btoa`, `URL`, `navigator`, `process`/`process.env`, and `crypto.getRandomValues`. These patch files can be found in `src-sdk` and `src/Polyfill.js`.
-
-Note, the final patched build remains compatible in the browser, e.g.,
-
-```diff
--AWS.HttpClient.prototype = AWS.XHRClient.prototype;
-+AWS.HttpClient.prototype = typeof XMLHttpRequest === 'undefined' && typeof UrlFetchApp !== 'undefined' ? AWS.XHRGoogleClient.prototype : AWS.XHRClient.prototype;
-```
+**Crypto polyfill**: The `Crypto.js` polyfill uses `Math.random()` which is not cryptographically secure. The AWS SDK only uses this for generating request IDs (not for encryption), so this is acceptable.
 
 ## AWS SDK v3
 
-This project uses AWS SDK v2, which entered maintenance mode in September 2024. See [MIGRATION.md](MIGRATION.md) for a detailed analysis of why v3 is not currently feasible for Google Apps Script and what the options are going forward.
+This project uses AWS SDK v2. AWS SDK v3 uses ES Modules, Node.js Streams, and a middleware architecture that are not compatible with Google Apps Script's runtime. See [MIGRATION.md](MIGRATION.md) for details on what has changed between versions of this library.
 
 ## How to contribute
 

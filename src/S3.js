@@ -193,3 +193,79 @@ function copyS3Object(sourceBucket, sourceKey, destBucket, destKey) {
       return false;
     });
 }
+
+/**
+ * Get the metadata of an object without downloading its content.
+ *
+ * Useful for checking if an object exists, getting its size, or reading its content type.
+ *
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {string} key - The object key (path) within the bucket.
+ * @returns {Promise<Object|false>} The S3 headObject response (includes ContentLength, ContentType, LastModified, ETag, Metadata), or `false` on error.
+ *
+ * @example
+ * const meta = await headS3Object('my-bucket', 'folder/file.jpg');
+ * if (meta !== false) {
+ *   Logger.log(`Size: ${meta.ContentLength} bytes, Type: ${meta.ContentType}`);
+ * }
+ */
+function headS3Object(bucketName, key) {
+  return new AWS.S3({
+    apiVersion: '2006-03-01',
+  })
+    .headObject({
+      Bucket: bucketName,
+      Key: key,
+    })
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
+}
+
+/**
+ * Generate a presigned URL for temporary access to an S3 object.
+ *
+ * The URL allows anyone with it to perform the specified operation (default: getObject)
+ * without needing AWS credentials, until the URL expires.
+ *
+ * Note: This generates the URL locally using AWS Signature V4. No network request is made.
+ *
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {string} key - The object key (path) within the bucket.
+ * @param {Object} [options] - Optional parameters.
+ * @param {number} [options.expires=3600] - URL expiration time in seconds (default 1 hour, max 7 days).
+ * @param {string} [options.operation='getObject'] - The S3 operation ('getObject', 'putObject').
+ * @param {string} [options.contentType] - Required Content-Type for putObject presigned URLs.
+ * @returns {string} The presigned URL.
+ *
+ * @example
+ * // Generate a download link (valid for 1 hour)
+ * const url = getPresignedS3Url('my-bucket', 'reports/q1.pdf');
+ *
+ * @example
+ * // Generate an upload link (valid for 15 minutes)
+ * const uploadUrl = getPresignedS3Url('my-bucket', 'uploads/file.txt', {
+ *   operation: 'putObject',
+ *   expires: 900,
+ *   contentType: 'text/plain',
+ * });
+ */
+function getPresignedS3Url(bucketName, key, options) {
+  const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+  const operation = (options && options.operation) || 'getObject';
+  const expires = (options && options.expires) || 3600;
+
+  const params = {
+    Bucket: bucketName,
+    Key: key,
+    Expires: expires,
+  };
+
+  if (options && options.contentType) {
+    params.ContentType = options.contentType;
+  }
+
+  return s3.getSignedUrl(operation, params);
+}

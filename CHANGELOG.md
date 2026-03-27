@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added (all backward-compatible)
 
+- **STS**: New `assumeRole` and `getCallerIdentity` wrappers for cross-account access and credential verification.
+- **S3**: `headS3Object` to check if an object exists and read metadata without downloading.
+- **S3**: `getPresignedS3Url` to generate temporary signed download/upload URLs.
+- **DynamoDB**: `scanDynamoDB` for full table scans with optional filters.
+- **DynamoDB**: `updateDynamoDBItem` for partial attribute updates (without replacing the entire item).
+- **CI/CD**: Scheduled GitHub Actions workflow to auto-detect and PR aws-sdk-js submodule updates weekly.
 - **Config**: `initConfig()` now accepts standard AWS SDK property names (`accessKeyId`, `secretAccessKey`) in addition to the legacy `accessKey`/`secretKey`. Both styles work; new names are preferred.
 - **S3**: `listS3Objects` now uses `listObjectsV2` API internally (improved performance and response shape). Accepts both the legacy `(bucket, 'prefix')` and new `(bucket, { prefix, delimiter, maxKeys, continuationToken, startAfter })` calling styles.
 - **EC2**: `listEC2Instances` and `listSecurityGroups` now accept both the legacy `(region)` string and new options object `({ region, filters, instanceIds, groupIds, maxResults, nextToken })`.
@@ -84,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vulnerability count: reduced from 38 to 3 (remaining are upstream clasp transitive deps)
 - Code style: `var` replaced with `const`/`let` across all source files
 - ESLint config: tuned for Google Apps Script cross-file global scope
-- Default SDK services: now includes `ses,s3,lambda,ec2,dynamodb,sns,sqs`
+- Default SDK services: now includes `ses,s3,lambda,ec2,dynamodb,sns,sqs,sts`
 
 ### Removed
 

@@ -19,6 +19,10 @@ function loadS3() {
   const mockCopyObject = jest.fn().mockReturnValue({
     promise: () => Promise.resolve({ CopyObjectResult: {} }),
   });
+  const mockHeadObject = jest.fn().mockReturnValue({
+    promise: () => Promise.resolve({ ContentLength: 1024, ContentType: 'image/jpeg', ETag: '"abc"' }),
+  });
+  const mockGetSignedUrl = jest.fn().mockReturnValue('https://my-bucket.s3.amazonaws.com/file.txt?signed');
 
   const sandbox = {
     ...global,
@@ -29,10 +33,12 @@ function loadS3() {
         putObject: mockPutObject,
         deleteObject: mockDeleteObject,
         copyObject: mockCopyObject,
+        headObject: mockHeadObject,
+        getSignedUrl: mockGetSignedUrl,
       }),
     },
     Logger: { log: jest.fn() },
-    _mocks: { mockListObjectsV2, mockGetObject, mockPutObject, mockDeleteObject, mockCopyObject },
+    _mocks: { mockListObjectsV2, mockGetObject, mockPutObject, mockDeleteObject, mockCopyObject, mockHeadObject, mockGetSignedUrl },
   };
 
   vm.createContext(sandbox);
@@ -208,6 +214,51 @@ describe('S3', () => {
       });
       const result = await sandbox.copyS3Object('src', 'key', 'dst', 'key2');
       expect(result).toBe(false);
+    });
+  });
+
+  describe('headS3Object', () => {
+    test('returns object metadata', async () => {
+      const result = await sandbox.headS3Object('my-bucket', 'image.jpg');
+      expect(result).toEqual({ ContentLength: 1024, ContentType: 'image/jpeg', ETag: '"abc"' });
+      expect(sandbox._mocks.mockHeadObject).toHaveBeenCalledWith({
+        Bucket: 'my-bucket',
+        Key: 'image.jpg',
+      });
+    });
+
+    test('returns false on error (e.g., not found)', async () => {
+      sandbox._mocks.mockHeadObject.mockReturnValueOnce({
+        promise: () => Promise.reject(new Error('NotFound')),
+      });
+      const result = await sandbox.headS3Object('my-bucket', 'missing.txt');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('getPresignedS3Url', () => {
+    test('generates a presigned getObject URL with defaults', () => {
+      const url = sandbox.getPresignedS3Url('my-bucket', 'file.txt');
+      expect(url).toBe('https://my-bucket.s3.amazonaws.com/file.txt?signed');
+      expect(sandbox._mocks.mockGetSignedUrl).toHaveBeenCalledWith('getObject', {
+        Bucket: 'my-bucket',
+        Key: 'file.txt',
+        Expires: 3600,
+      });
+    });
+
+    test('generates a presigned putObject URL with options', () => {
+      sandbox.getPresignedS3Url('my-bucket', 'upload.txt', {
+        operation: 'putObject',
+        expires: 900,
+        contentType: 'text/plain',
+      });
+      expect(sandbox._mocks.mockGetSignedUrl).toHaveBeenCalledWith('putObject', {
+        Bucket: 'my-bucket',
+        Key: 'upload.txt',
+        Expires: 900,
+        ContentType: 'text/plain',
+      });
     });
   });
 });

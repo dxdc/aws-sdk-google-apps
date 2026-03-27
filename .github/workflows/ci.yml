@@ -49,7 +49,7 @@ jobs:
 
       - name: Verify dist output
         run: |
-          for f in AwsSdk.js Config.js S3.js Ses.js Lambda.js EC2.js DynamoDB.js SNS.js SQS.js Polyfill.js Crypto.js Xml.js; do
+          for f in AwsSdk.js Config.js S3.js Ses.js Lambda.js EC2.js DynamoDB.js SNS.js SQS.js STS.js Polyfill.js Crypto.js Xml.js; do
             test -f "dist/$f" || (echo "$f not found in dist/" && exit 1)
           done
           echo "Build output verified successfully"

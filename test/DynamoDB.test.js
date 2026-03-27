@@ -16,6 +16,12 @@ function loadDynamoDB() {
   const mockQuery = jest.fn().mockReturnValue({
     promise: () => Promise.resolve({ Items: [{ userId: { S: 'user-123' } }], Count: 1 }),
   });
+  const mockScan = jest.fn().mockReturnValue({
+    promise: () => Promise.resolve({ Items: [{ userId: { S: 'user-123' } }], Count: 1, ScannedCount: 1 }),
+  });
+  const mockUpdateItem = jest.fn().mockReturnValue({
+    promise: () => Promise.resolve({ Attributes: { name: { S: 'Bob' } } }),
+  });
 
   const sandbox = {
     ...global,
@@ -25,10 +31,12 @@ function loadDynamoDB() {
         putItem: mockPutItem,
         deleteItem: mockDeleteItem,
         query: mockQuery,
+        scan: mockScan,
+        updateItem: mockUpdateItem,
       }),
     },
     Logger: { log: jest.fn() },
-    _mocks: { mockGetItem, mockPutItem, mockDeleteItem, mockQuery },
+    _mocks: { mockGetItem, mockPutItem, mockDeleteItem, mockQuery, mockScan, mockUpdateItem },
   };
 
   vm.createContext(sandbox);
@@ -171,6 +179,81 @@ describe('DynamoDB', () => {
         promise: () => Promise.reject(new Error('ValidationException')),
       });
       const result = await sandbox.queryDynamoDB('T', 'k = :v', { ':v': { S: '1' } });
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('scanDynamoDB', () => {
+    test('scans a table with no options', async () => {
+      const result = await sandbox.scanDynamoDB('Users');
+      expect(result.Count).toBe(1);
+      expect(sandbox._mocks.mockScan).toHaveBeenCalledWith({ TableName: 'Users' });
+    });
+
+    test('passes filter, expressionNames, and limit', async () => {
+      await sandbox.scanDynamoDB('Users', {
+        filterExpression: '#s = :active',
+        expressionNames: { '#s': 'status' },
+        expressionValues: { ':active': { S: 'active' } },
+        limit: 100,
+      });
+      expect(sandbox._mocks.mockScan).toHaveBeenCalledWith(
+        expect.objectContaining({
+          FilterExpression: '#s = :active',
+          ExpressionAttributeNames: { '#s': 'status' },
+          ExpressionAttributeValues: { ':active': { S: 'active' } },
+          Limit: 100,
+        }),
+      );
+    });
+
+    test('returns false on error', async () => {
+      sandbox._mocks.mockScan.mockReturnValueOnce({
+        promise: () => Promise.reject(new Error('ResourceNotFoundException')),
+      });
+      const result = await sandbox.scanDynamoDB('Missing');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('updateDynamoDBItem', () => {
+    test('updates specific attributes', async () => {
+      const result = await sandbox.updateDynamoDBItem(
+        'Users',
+        { userId: { S: 'user-123' } },
+        'SET #n = :name',
+        { ':name': { S: 'Bob' } },
+        { expressionNames: { '#n': 'name' }, returnValues: 'ALL_NEW' },
+      );
+      expect(result).toEqual({ Attributes: { name: { S: 'Bob' } } });
+      expect(sandbox._mocks.mockUpdateItem).toHaveBeenCalledWith(
+        expect.objectContaining({
+          TableName: 'Users',
+          Key: { userId: { S: 'user-123' } },
+          UpdateExpression: 'SET #n = :name',
+          ExpressionAttributeValues: { ':name': { S: 'Bob' } },
+          ExpressionAttributeNames: { '#n': 'name' },
+          ReturnValues: 'ALL_NEW',
+        }),
+      );
+    });
+
+    test('passes conditionExpression', async () => {
+      await sandbox.updateDynamoDBItem(
+        'Users',
+        { userId: { S: 'user-123' } },
+        'SET age = :age',
+        { ':age': { N: '31' }, ':expected': { N: '30' } },
+        { conditionExpression: 'age = :expected' },
+      );
+      expect(sandbox._mocks.mockUpdateItem).toHaveBeenCalledWith(expect.objectContaining({ ConditionExpression: 'age = :expected' }));
+    });
+
+    test('returns false on error', async () => {
+      sandbox._mocks.mockUpdateItem.mockReturnValueOnce({
+        promise: () => Promise.reject(new Error('ConditionalCheckFailedException')),
+      });
+      const result = await sandbox.updateDynamoDBItem('T', { id: { S: '1' } }, 'SET x = :v', { ':v': { S: 'a' } });
       expect(result).toBe(false);
     });
   });

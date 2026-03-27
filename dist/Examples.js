@@ -248,3 +248,96 @@ async function sqsTest() {
     Logger.log('Deleted first message');
   }
 }
+
+async function headS3ObjectTest() {
+  initConfig(AWS_CONFIG_TEST);
+
+  const meta = await headS3Object('myBucket', 'folder1/file.jpg');
+  if (meta === false) {
+    Logger.log('Object does not exist');
+    return false;
+  }
+
+  Logger.log(`Size: ${meta.ContentLength} bytes, Type: ${meta.ContentType}`);
+  return meta;
+}
+
+function presignedUrlTest() {
+  initConfig(AWS_CONFIG_TEST);
+
+  // Generate a download link (valid for 1 hour)
+  const downloadUrl = getPresignedS3Url('myBucket', 'reports/q1.pdf');
+  Logger.log(`Download URL: ${downloadUrl}`);
+
+  // Generate an upload link (valid for 15 minutes)
+  const uploadUrl = getPresignedS3Url('myBucket', 'uploads/data.csv', {
+    operation: 'putObject',
+    expires: 900,
+    contentType: 'text/csv',
+  });
+  Logger.log(`Upload URL: ${uploadUrl}`);
+}
+
+async function stsTest() {
+  initConfig(AWS_CONFIG_TEST);
+
+  // Verify current credentials
+  const identity = await getCallerIdentity();
+  if (identity !== false) {
+    Logger.log(`Account: ${identity.Account}, ARN: ${identity.Arn}`);
+  }
+
+  // Assume a cross-account role
+  const assumed = await assumeRole('arn:aws:iam::987654321098:role/CrossAccountRole', 'gas-session');
+  if (assumed === false) {
+    return false;
+  }
+
+  // Re-init with the temporary credentials
+  initConfig({
+    accessKeyId: assumed.Credentials.AccessKeyId,
+    secretAccessKey: assumed.Credentials.SecretAccessKey,
+    sessionToken: assumed.Credentials.SessionToken,
+    region: 'us-east-1',
+  });
+
+  Logger.log('Now operating with assumed role credentials');
+}
+
+async function scanDynamoDBTest() {
+  initConfig(AWS_CONFIG_TEST);
+
+  // Scan with a filter
+  const result = await scanDynamoDB('Users', {
+    filterExpression: '#s = :active',
+    expressionNames: { '#s': 'status' },
+    expressionValues: { ':active': { S: 'active' } },
+    limit: 100,
+  });
+
+  if (result === false) {
+    return false;
+  }
+
+  Logger.log(`Found ${result.Count} active users (scanned ${result.ScannedCount})`);
+  return result.Items;
+}
+
+async function updateDynamoDBTest() {
+  initConfig(AWS_CONFIG_TEST);
+
+  const result = await updateDynamoDBItem(
+    'Users',
+    { userId: { S: 'user-123' } },
+    'SET #n = :name, age = :age',
+    { ':name': { S: 'Bob' }, ':age': { N: '31' } },
+    { expressionNames: { '#n': 'name' }, returnValues: 'ALL_NEW' },
+  );
+
+  if (result === false) {
+    return false;
+  }
+
+  Logger.log(`Updated: ${JSON.stringify(result.Attributes)}`);
+  return result;
+}

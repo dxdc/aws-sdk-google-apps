@@ -144,3 +144,118 @@ function queryDynamoDB(tableName, keyConditionExpression, expressionValues, opti
       return false;
     });
 }
+
+/**
+ * Scan a DynamoDB table (reads every item, use sparingly).
+ *
+ * Scanning is expensive and slow on large tables. Prefer `queryDynamoDB` when possible.
+ *
+ * @param {string} tableName - The name of the DynamoDB table.
+ * @param {Object} [options] - Optional scan parameters.
+ * @param {string} [options.filterExpression] - Filter expression (e.g., '#s = :active').
+ * @param {Object} [options.expressionValues] - Attribute values for the filter expression.
+ * @param {Object} [options.expressionNames] - Attribute name substitutions for reserved words.
+ * @param {string} [options.projectionExpression] - Comma-separated list of attributes to retrieve.
+ * @param {number} [options.limit] - Maximum number of items to evaluate (not necessarily return).
+ * @param {Object} [options.exclusiveStartKey] - Pagination key from a previous response's LastEvaluatedKey.
+ * @returns {Promise<Object|false>} The DynamoDB scan response (includes Items, Count, LastEvaluatedKey), or `false` on error.
+ *
+ * @example
+ * // Scan all items
+ * const result = await scanDynamoDB('Users');
+ *
+ * @example
+ * // Scan with filter
+ * const result = await scanDynamoDB('Users', {
+ *   filterExpression: '#s = :active',
+ *   expressionNames: { '#s': 'status' },
+ *   expressionValues: { ':active': { S: 'active' } },
+ * });
+ */
+function scanDynamoDB(tableName, options) {
+  const params = {
+    TableName: tableName,
+  };
+
+  if (options) {
+    if (options.filterExpression) {
+      params.FilterExpression = options.filterExpression;
+    }
+    if (options.expressionValues) {
+      params.ExpressionAttributeValues = options.expressionValues;
+    }
+    if (options.expressionNames) {
+      params.ExpressionAttributeNames = options.expressionNames;
+    }
+    if (options.projectionExpression) {
+      params.ProjectionExpression = options.projectionExpression;
+    }
+    if (options.limit) {
+      params.Limit = options.limit;
+    }
+    if (options.exclusiveStartKey) {
+      params.ExclusiveStartKey = options.exclusiveStartKey;
+    }
+  }
+
+  return new AWS.DynamoDB({ apiVersion: '2012-08-10' })
+    .scan(params)
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
+}
+
+/**
+ * Update specific attributes of an item in a DynamoDB table.
+ *
+ * Unlike `putDynamoDBItem` which replaces the entire item, this updates only the specified attributes.
+ *
+ * @param {string} tableName - The name of the DynamoDB table.
+ * @param {Object} key - The primary key of the item to update.
+ * @param {string} updateExpression - The update expression (e.g., 'SET #n = :name, age = :age').
+ * @param {Object} expressionValues - Attribute values for the expression.
+ * @param {Object} [options] - Optional parameters.
+ * @param {Object} [options.expressionNames] - Attribute name substitutions for reserved words.
+ * @param {string} [options.conditionExpression] - Condition that must be true for the update to succeed.
+ * @param {string} [options.returnValues='NONE'] - What to return: 'NONE', 'ALL_OLD', 'UPDATED_OLD', 'ALL_NEW', 'UPDATED_NEW'.
+ * @returns {Promise<Object|false>} The DynamoDB updateItem response, or `false` on error.
+ *
+ * @example
+ * const result = await updateDynamoDBItem(
+ *   'Users',
+ *   { userId: { S: 'user-123' } },
+ *   'SET #n = :name, age = :age',
+ *   { ':name': { S: 'Bob' }, ':age': { N: '31' } },
+ *   { expressionNames: { '#n': 'name' }, returnValues: 'ALL_NEW' },
+ * );
+ */
+function updateDynamoDBItem(tableName, key, updateExpression, expressionValues, options) {
+  const params = {
+    TableName: tableName,
+    Key: key,
+    UpdateExpression: updateExpression,
+    ExpressionAttributeValues: expressionValues,
+  };
+
+  if (options) {
+    if (options.expressionNames) {
+      params.ExpressionAttributeNames = options.expressionNames;
+    }
+    if (options.conditionExpression) {
+      params.ConditionExpression = options.conditionExpression;
+    }
+    if (options.returnValues) {
+      params.ReturnValues = options.returnValues;
+    }
+  }
+
+  return new AWS.DynamoDB({ apiVersion: '2012-08-10' })
+    .updateItem(params)
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
+}
