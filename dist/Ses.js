@@ -94,7 +94,13 @@ function sendEmail(optionsOrTo, ccEmails, bccEmails, fromEmail, replyToEmails, s
     ReplyToAddresses: replyTo,
   };
 
-  return new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
+  return new AWS.SES({ apiVersion: '2010-12-01' })
+    .sendEmail(params)
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }
 
 /**

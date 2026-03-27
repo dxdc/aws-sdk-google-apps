@@ -39,7 +39,7 @@ describe('Config', () => {
     expect(sandbox.AWS.Config).toHaveBeenCalled();
   });
 
-  test('initConfig sets region and credentials', () => {
+  test('initConfig sets region and credentials with new property names', () => {
     sandbox.initConfig({
       region: 'eu-west-1',
       accessKeyId: 'AK',
@@ -53,6 +53,46 @@ describe('Config', () => {
         credentials: {
           accessKeyId: 'AK',
           secretAccessKey: 'SK',
+        },
+      }),
+    );
+  });
+
+  test('initConfig accepts legacy accessKey/secretKey property names', () => {
+    sandbox._updateMock.mockClear();
+
+    sandbox.initConfig({
+      region: 'us-east-1',
+      accessKey: 'LEGACY_AK',
+      secretKey: 'LEGACY_SK',
+    });
+
+    expect(sandbox._updateMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        credentials: {
+          accessKeyId: 'LEGACY_AK',
+          secretAccessKey: 'LEGACY_SK',
+        },
+      }),
+    );
+  });
+
+  test('initConfig prefers new names over legacy names', () => {
+    sandbox._updateMock.mockClear();
+
+    sandbox.initConfig({
+      region: 'us-east-1',
+      accessKeyId: 'NEW_AK',
+      secretAccessKey: 'NEW_SK',
+      accessKey: 'OLD_AK',
+      secretKey: 'OLD_SK',
+    });
+
+    expect(sandbox._updateMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        credentials: {
+          accessKeyId: 'NEW_AK',
+          secretAccessKey: 'NEW_SK',
         },
       }),
     );

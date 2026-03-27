@@ -1,6 +1,6 @@
 {
   "name": "aws-sdk-google-apps",
-  "version": "3.0.0",
+  "version": "2.2.0",
   "description": "Native support for the AWS SDK in Google Apps Script",
   "main": "build.js",
   "engines": {
@@ -26,6 +26,9 @@
     "url": "https://github.com/dxdc/aws-sdk-google-apps/issues"
   },
   "homepage": "https://github.com/dxdc/aws-sdk-google-apps#readme",
+  "jest": {
+    "testPathIgnorePatterns": ["/node_modules/", "/aws-sdk-js/"]
+  },
   "devDependencies": {
     "@google/clasp": "^3.0.0",
     "eslint": "^8.52.0",

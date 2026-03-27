@@ -53,11 +53,12 @@ describe('DynamoDB', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockGetItem.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('ResourceNotFoundException')),
       });
-      await expect(sandbox.getDynamoDBItem('Missing', { id: { S: '1' } })).rejects.toThrow('ResourceNotFoundException');
+      const result = await sandbox.getDynamoDBItem('Missing', { id: { S: '1' } });
+      expect(result).toBe(false);
     });
   });
 
@@ -71,11 +72,12 @@ describe('DynamoDB', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockPutItem.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('ValidationException')),
       });
-      await expect(sandbox.putDynamoDBItem('T', {})).rejects.toThrow('ValidationException');
+      const result = await sandbox.putDynamoDBItem('T', {});
+      expect(result).toBe(false);
     });
   });
 
@@ -88,11 +90,12 @@ describe('DynamoDB', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockDeleteItem.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('ConditionalCheckFailedException')),
       });
-      await expect(sandbox.deleteDynamoDBItem('T', { id: { S: '1' } })).rejects.toThrow('ConditionalCheckFailedException');
+      const result = await sandbox.deleteDynamoDBItem('T', { id: { S: '1' } });
+      expect(result).toBe(false);
     });
   });
 
@@ -163,11 +166,12 @@ describe('DynamoDB', () => {
       );
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockQuery.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('ValidationException')),
       });
-      await expect(sandbox.queryDynamoDB('T', 'k = :v', { ':v': { S: '1' } })).rejects.toThrow('ValidationException');
+      const result = await sandbox.queryDynamoDB('T', 'k = :v', { ':v': { S: '1' } });
+      expect(result).toBe(false);
     });
   });
 });

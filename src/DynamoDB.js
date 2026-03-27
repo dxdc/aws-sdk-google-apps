@@ -3,12 +3,13 @@
  *
  * @param {string} tableName - The name of the DynamoDB table.
  * @param {Object} key - The primary key of the item (e.g., { id: { S: '123' } }).
- * @returns {Promise<Object>} The DynamoDB getItem response (includes Item).
- * @throws {Error} AWS SDK errors (e.g., ResourceNotFoundException, ValidationException).
+ * @returns {Promise<Object|false>} The DynamoDB getItem response (includes Item), or `false` on error.
  *
  * @example
  * const result = await getDynamoDBItem('Users', { userId: { S: 'user-123' } });
- * Logger.log(result.Item.name.S);
+ * if (result !== false) {
+ *   Logger.log(result.Item.name.S);
+ * }
  */
 function getDynamoDBItem(tableName, key) {
   return new AWS.DynamoDB({ apiVersion: '2012-08-10' })
@@ -16,7 +17,11 @@ function getDynamoDBItem(tableName, key) {
       TableName: tableName,
       Key: key,
     })
-    .promise();
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }
 
 /**
@@ -24,8 +29,7 @@ function getDynamoDBItem(tableName, key) {
  *
  * @param {string} tableName - The name of the DynamoDB table.
  * @param {Object} item - The item to put (e.g., { id: { S: '123' }, name: { S: 'Alice' } }).
- * @returns {Promise<Object>} The DynamoDB putItem response.
- * @throws {Error} AWS SDK errors (e.g., ResourceNotFoundException, ConditionalCheckFailedException).
+ * @returns {Promise<Object|false>} The DynamoDB putItem response, or `false` on error.
  *
  * @example
  * await putDynamoDBItem('Users', {
@@ -40,7 +44,11 @@ function putDynamoDBItem(tableName, item) {
       TableName: tableName,
       Item: item,
     })
-    .promise();
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }
 
 /**
@@ -48,8 +56,7 @@ function putDynamoDBItem(tableName, item) {
  *
  * @param {string} tableName - The name of the DynamoDB table.
  * @param {Object} key - The primary key of the item to delete.
- * @returns {Promise<Object>} The DynamoDB deleteItem response.
- * @throws {Error} AWS SDK errors (e.g., ResourceNotFoundException).
+ * @returns {Promise<Object|false>} The DynamoDB deleteItem response, or `false` on error.
  *
  * @example
  * await deleteDynamoDBItem('Users', { userId: { S: 'user-123' } });
@@ -60,7 +67,11 @@ function deleteDynamoDBItem(tableName, key) {
       TableName: tableName,
       Key: key,
     })
-    .promise();
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }
 
 /**
@@ -77,8 +88,7 @@ function deleteDynamoDBItem(tableName, key) {
  * @param {string} [options.filterExpression] - Filter expression applied after the query (e.g., '#s = :active').
  * @param {string} [options.projectionExpression] - Comma-separated list of attributes to retrieve.
  * @param {Object} [options.exclusiveStartKey] - Pagination key from a previous response's LastEvaluatedKey.
- * @returns {Promise<Object>} The DynamoDB query response (includes Items, Count, LastEvaluatedKey).
- * @throws {Error} AWS SDK errors (e.g., ResourceNotFoundException, ValidationException).
+ * @returns {Promise<Object|false>} The DynamoDB query response (includes Items, Count, LastEvaluatedKey), or `false` on error.
  *
  * @example
  * const result = await queryDynamoDB('Orders', 'userId = :uid', {
@@ -126,5 +136,11 @@ function queryDynamoDB(tableName, keyConditionExpression, expressionValues, opti
     }
   }
 
-  return new AWS.DynamoDB({ apiVersion: '2012-08-10' }).query(params).promise();
+  return new AWS.DynamoDB({ apiVersion: '2012-08-10' })
+    .query(params)
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }

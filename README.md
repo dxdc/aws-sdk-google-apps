@@ -46,13 +46,11 @@ const AWS_CONFIG = {
 // Example: retrieve an S3 object
 async function getS3ObjectExample() {
   AWSLIB.initConfig(AWS_CONFIG);
-  try {
-    const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
-    return Utilities.newBlob(result.Body, result.ContentType);
-  } catch (err) {
-    Logger.log(err, err.stack);
-    return null;
+  const result = await AWSLIB.getS3Object('myBucket', 'folder1/file.jpg');
+  if (result === false) {
+    return false;
   }
+  return Utilities.newBlob(result.Body, result.ContentType);
 }
 
 // Example: send an email via SES

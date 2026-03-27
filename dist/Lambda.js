@@ -36,5 +36,11 @@ function invokeLambda(functionName, payload, options) {
     }
   }
 
-  return new AWS.Lambda({ apiVersion: '2015-03-31' }).invoke(params).promise();
+  return new AWS.Lambda({ apiVersion: '2015-03-31' })
+    .invoke(params)
+    .promise()
+    .catch((err) => {
+      Logger.log(err, err.stack);
+      return false;
+    });
 }

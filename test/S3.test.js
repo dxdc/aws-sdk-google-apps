@@ -48,12 +48,20 @@ describe('S3', () => {
   });
 
   describe('listS3Objects', () => {
-    test('lists objects with options', async () => {
+    test('lists objects with options object', async () => {
       const result = await sandbox.listS3Objects('my-bucket', { prefix: 'images/' });
       expect(result).toEqual({ Contents: [{ Key: 'file1.txt' }], KeyCount: 1, IsTruncated: false });
       expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
         Delimiter: '/',
         Prefix: 'images/',
+      });
+    });
+
+    test('accepts legacy prefix string', async () => {
+      await sandbox.listS3Objects('my-bucket', 'legacy/prefix/');
+      expect(sandbox._mocks.mockListObjectsV2).toHaveBeenCalledWith({
+        Delimiter: '/',
+        Prefix: 'legacy/prefix/',
       });
     });
 
@@ -65,7 +73,7 @@ describe('S3', () => {
       });
     });
 
-    test('passes continuationToken and maxKeys', async () => {
+    test('passes continuationToken, maxKeys, startAfter', async () => {
       await sandbox.listS3Objects('my-bucket', {
         prefix: 'dir/',
         maxKeys: 10,
@@ -89,11 +97,12 @@ describe('S3', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockListObjectsV2.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Access denied')),
       });
-      await expect(sandbox.listS3Objects('my-bucket')).rejects.toThrow('Access denied');
+      const result = await sandbox.listS3Objects('my-bucket');
+      expect(result).toBe(false);
     });
   });
 
@@ -107,11 +116,12 @@ describe('S3', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockGetObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('NoSuchKey')),
       });
-      await expect(sandbox.getS3Object('my-bucket', 'missing.txt')).rejects.toThrow('NoSuchKey');
+      const result = await sandbox.getS3Object('my-bucket', 'missing.txt');
+      expect(result).toBe(false);
     });
   });
 
@@ -144,11 +154,12 @@ describe('S3', () => {
       );
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockPutObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Forbidden')),
       });
-      await expect(sandbox.putS3Object('my-bucket', 'file.txt', 'data')).rejects.toThrow('Forbidden');
+      const result = await sandbox.putS3Object('my-bucket', 'file.txt', 'data');
+      expect(result).toBe(false);
     });
   });
 
@@ -162,11 +173,12 @@ describe('S3', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockDeleteObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Access denied')),
       });
-      await expect(sandbox.deleteS3Object('my-bucket', 'file.txt')).rejects.toThrow('Access denied');
+      const result = await sandbox.deleteS3Object('my-bucket', 'file.txt');
+      expect(result).toBe(false);
     });
   });
 
@@ -190,11 +202,12 @@ describe('S3', () => {
       );
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockCopyObject.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Copy error')),
       });
-      await expect(sandbox.copyS3Object('src', 'key', 'dst', 'key2')).rejects.toThrow('Copy error');
+      const result = await sandbox.copyS3Object('src', 'key', 'dst', 'key2');
+      expect(result).toBe(false);
     });
   });
 });

@@ -37,13 +37,18 @@ describe('EC2', () => {
   });
 
   describe('listEC2Instances', () => {
-    test('lists instances with region option', async () => {
+    test('lists instances with options object', async () => {
       const result = await sandbox.listEC2Instances({ region: 'us-west-2' });
       expect(result.reservationSet.instancesSet).toHaveLength(1);
       expect(sandbox.AWS.EC2).toHaveBeenCalledWith(expect.objectContaining({ region: 'us-west-2' }));
     });
 
-    test('falls back to default region when no options', async () => {
+    test('accepts legacy region string', async () => {
+      await sandbox.listEC2Instances('eu-west-1');
+      expect(sandbox.AWS.EC2).toHaveBeenCalledWith(expect.objectContaining({ region: 'eu-west-1' }));
+    });
+
+    test('falls back to default region when no args', async () => {
       await sandbox.listEC2Instances();
       expect(sandbox.AWS.EC2).toHaveBeenCalledWith(expect.objectContaining({ region: 'us-east-1' }));
     });
@@ -65,18 +70,24 @@ describe('EC2', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockDescribeInstances.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('UnauthorizedOperation')),
       });
-      await expect(sandbox.listEC2Instances()).rejects.toThrow('UnauthorizedOperation');
+      const result = await sandbox.listEC2Instances();
+      expect(result).toBe(false);
     });
   });
 
   describe('listSecurityGroups', () => {
-    test('lists security groups with region option', async () => {
+    test('lists security groups with options object', async () => {
       const result = await sandbox.listSecurityGroups({ region: 'eu-west-1' });
       expect(result.securityGroupInfo).toHaveLength(1);
+    });
+
+    test('accepts legacy region string', async () => {
+      await sandbox.listSecurityGroups('ap-southeast-1');
+      expect(sandbox.AWS.EC2).toHaveBeenCalledWith(expect.objectContaining({ region: 'ap-southeast-1' }));
     });
 
     test('passes filters, groupIds, groupNames', async () => {
@@ -92,11 +103,12 @@ describe('EC2', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockDescribeSecurityGroups.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('Access denied')),
       });
-      await expect(sandbox.listSecurityGroups()).rejects.toThrow('Access denied');
+      const result = await sandbox.listSecurityGroups();
+      expect(result).toBe(false);
     });
   });
 });

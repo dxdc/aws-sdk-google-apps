@@ -88,14 +88,22 @@ describe('SES', () => {
       expect(result).toEqual({ MessageId: 'test-message-id' });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mockSendEmail.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('SES error')),
       });
 
-      await expect(
-        sandbox.sendEmail('to@example.com', '', '', 'from@example.com', '', 'Subj', '<html><body>Hi</body></html>', 'Hi'),
-      ).rejects.toThrow('SES error');
+      const result = await sandbox.sendEmail(
+        'to@example.com',
+        '',
+        '',
+        'from@example.com',
+        '',
+        'Subj',
+        '<html><body>Hi</body></html>',
+        'Hi',
+      );
+      expect(result).toBe(false);
     });
   });
 

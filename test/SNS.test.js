@@ -54,10 +54,11 @@ describe('SNS', () => {
     expect(sandbox._mockPublish).toHaveBeenCalledWith(expect.objectContaining({ MessageAttributes: attrs }));
   });
 
-  test('throws on error', async () => {
+  test('returns false on error', async () => {
     sandbox._mockPublish.mockReturnValueOnce({
       promise: () => Promise.reject(new Error('NotFoundException')),
     });
-    await expect(sandbox.publishSNS('arn:bad', 'msg')).rejects.toThrow('NotFoundException');
+    const result = await sandbox.publishSNS('arn:bad', 'msg');
+    expect(result).toBe(false);
   });
 });

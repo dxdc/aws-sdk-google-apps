@@ -64,10 +64,11 @@ describe('Lambda', () => {
     expect(sandbox._mockInvoke).toHaveBeenCalledWith(expect.objectContaining({ Qualifier: 'v2' }));
   });
 
-  test('throws on error', async () => {
+  test('returns false on error', async () => {
     sandbox._mockInvoke.mockReturnValueOnce({
       promise: () => Promise.reject(new Error('ResourceNotFoundException')),
     });
-    await expect(sandbox.invokeLambda('missing')).rejects.toThrow('ResourceNotFoundException');
+    const result = await sandbox.invokeLambda('missing');
+    expect(result).toBe(false);
   });
 });

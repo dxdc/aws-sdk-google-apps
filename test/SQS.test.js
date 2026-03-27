@@ -69,11 +69,12 @@ describe('SQS', () => {
       );
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockSendMessage.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('InvalidMessageContents')),
       });
-      await expect(sandbox.sendSQSMessage('url', 'msg')).rejects.toThrow('InvalidMessageContents');
+      const result = await sandbox.sendSQSMessage('url', 'msg');
+      expect(result).toBe(false);
     });
   });
 
@@ -101,11 +102,12 @@ describe('SQS', () => {
       expect(sandbox._mocks.mockReceiveMessage).toHaveBeenCalledWith(expect.objectContaining({ VisibilityTimeout: 30 }));
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockReceiveMessage.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('QueueDoesNotExist')),
       });
-      await expect(sandbox.receiveSQSMessages('url')).rejects.toThrow('QueueDoesNotExist');
+      const result = await sandbox.receiveSQSMessages('url');
+      expect(result).toBe(false);
     });
   });
 
@@ -118,11 +120,12 @@ describe('SQS', () => {
       });
     });
 
-    test('throws on error', async () => {
+    test('returns false on error', async () => {
       sandbox._mocks.mockDeleteMessage.mockReturnValueOnce({
         promise: () => Promise.reject(new Error('ReceiptHandleIsInvalid')),
       });
-      await expect(sandbox.deleteSQSMessage('url', 'bad')).rejects.toThrow('ReceiptHandleIsInvalid');
+      const result = await sandbox.deleteSQSMessage('url', 'bad');
+      expect(result).toBe(false);
     });
   });
 });

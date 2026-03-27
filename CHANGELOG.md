@@ -5,26 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 3.0.0
+## 2.2.0
 
-### Breaking changes
+### Added (all backward-compatible)
 
-- **Error handling**: Service wrappers no longer catch errors and return `false`. Errors from the AWS SDK now propagate naturally, giving callers access to `.code`, `.statusCode`, `.retryable`, and `.message`. Use `try/catch` to handle errors.
-- **Config**: `initConfig()` now uses standard AWS SDK property names (`accessKeyId`, `secretAccessKey`) instead of the non-standard `accessKey`/`secretKey`.
-- **S3**: `listS3Objects(bucket, prefix)` is now `listS3Objects(bucket, options)` using `listObjectsV2` API. Supports `prefix`, `delimiter`, `maxKeys`, `continuationToken`, `startAfter`.
-- **EC2**: `listEC2Instances(region)` and `listSecurityGroups(region)` now take an options object with `region`, `filters`, `instanceIds`/`groupIds`, `maxResults`, `nextToken`.
-
-### Added
-
-- S3: `listObjectsV2` support with pagination (`continuationToken`, `maxKeys`, `startAfter`)
-- S3: configurable `delimiter` option (default `'/'`, set to `''` for flat listing)
-- EC2: filter support (`filters`, `instanceIds`, `groupIds`, `groupNames`)
-- EC2: pagination support (`maxResults`, `nextToken`)
-- DynamoDB: `expressionNames` for reserved word handling
-- DynamoDB: `filterExpression` for post-query filtering
-- DynamoDB: `projectionExpression` for selecting specific attributes
-- DynamoDB: `exclusiveStartKey` for pagination
-- XHR client: non-2xx HTTP responses are now passed to the SDK for proper retry handling (429, 500, 503)
+- **Config**: `initConfig()` now accepts standard AWS SDK property names (`accessKeyId`, `secretAccessKey`) in addition to the legacy `accessKey`/`secretKey`. Both styles work; new names are preferred.
+- **S3**: `listS3Objects` now uses `listObjectsV2` API internally (improved performance and response shape). Accepts both the legacy `(bucket, 'prefix')` and new `(bucket, { prefix, delimiter, maxKeys, continuationToken, startAfter })` calling styles.
+- **EC2**: `listEC2Instances` and `listSecurityGroups` now accept both the legacy `(region)` string and new options object `({ region, filters, instanceIds, groupIds, maxResults, nextToken })`.
+- DynamoDB `queryDynamoDB`: added `expressionNames` for reserved word handling, `filterExpression`, `projectionExpression`, and `exclusiveStartKey` for pagination.
+- Lambda `invokeLambda`: added `options` parameter for `invocationType` and `qualifier`.
+- SNS `publishSNS`: added `options` parameter for `subject` and `messageAttributes`.
+- SQS `sendSQSMessage`: added `options` parameter for `delaySeconds`, `messageAttributes`, and FIFO queue support (`messageGroupId`, `messageDeduplicationId`).
+- SQS `receiveSQSMessages`: added `options` parameter for `maxMessages`, `waitTimeSeconds`, `visibilityTimeout`.
+- S3 `putS3Object`: added `options` parameter for `contentType`, `cacheControl`, `metadata`.
+- XHR client: non-2xx HTTP responses are now passed to the SDK for proper retry handling (429, 500, 503).
 
 ### Changed
 
