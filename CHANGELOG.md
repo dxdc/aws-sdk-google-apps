@@ -25,8 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SQS `receiveSQSMessages`: added `options` parameter for `maxMessages`, `waitTimeSeconds`, `visibilityTimeout`.
 - S3 `putS3Object`: added `options` parameter for `contentType`, `cacheControl`, `metadata`.
 - XHR client: non-2xx HTTP responses are now passed to the SDK for proper retry handling (429, 500, 503).
+- **Testing**: GAS-native test runner (`TestRunner.js`) for in-environment polyfill and service verification.
 
 ### Changed
+
+- **aws-sdk-js**: submodule updated from v2.1692.0 to v2.1693.0
+- **Crypto**: `crypto.getRandomValues` polyfill rewritten to use native `Utilities.getUuid()` instead of custom PRNG
 
 - All service wrappers: removed no-op `.then((data) => data)` promise chains
 - SES `simpleMakePlainText_`: falls back to regex tag stripping when HTML is not valid XML
