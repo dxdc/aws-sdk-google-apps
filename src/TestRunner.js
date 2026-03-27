@@ -36,7 +36,7 @@ function _createTestHarness(suiteName) {
   }
 
   function assertEqual(name, actual, expected) {
-    _assert(name, function () {
+    _assert(name, () => {
       var a = JSON.stringify(actual);
       var e = JSON.stringify(expected);
       if (a !== e) {
@@ -46,7 +46,7 @@ function _createTestHarness(suiteName) {
   }
 
   function assertTrue(name, value) {
-    _assert(name, function () {
+    _assert(name, () => {
       if (!value) {
         throw new Error('expected truthy but got ' + JSON.stringify(value));
       }
@@ -54,7 +54,7 @@ function _createTestHarness(suiteName) {
   }
 
   function assertFalse(name, value) {
-    _assert(name, function () {
+    _assert(name, () => {
       if (value) {
         throw new Error('expected falsy but got ' + JSON.stringify(value));
       }
@@ -62,7 +62,7 @@ function _createTestHarness(suiteName) {
   }
 
   function assertTypeof(name, value, expectedType) {
-    _assert(name, function () {
+    _assert(name, () => {
       if (typeof value !== expectedType) {
         throw new Error('expected typeof ' + expectedType + ' but got ' + typeof value);
       }
@@ -70,7 +70,7 @@ function _createTestHarness(suiteName) {
   }
 
   function assertThrows(name, fn) {
-    _assert(name, function () {
+    _assert(name, () => {
       var threw = false;
       try {
         fn();
@@ -113,14 +113,14 @@ function testPolyfills() {
 
   // Timer polyfills
   var timerRan = false;
-  var id = setTimeout(function () {
+  var id = setTimeout(() => {
     timerRan = true;
   }, 0);
   t.assertTrue('setTimeout executes handler', timerRan);
   t.assertTypeof('setTimeout returns a number', id, 'number');
 
   var intervalRan = false;
-  var iid = setInterval(function () {
+  var iid = setInterval(() => {
     intervalRan = true;
   }, 0);
   t.assertTrue('setInterval executes handler', intervalRan);
@@ -136,7 +136,7 @@ function testPolyfills() {
   // setTimeout passes extra args
   var receivedArgs = [];
   setTimeout(
-    function (a, b) {
+    (a, b) => {
       receivedArgs = [a, b];
     },
     0,
@@ -239,7 +239,7 @@ function testCrypto() {
   t.assertEqual('getRandomValues works with Int8Array', i8.length, 8);
 
   // Type mismatch
-  t.assertThrows('getRandomValues rejects Float64Array', function () {
+  t.assertThrows('getRandomValues rejects Float64Array', () => {
     crypto.getRandomValues(new Float64Array(4));
   });
 
@@ -366,10 +366,7 @@ function testGasEnvironment() {
 
   // Utilities.getUuid format
   var uuid = Utilities.getUuid();
-  t.assertTrue(
-    'Utilities.getUuid matches UUID format',
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid),
-  );
+  t.assertTrue('Utilities.getUuid matches UUID format', /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid));
 
   // Utilities.newBlob
   var blob = Utilities.newBlob('test content', 'text/plain', 'test.txt');
