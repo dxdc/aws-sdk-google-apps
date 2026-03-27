@@ -82,6 +82,7 @@ var console = (typeof console !== 'undefined' && console) || {};
 
 // ---------- Blob polyfill ----------
 if (typeof Blob === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var Blob = (parts, options) => {
     const contentType = options && options.type ? options.type : 'application/octet-stream';
     const data = parts
@@ -95,11 +96,13 @@ if (typeof Blob === 'undefined') {
 
 // ---------- Base64 polyfills ----------
 if (typeof atob === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var atob = (base64) => {
     return Utilities.newBlob(Utilities.base64Decode(base64)).getDataAsString();
   };
 }
 if (typeof btoa === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var btoa = (str) => {
     return Utilities.base64Encode(str);
   };
@@ -121,6 +124,7 @@ if (typeof TextDecoder === 'undefined') {
 
 // ---------- URL polyfill ----------
 if (typeof URL === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var URL = {
     createObjectURL: (blob) => {
       return 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
@@ -156,6 +160,7 @@ if (typeof Buffer === 'undefined') {
 // ---------- navigator polyfill ----------
 // AWS SDK checks for navigator.userAgent to build the User-Agent header.
 if (typeof navigator === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var navigator = {
     userAgent: 'GoogleAppsScript',
   };
@@ -166,6 +171,7 @@ if (typeof navigator === 'undefined') {
 // Ensure process and process.env exist so these lookups return undefined
 // rather than throwing a ReferenceError.
 if (typeof process === 'undefined') {
+  // eslint-disable-next-line no-useless-assignment -- GAS global polyfill consumed by other scripts
   var process = { env: {}, version: 'v0.0.0' };
 } else if (typeof process.env === 'undefined') {
   process.env = {};

@@ -34,6 +34,7 @@ export default [
       'no-console': 'off',
       curly: ['error', 'all'],
       'dot-location': ['error', 'property'],
+      'no-useless-assignment': 'error',
       'prettier/prettier': ['error'],
     },
   },
