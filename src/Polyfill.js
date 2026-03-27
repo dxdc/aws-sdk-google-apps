@@ -9,9 +9,8 @@
 // ---------- Timer polyfills ----------
 // GAS is synchronous, so setTimeout/setInterval execute immediately after sleeping.
 // These return numeric IDs for compatibility with the AWS SDK's internal timer wrappers.
-
-var _timerCounter = 0;
-var _activeTimers = {};
+// Note: state is stored on the function object to avoid var-hoisting issues
+// when AwsSdk.gs loads before Polyfill.gs in GAS alphabetical file order.
 
 /**
  * Polyfill for setTimeout. Blocks the thread with Utilities.sleep() then
@@ -22,16 +21,20 @@ var _activeTimers = {};
  * @returns {number} A numeric timer ID.
  */
 function setTimeout(handler, ms) {
-  var id = ++_timerCounter;
-  _activeTimers[id] = true;
+  if (!setTimeout._timers) {
+    setTimeout._counter = 0;
+    setTimeout._timers = {};
+  }
+  var id = ++setTimeout._counter;
+  setTimeout._timers[id] = true;
   var args = Array.prototype.slice.call(arguments, 2);
 
   if (ms > 0) {
     Utilities.sleep(ms);
   }
 
-  if (_activeTimers[id]) {
-    delete _activeTimers[id];
+  if (setTimeout._timers[id]) {
+    delete setTimeout._timers[id];
     handler.apply(null, args);
   }
 
@@ -44,7 +47,9 @@ function setTimeout(handler, ms) {
  * @param {number} id - The timer ID returned by setTimeout.
  */
 function clearTimeout(id) {
-  delete _activeTimers[id];
+  if (setTimeout._timers) {
+    delete setTimeout._timers[id];
+  }
 }
 
 /**
