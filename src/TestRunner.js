@@ -83,6 +83,14 @@ function _createTestHarness(suiteName) {
     });
   }
 
+  function assertAtLeast(name, actual, minimum) {
+    _assert(name, () => {
+      if (actual < minimum) {
+        throw new Error('expected at least ' + minimum + ' but got ' + actual);
+      }
+    });
+  }
+
   function summary() {
     var line = suiteName + ': ' + passed + ' passed, ' + failed + ' failed';
     Logger.log(line);
@@ -95,6 +103,7 @@ function _createTestHarness(suiteName) {
     assertFalse: assertFalse,
     assertTypeof: assertTypeof,
     assertThrows: assertThrows,
+    assertAtLeast: assertAtLeast,
     summary: summary,
   };
 }
@@ -145,59 +154,115 @@ function testPolyfills() {
   );
   t.assertEqual('setTimeout passes extra arguments', receivedArgs, ['hello', 42]);
 
-  // Console polyfill
-  t.assertTypeof('console.log is a function', console.log, 'function');
-  t.assertTypeof('console.warn is a function', console.warn, 'function');
-  t.assertTypeof('console.error is a function', console.error, 'function');
-  t.assertTypeof('console.info is a function', console.info, 'function');
+  // setTimeout actually sleeps for the specified duration
+  var t0 = Date.now();
+  setTimeout(() => {}, 1000);
+  var elapsed = Date.now() - t0;
+  t.assertAtLeast('setTimeout delays ~1s', elapsed, 900);
+
+  // setInterval also sleeps
+  var t1 = Date.now();
+  setInterval(() => {}, 500);
+  var elapsed2 = Date.now() - t1;
+  t.assertAtLeast('setInterval delays ~500ms', elapsed2, 400);
+
+  // setTimeout with 0ms does not add significant delay
+  var t2 = Date.now();
+  setTimeout(() => {}, 0);
+  var elapsed3 = Date.now() - t2;
+  t.assertTrue('setTimeout(0) completes quickly (<200ms)', elapsed3 < 200);
+
+  // Console polyfill — verify methods actually log without throwing
+  console.log('console.log test');
+  console.warn('console.warn test');
+  console.error('console.error test');
+  console.info('console.info test');
+  t.assertTrue('console.log runs without error', true);
 
   // Blob polyfill
   var blob = Blob(['hello'], { type: 'text/plain' });
-  t.assertTrue('Blob returns a GAS blob', typeof blob.getDataAsString === 'function');
   t.assertEqual('Blob content is correct', blob.getDataAsString(), 'hello');
   t.assertEqual('Blob content type is correct', blob.getContentType(), 'text/plain');
 
+  // Blob concatenates multiple parts
+  var multiBlob = Blob(['foo', 'bar', 'baz'], { type: 'text/plain' });
+  t.assertEqual('Blob concatenates parts', multiBlob.getDataAsString(), 'foobarbaz');
+
+  // Blob defaults to application/octet-stream
+  var defaultBlob = Blob(['data']);
+  t.assertEqual('Blob default content type', defaultBlob.getContentType(), 'application/octet-stream');
+
   // Base64 polyfills
   var encoded = btoa('Hello, World!');
-  t.assertTypeof('btoa returns a string', encoded, 'string');
   var decoded = atob(encoded);
   t.assertEqual('atob(btoa(x)) round-trips', decoded, 'Hello, World!');
+
+  // btoa produces standard base64
+  t.assertEqual('btoa("ABC") is correct', btoa('ABC'), 'QUJD');
+  t.assertEqual('atob("QUJD") is correct', atob('QUJD'), 'ABC');
+
+  // empty string round-trips
+  t.assertEqual('btoa/atob empty string', atob(btoa('')), '');
 
   // TextEncoder / TextDecoder
   var encoder = new TextEncoder();
   var bytes = encoder.encode('ABC');
-  t.assertTrue('TextEncoder.encode returns array-like', bytes.length === 3);
+  t.assertEqual('TextEncoder.encode length', bytes.length, 3);
 
   var decoder = new TextDecoder();
   var str = decoder.decode(bytes);
   t.assertEqual('TextDecoder.decode round-trips', str, 'ABC');
 
-  // URL polyfill
-  t.assertTypeof('URL.createObjectURL is a function', URL.createObjectURL, 'function');
-  t.assertTypeof('URL.revokeObjectURL is a function', URL.revokeObjectURL, 'function');
+  // TextEncoder/Decoder with longer string
+  var longStr = 'The quick brown fox jumps over the lazy dog';
+  var longBytes = encoder.encode(longStr);
+  t.assertEqual('TextEncoder encodes correct length', longBytes.length, longStr.length);
+  t.assertEqual('TextDecoder decodes long string', decoder.decode(longBytes), longStr);
 
+  // URL polyfill — verify data URI is decodable
   var testBlob = Utilities.newBlob('test', 'text/plain');
   var dataUri = URL.createObjectURL(testBlob);
-  t.assertTrue('URL.createObjectURL returns data URI', dataUri.indexOf('data:text/plain;base64,') === 0);
+  t.assertTrue('URL.createObjectURL starts with data:', dataUri.indexOf('data:text/plain;base64,') === 0);
+
+  // Extract base64 portion and verify it decodes back
+  var b64Part = dataUri.split(',')[1];
+  var decodedUri = atob(b64Part);
+  t.assertEqual('URL.createObjectURL data URI decodes correctly', decodedUri, 'test');
+
+  // revokeObjectURL doesn't throw
+  URL.revokeObjectURL(dataUri);
+  t.assertTrue('URL.revokeObjectURL runs without error', true);
 
   // Buffer polyfill
-  t.assertTypeof('Buffer.from is a function', Buffer.from, 'function');
-  t.assertTypeof('Buffer.isBuffer is a function', Buffer.isBuffer, 'function');
-
   var bufFromStr = Buffer.from('hello');
-  t.assertTrue('Buffer.from(string) returns bytes', Array.isArray(bufFromStr) && bufFromStr.length > 0);
+  t.assertTrue('Buffer.from(string) returns bytes', Array.isArray(bufFromStr) && bufFromStr.length === 5);
 
-  var bufFromB64 = Buffer.from(Utilities.base64Encode('test'), 'base64');
-  t.assertTrue('Buffer.from(base64) decodes', Array.isArray(bufFromB64));
+  // Verify Buffer.from(string) bytes match the actual content
+  var bufDecoded = Utilities.newBlob(bufFromStr).getDataAsString();
+  t.assertEqual('Buffer.from(string) decodes back to original', bufDecoded, 'hello');
 
+  // Buffer.from with base64 encoding
+  var bufFromB64 = Buffer.from(btoa('test'), 'base64');
+  var b64Decoded = Utilities.newBlob(bufFromB64).getDataAsString();
+  t.assertEqual('Buffer.from(base64) decodes correctly', b64Decoded, 'test');
+
+  // Buffer.from(array) passes through unchanged
   var bufFromArr = Buffer.from([1, 2, 3]);
   t.assertEqual('Buffer.from(array) passes through', bufFromArr, [1, 2, 3]);
 
+  // Buffer.isBuffer
+  var bufInstance = new Buffer([10, 20]);
+  t.assertTrue('Buffer.isBuffer returns true for Buffer', Buffer.isBuffer(bufInstance));
+  t.assertFalse('Buffer.isBuffer returns false for array', Buffer.isBuffer([1, 2]));
+  t.assertFalse('Buffer.isBuffer returns false for string', Buffer.isBuffer('hello'));
+
   // navigator polyfill
   t.assertEqual('navigator.userAgent is GoogleAppsScript', navigator.userAgent, 'GoogleAppsScript');
+  t.assertTypeof('navigator is an object', navigator, 'object');
 
-  // process polyfill
-  t.assertTypeof('process.env is an object', process.env, 'object');
+  // process polyfill — verify missing env vars return undefined (not throw)
+  t.assertEqual('process.env.NONEXISTENT is undefined', process.env.NONEXISTENT, undefined);
+  t.assertEqual('process.env.AWS_PROFILE is undefined', process.env.AWS_PROFILE, undefined);
   t.assertTypeof('process.version is a string', process.version, 'string');
 
   return t.summary();
@@ -211,12 +276,10 @@ function testCrypto() {
   Logger.log('--- Crypto Tests ---');
   var t = _createTestHarness('Crypto');
 
-  // getRandomValues
-  t.assertTypeof('crypto.getRandomValues is a function', crypto.getRandomValues, 'function');
-
+  // getRandomValues — fills array with random data
   var arr = new Uint8Array(16);
   var result = crypto.getRandomValues(arr);
-  t.assertTrue('getRandomValues returns the same array', result === arr);
+  t.assertTrue('getRandomValues returns the same array reference', result === arr);
   t.assertEqual('getRandomValues fills correct length', result.length, 16);
 
   // Verify at least some bytes are non-zero (statistically near certain for 16 bytes)
@@ -229,24 +292,80 @@ function testCrypto() {
   }
   t.assertTrue('getRandomValues produces non-zero bytes', hasNonZero);
 
-  // Different typed arrays
+  // Two calls should produce different output (statistically near certain)
+  var arr2 = new Uint8Array(16);
+  crypto.getRandomValues(arr2);
+  var same = true;
+  for (var j = 0; j < 16; j++) {
+    if (arr[j] !== arr2[j]) {
+      same = false;
+      break;
+    }
+  }
+  t.assertFalse('getRandomValues produces unique output across calls', same);
+
+  // Uint32Array — verify values are actual 32-bit integers
   var u32 = new Uint32Array(4);
   crypto.getRandomValues(u32);
-  t.assertEqual('getRandomValues works with Uint32Array', u32.length, 4);
+  t.assertEqual('getRandomValues Uint32Array length', u32.length, 4);
+  var hasLargeValue = false;
+  for (var k = 0; k < u32.length; k++) {
+    if (u32[k] > 255) {
+      hasLargeValue = true;
+      break;
+    }
+  }
+  t.assertTrue('Uint32Array has values > 255 (multi-byte)', hasLargeValue);
 
-  var i8 = new Int8Array(8);
+  // Int8Array — verify values can be negative
+  var i8 = new Int8Array(32);
   crypto.getRandomValues(i8);
-  t.assertEqual('getRandomValues works with Int8Array', i8.length, 8);
+  var hasNeg = false;
+  for (var m = 0; m < i8.length; m++) {
+    if (i8[m] < 0) {
+      hasNeg = true;
+      break;
+    }
+  }
+  t.assertTrue('Int8Array produces negative values', hasNeg);
 
-  // Type mismatch
+  // Uint8ClampedArray
+  var clamped = new Uint8ClampedArray(8);
+  crypto.getRandomValues(clamped);
+  var allInRange = true;
+  for (var n = 0; n < clamped.length; n++) {
+    if (clamped[n] < 0 || clamped[n] > 255) {
+      allInRange = false;
+      break;
+    }
+  }
+  t.assertTrue('Uint8ClampedArray values in 0-255 range', allInRange);
+
+  // Type mismatch — rejects non-integer typed arrays
   t.assertThrows('getRandomValues rejects Float64Array', () => {
     crypto.getRandomValues(new Float64Array(4));
   });
+  t.assertThrows('getRandomValues rejects Float32Array', () => {
+    crypto.getRandomValues(new Float32Array(4));
+  });
 
-  // uuidToBytes
+  // Quota exceeded — rejects arrays > 65536 bytes
+  t.assertThrows('getRandomValues rejects > 65536 bytes', () => {
+    crypto.getRandomValues(new Uint8Array(65537));
+  });
+
+  // Exactly 65536 bytes should succeed
+  var maxArr = new Uint8Array(65536);
+  crypto.getRandomValues(maxArr);
+  t.assertEqual('getRandomValues accepts exactly 65536 bytes', maxArr.length, 65536);
+
+  // uuidToBytes — verify known UUID parsing
   var bytes = uuidToBytes('550e8400-e29b-41d4-a716-446655440000');
   t.assertEqual('uuidToBytes returns 16 bytes', bytes.length, 16);
-  t.assertEqual('uuidToBytes first byte', bytes[0], 0x55);
+  t.assertEqual('uuidToBytes byte 0', bytes[0], 0x55);
+  t.assertEqual('uuidToBytes byte 1', bytes[1], 0x0e);
+  t.assertEqual('uuidToBytes byte 2', bytes[2], 0x84);
+  t.assertEqual('uuidToBytes last byte', bytes[15], 0x00);
 
   return t.summary();
 }
@@ -346,17 +465,11 @@ function testGasEnvironment() {
   Logger.log('--- GAS Environment Tests ---');
   var t = _createTestHarness('GAS Environment');
 
-  // Core services exist
-  t.assertTypeof('Utilities is defined', Utilities, 'object');
-  t.assertTypeof('Logger is defined', Logger, 'object');
-  t.assertTypeof('UrlFetchApp is defined', UrlFetchApp, 'object');
-
-  // Utilities methods
-  t.assertTypeof('Utilities.sleep is a function', Utilities.sleep, 'function');
-  t.assertTypeof('Utilities.base64Encode is a function', Utilities.base64Encode, 'function');
-  t.assertTypeof('Utilities.base64Decode is a function', Utilities.base64Decode, 'function');
-  t.assertTypeof('Utilities.newBlob is a function', Utilities.newBlob, 'function');
-  t.assertTypeof('Utilities.getUuid is a function', Utilities.getUuid, 'function');
+  // Utilities.sleep — verify it actually pauses
+  var sleepStart = Date.now();
+  Utilities.sleep(500);
+  var sleepElapsed = Date.now() - sleepStart;
+  t.assertAtLeast('Utilities.sleep(500) pauses ~500ms', sleepElapsed, 400);
 
   // Utilities.base64Encode/Decode round-trip
   var original = 'GAS test data: 123 !@#';
@@ -364,26 +477,57 @@ function testGasEnvironment() {
   var roundTrip = Utilities.newBlob(Utilities.base64Decode(b64)).getDataAsString();
   t.assertEqual('Utilities base64 round-trip', roundTrip, original);
 
-  // Utilities.getUuid format
-  var uuid = Utilities.getUuid();
-  t.assertTrue('Utilities.getUuid matches UUID format', /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid));
+  // Utilities.base64Encode produces correct output for known input
+  t.assertEqual('Utilities.base64Encode("ABC")', Utilities.base64Encode('ABC'), 'QUJD');
 
-  // Utilities.newBlob
+  // Utilities.base64Decode returns byte array
+  var decodedBytes = Utilities.base64Decode('QUJD');
+  t.assertEqual('Utilities.base64Decode length', decodedBytes.length, 3);
+
+  // Utilities.getUuid — format and uniqueness
+  var uuid1 = Utilities.getUuid();
+  var uuid2 = Utilities.getUuid();
+  t.assertTrue('Utilities.getUuid matches UUID format', /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid1));
+  t.assertTrue('Utilities.getUuid produces unique values', uuid1 !== uuid2);
+
+  // Utilities.newBlob — full behavior
   var blob = Utilities.newBlob('test content', 'text/plain', 'test.txt');
   t.assertEqual('Blob getDataAsString', blob.getDataAsString(), 'test content');
   t.assertEqual('Blob getContentType', blob.getContentType(), 'text/plain');
   t.assertEqual('Blob getName', blob.getName(), 'test.txt');
 
-  // XmlService
-  t.assertTypeof('XmlService is defined', XmlService, 'object');
-  var doc = XmlService.parse('<root><child>text</child></root>');
-  t.assertTrue('XmlService.parse returns a document', doc !== null);
+  // Blob getBytes and back
+  var blobBytes = blob.getBytes();
+  t.assertTrue('Blob getBytes returns array', Array.isArray(blobBytes) || blobBytes.length > 0);
+  var blobFromBytes = Utilities.newBlob(blobBytes).getDataAsString();
+  t.assertEqual('Blob bytes round-trip to string', blobFromBytes, 'test content');
+
+  // XmlService — parse and extract
+  var doc = XmlService.parse('<root><child attr="val">text</child></root>');
   var root = doc.getRootElement();
   t.assertEqual('XmlService root element name', root.getName(), 'root');
+  var child = root.getChild('child');
+  t.assertEqual('XmlService child text', child.getText(), 'text');
+  t.assertEqual('XmlService child attribute', child.getAttribute('attr').getValue(), 'val');
 
-  // AWS global
-  t.assertTypeof('AWS global is defined', AWS, 'object');
-  t.assertTypeof('AWS.S3 constructor exists', AWS.S3, 'function');
+  // XmlService — create and output
+  var newRoot = XmlService.createElement('test');
+  newRoot.setText('value');
+  var output = XmlService.getRawFormat().format(newRoot);
+  t.assertTrue('XmlService output contains element', output.indexOf('<test>value</test>') !== -1);
+
+  // Logger — verify log works and returns content
+  Logger.clear();
+  Logger.log('test log message');
+  var logOutput = Logger.getLog();
+  t.assertTrue('Logger.log captures output', logOutput.indexOf('test log message') !== -1);
+
+  // AWS global — verify service constructors exist
+  t.assertTypeof('AWS.S3 is a constructor', AWS.S3, 'function');
+  t.assertTypeof('AWS.SES is a constructor', AWS.SES, 'function');
+  t.assertTypeof('AWS.DynamoDB is a constructor', AWS.DynamoDB, 'function');
+  t.assertTypeof('AWS.Lambda is a constructor', AWS.Lambda, 'function');
+  t.assertTypeof('AWS.Config is a constructor', AWS.Config, 'function');
 
   return t.summary();
 }
