@@ -1,55 +1,114 @@
-function sendEmail(toEmails, ccEmails, bccEmails, fromEmail, replyToEmails, subject, htmlBody, plainBody) {
+/**
+ * Send an email using Amazon SES.
+ *
+ * Accepts both a modern options object and the legacy positional argument style.
+ *
+ * @param {Object|string} optionsOrTo - Options object, or 'to' email(s) for legacy usage.
+ * @param {string|string[]} optionsOrTo.to - Recipient email address(es).
+ * @param {string|string[]} [optionsOrTo.cc] - CC email address(es).
+ * @param {string|string[]} [optionsOrTo.bcc] - BCC email address(es).
+ * @param {string} optionsOrTo.from - Sender email address (must be SES-verified).
+ * @param {string|string[]} [optionsOrTo.replyTo] - Reply-to email address(es).
+ * @param {string} optionsOrTo.subject - Email subject line.
+ * @param {string} optionsOrTo.html - HTML body content.
+ * @param {string} [optionsOrTo.text] - Plain text body (auto-generated from HTML if omitted).
+ * @returns {Promise<Object>} The SES sendEmail response (includes MessageId).
+ * @throws {Error} AWS SDK errors (e.g., MessageRejected, InvalidParameterValue).
+ *
+ * @example
+ * // Options-object style (recommended):
+ * const result = await sendEmail({
+ *   to: 'recipient@example.com',
+ *   from: 'sender@example.com',
+ *   subject: 'Hello from GAS',
+ *   html: '<h1>Hello!</h1><p>Sent via AWS SES.</p>',
+ * });
+ *
+ * @example
+ * // Legacy positional style (still supported):
+ * const result = await sendEmail(
+ *   'to@example.com', 'cc@example.com', '', 'from@example.com',
+ *   'reply@example.com', 'Subject', '<html>body</html>'
+ * );
+ */
+function sendEmail(optionsOrTo, ccEmails, bccEmails, fromEmail, replyToEmails, subject, htmlBody, plainBody) {
+  let toEmails, html, text, from, replyTo, cc, bcc, subj;
+
+  // Detect options-object vs legacy positional arguments
+  if (typeof optionsOrTo === 'object' && !Array.isArray(optionsOrTo) && optionsOrTo !== null && optionsOrTo.from) {
+    toEmails = optionsOrTo.to;
+    cc = optionsOrTo.cc || [];
+    bcc = optionsOrTo.bcc || [];
+    from = optionsOrTo.from;
+    replyTo = optionsOrTo.replyTo || [];
+    subj = optionsOrTo.subject;
+    html = optionsOrTo.html;
+    text = optionsOrTo.text;
+  } else {
+    toEmails = optionsOrTo;
+    cc = ccEmails;
+    bcc = bccEmails;
+    from = fromEmail;
+    replyTo = replyToEmails;
+    subj = subject;
+    html = htmlBody;
+    text = plainBody;
+  }
+
   if (typeof toEmails === 'string') {
     toEmails = splitEmails_(toEmails);
   }
-  if (typeof ccEmails === 'string') {
-    ccEmails = splitEmails_(ccEmails);
+  if (typeof cc === 'string') {
+    cc = splitEmails_(cc);
   }
-  if (typeof bccEmails === 'string') {
-    bccEmails = splitEmails_(bccEmails);
+  if (typeof bcc === 'string') {
+    bcc = splitEmails_(bcc);
   }
-  if (typeof replyToEmails === 'string') {
-    replyToEmails = splitEmails_(replyToEmails);
+  if (typeof replyTo === 'string') {
+    replyTo = splitEmails_(replyTo);
   }
 
   const params = {
     Destination: {
       ToAddresses: toEmails,
-      CcAddresses: ccEmails,
-      BccAddresses: bccEmails,
+      CcAddresses: cc,
+      BccAddresses: bcc,
     },
     Message: {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: htmlBody,
+          Data: html,
         },
         Text: {
           Charset: 'UTF-8',
-          Data: plainBody || simpleMakePlainText_(htmlBody),
+          Data: text || simpleMakePlainText_(html),
         },
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: subject,
+        Data: subj,
       },
     },
-    Source: fromEmail,
-    ReplyToAddresses: replyToEmails,
+    Source: from,
+    ReplyToAddresses: replyTo,
   };
 
-  // Create the promise and SES service object
-  var sendPromise = new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail(params).promise();
-  return sendPromise
-    .then((data) => {
-      return data;
-    })
+  return new AWS.SES({ apiVersion: '2010-12-01' })
+    .sendEmail(params)
+    .promise()
     .catch((err) => {
       Logger.log(err, err.stack);
       return false;
     });
 }
 
+/**
+ * Split a comma-separated email string into an array.
+ * @param {string} emails - Comma-separated email addresses.
+ * @returns {string[]} Array of trimmed, non-empty email addresses.
+ * @private
+ */
 function splitEmails_(emails) {
   return emails
     .trim()
@@ -57,17 +116,30 @@ function splitEmails_(emails) {
     .filter(Boolean);
 }
 
+/**
+ * Convert HTML to plain text by extracting body content.
+ * Falls back to regex tag stripping if the HTML is not valid XML.
+ * @param {string} html - HTML string to convert.
+ * @returns {string} Plain text extracted from the HTML.
+ * @private
+ */
 function simpleMakePlainText_(html) {
-  var document = XmlService.parse(html);
-  var body = getElementsByTagName(document, 'body');
-  if (body.length < 1) {
-    body.push(document.getRootElement().getValue());
+  try {
+    const document = XmlService.parse(html);
+    let body = getElementsByTagName(document, 'body');
+    if (body.length < 1) {
+      body.push(document.getRootElement().getValue());
+    }
+
+    return body[0]
+      .replace(/\n\s*\n/g, '\n\n')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{2,}/g, '\n\n');
+  } catch (e) {
+    // HTML is not valid XML; strip tags as a fallback
+    return html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
-
-  var output = body[0]
-    .replace(/\n\s*\n/g, '\n\n')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{2,}/g, '\n\n');
-
-  return output;
 }

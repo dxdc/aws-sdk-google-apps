@@ -1,0 +1,94 @@
+name: Update AWS SDK
+
+on:
+  schedule:
+    # Run weekly on Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-sdk:
+    name: Check for SDK updates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Get current SDK version
+        id: current
+        run: |
+          cd aws-sdk-js
+          echo "version=$(git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Update submodule to latest
+        run: |
+          cd aws-sdk-js
+          git fetch origin master --tags
+          git checkout origin/master
+
+      - name: Get new SDK version
+        id: updated
+        run: |
+          cd aws-sdk-js
+          echo "version=$(git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Check if update is needed
+        id: check
+        run: |
+          if [ "${{ steps.current.outputs.version }}" = "${{ steps.updated.outputs.version }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "SDK is already at ${{ steps.current.outputs.version }}"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "SDK update available: ${{ steps.current.outputs.version }} → ${{ steps.updated.outputs.version }}"
+          fi
+
+      - name: Install dependencies
+        if: steps.check.outputs.skip == 'false'
+        run: npm ci
+
+      - name: Install submodule dependencies
+        if: steps.check.outputs.skip == 'false'
+        run: cd aws-sdk-js && npm install
+
+      - name: Rebuild SDK bundle
+        if: steps.check.outputs.skip == 'false'
+        run: npm run sdk --sdk=ses,s3,lambda,ec2,dynamodb,sns,sqs,sts
+
+      - name: Build dist
+        if: steps.check.outputs.skip == 'false'
+        run: npm run build
+
+      - name: Run tests
+        if: steps.check.outputs.skip == 'false'
+        run: npm test
+
+      - name: Create pull request
+        if: steps.check.outputs.skip == 'false'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: 'chore: update aws-sdk-js ${{ steps.current.outputs.version }} → ${{ steps.updated.outputs.version }}'
+          title: 'chore: update aws-sdk-js to ${{ steps.updated.outputs.version }}'
+          body: |
+            Automated update of the aws-sdk-js submodule.
+
+            **${{ steps.current.outputs.version }}** → **${{ steps.updated.outputs.version }}**
+
+            - Submodule updated to latest master
+            - SDK bundle rebuilt (`src-sdk/aws-sdk.js`)
+            - `dist/` rebuilt
+            - All tests passing
+          branch: chore/update-aws-sdk
+          delete-branch: true
+          labels: dependencies

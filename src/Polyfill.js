@@ -1,19 +1,91 @@
-async function setTimeout() {
-  const args = Array.prototype.slice.call(arguments);
-  const handler = args.shift();
-  const ms = args.shift();
-  Utilities.sleep(ms);
+/**
+ * Polyfills for Google Apps Script V8 runtime compatibility.
+ *
+ * Google Apps Script's V8 runtime lacks many browser and Node.js APIs
+ * that the AWS SDK depends on. These polyfills bridge the gap using
+ * GAS-native equivalents (Utilities, XmlService, etc.).
+ */
 
-  return handler.apply(this, args);
+// ---------- Timer polyfills ----------
+// GAS is synchronous, so setTimeout/setInterval execute immediately after sleeping.
+// These return numeric IDs for compatibility with the AWS SDK's internal timer wrappers.
+
+var _timerCounter = 0;
+var _activeTimers = {};
+
+/**
+ * Polyfill for setTimeout. Blocks the thread with Utilities.sleep() then
+ * invokes the callback. Returns a numeric timer ID for clearTimeout compatibility.
+ * @param {Function} handler - The function to execute after the delay.
+ * @param {number} ms - The delay in milliseconds.
+ * @param {...*} args - Additional arguments passed to the handler.
+ * @returns {number} A numeric timer ID.
+ */
+function setTimeout(handler, ms) {
+  var id = ++_timerCounter;
+  _activeTimers[id] = true;
+  var args = Array.prototype.slice.call(arguments, 2);
+
+  if (ms > 0) {
+    Utilities.sleep(ms);
+  }
+
+  if (_activeTimers[id]) {
+    delete _activeTimers[id];
+    handler.apply(null, args);
+  }
+
+  return id;
 }
 
-// Polyfill for Blob (using Utilities.newBlob)
+/**
+ * Polyfill for clearTimeout. Marks the timer as cancelled so the handler
+ * will not execute if it hasn't already.
+ * @param {number} id - The timer ID returned by setTimeout.
+ */
+function clearTimeout(id) {
+  delete _activeTimers[id];
+}
+
+/**
+ * Polyfill for setInterval. In GAS's synchronous environment, this executes
+ * the callback once (equivalent to setTimeout) since there is no event loop.
+ * @param {Function} handler - The function to execute.
+ * @param {number} ms - The interval in milliseconds.
+ * @param {...*} args - Additional arguments passed to the handler.
+ * @returns {number} A numeric timer ID.
+ */
+function setInterval(handler, ms) {
+  return setTimeout.apply(null, arguments);
+}
+
+/**
+ * Polyfill for clearInterval.
+ * @param {number} id - The timer ID returned by setInterval.
+ */
+function clearInterval(id) {
+  clearTimeout(id);
+}
+
+// ---------- Console polyfill ----------
+// GAS V8 has console.log but may lack console.warn/error/info in some contexts.
+// Ensure all standard console methods exist, mapping to Logger.log.
+
+var console = (typeof console !== 'undefined' && console) || {};
+['log', 'warn', 'error', 'info'].forEach((method) => {
+  if (typeof console[method] !== 'function') {
+    console[method] = function () {
+      Logger.log.apply(Logger, arguments);
+    };
+  }
+});
+
+// ---------- Blob polyfill ----------
 if (typeof Blob === 'undefined') {
-  var Blob = function (parts, options) {
-    var contentType = options && options.type ? options.type : 'application/octet-stream';
-    // For maximal compatibility, handle parts that may be non-strings by converting them
-    var data = parts
-      .map(function (part) {
+  var Blob = (parts, options) => {
+    const contentType = options && options.type ? options.type : 'application/octet-stream';
+    const data = parts
+      .map((part) => {
         return typeof part === 'string' ? part : part.toString();
       })
       .join('');
@@ -21,61 +93,54 @@ if (typeof Blob === 'undefined') {
   };
 }
 
-// Polyfill for atob and btoa (base64 encoding/decoding)
+// ---------- Base64 polyfills ----------
 if (typeof atob === 'undefined') {
-  function atob(base64) {
-    // Decodes base64 into a string
+  var atob = (base64) => {
     return Utilities.newBlob(Utilities.base64Decode(base64)).getDataAsString();
-  }
+  };
 }
 if (typeof btoa === 'undefined') {
-  function btoa(str) {
-    // Encodes a string into base64
+  var btoa = (str) => {
     return Utilities.base64Encode(str);
-  }
+  };
 }
 
-// Polyfill for TextEncoder and TextDecoder for UTF-8 conversions
+// ---------- TextEncoder / TextDecoder polyfills ----------
 if (typeof TextEncoder === 'undefined') {
   var TextEncoder = function () {};
   TextEncoder.prototype.encode = function (str) {
-    // Returns a byte array using UTF-8 encoding
     return Utilities.newBlob(str).getBytes();
   };
 }
 if (typeof TextDecoder === 'undefined') {
   var TextDecoder = function () {};
   TextDecoder.prototype.decode = function (byteArray) {
-    // Converts a byte array back to a string assuming UTF-8
     return Utilities.newBlob(byteArray).getDataAsString();
   };
 }
 
-// Polyfill for URL.createObjectURL and URL.revokeObjectURL
+// ---------- URL polyfill ----------
 if (typeof URL === 'undefined') {
   var URL = {
-    createObjectURL: function (blob) {
-      // Returns a data URI as a minimal substitute
+    createObjectURL: (blob) => {
       return 'data:' + blob.getContentType() + ';base64,' + Utilities.base64Encode(blob.getBytes());
     },
-    revokeObjectURL: function (url) {
+    revokeObjectURL: () => {
       // No operation needed in Apps Script
     },
   };
 }
 
-// Minimal Buffer polyfill
+// ---------- Buffer polyfill ----------
 if (typeof Buffer === 'undefined') {
   var Buffer = function (arr) {
     this.data = arr;
   };
-  Buffer.from = function (input, encoding) {
+  Buffer.from = (input, encoding) => {
     if (typeof input === 'string') {
       if (encoding === 'base64') {
-        // Decode base64 into a byte array
         return Utilities.base64Decode(input);
       } else {
-        // Default to UTF-8 conversion
         return Utilities.newBlob(input).getBytes();
       }
     } else if (Array.isArray(input)) {
@@ -83,7 +148,25 @@ if (typeof Buffer === 'undefined') {
     }
     return input;
   };
-  Buffer.isBuffer = function (obj) {
+  Buffer.isBuffer = (obj) => {
     return obj instanceof Buffer;
   };
+}
+
+// ---------- navigator polyfill ----------
+// AWS SDK checks for navigator.userAgent to build the User-Agent header.
+if (typeof navigator === 'undefined') {
+  var navigator = {
+    userAgent: 'GoogleAppsScript',
+  };
+}
+
+// ---------- process polyfill ----------
+// AWS SDK reads process.env for AWS_PROFILE, AWS_EXECUTION_ENV, etc.
+// Ensure process and process.env exist so these lookups return undefined
+// rather than throwing a ReferenceError.
+if (typeof process === 'undefined') {
+  var process = { env: {}, version: 'v0.0.0' };
+} else if (typeof process.env === 'undefined') {
+  process.env = {};
 }

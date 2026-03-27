@@ -1,4 +1,4 @@
-// AWS SDK for JavaScript v2.1692.0
+// AWS SDK for JavaScript v2.1693.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
@@ -715,6 +715,3427 @@ module.exports={
   }
 }
 },{}],3:[function(require,module,exports){
+module.exports={
+  "version": "2.0",
+  "metadata": {
+    "apiVersion": "2012-08-10",
+    "endpointPrefix": "dynamodb",
+    "jsonVersion": "1.0",
+    "protocol": "json",
+    "protocols": [
+      "json"
+    ],
+    "serviceAbbreviation": "DynamoDB",
+    "serviceFullName": "Amazon DynamoDB",
+    "serviceId": "DynamoDB",
+    "signatureVersion": "v4",
+    "targetPrefix": "DynamoDB_20120810",
+    "uid": "dynamodb-2012-08-10",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
+  },
+  "operations": {
+    "BatchExecuteStatement": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "Statements"
+        ],
+        "members": {
+          "Statements": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Statement"
+              ],
+              "members": {
+                "Statement": {},
+                "Parameters": {
+                  "shape": "S5"
+                },
+                "ConsistentRead": {
+                  "type": "boolean"
+                },
+                "ReturnValuesOnConditionCheckFailure": {}
+              }
+            }
+          },
+          "ReturnConsumedCapacity": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Responses": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "Error": {
+                  "type": "structure",
+                  "members": {
+                    "Code": {},
+                    "Message": {},
+                    "Item": {
+                      "shape": "Sr"
+                    }
+                  }
+                },
+                "TableName": {},
+                "Item": {
+                  "shape": "Sr"
+                }
+              }
+            }
+          },
+          "ConsumedCapacity": {
+            "shape": "St"
+          }
+        }
+      }
+    },
+    "BatchGetItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "RequestItems"
+        ],
+        "members": {
+          "RequestItems": {
+            "shape": "S11"
+          },
+          "ReturnConsumedCapacity": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Responses": {
+            "type": "map",
+            "key": {},
+            "value": {
+              "shape": "S1b"
+            }
+          },
+          "UnprocessedKeys": {
+            "shape": "S11"
+          },
+          "ConsumedCapacity": {
+            "shape": "St"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "BatchWriteItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "RequestItems"
+        ],
+        "members": {
+          "RequestItems": {
+            "shape": "S1d"
+          },
+          "ReturnConsumedCapacity": {},
+          "ReturnItemCollectionMetrics": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "UnprocessedItems": {
+            "shape": "S1d"
+          },
+          "ItemCollectionMetrics": {
+            "shape": "S1l"
+          },
+          "ConsumedCapacity": {
+            "shape": "St"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "CreateBackup": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "BackupName"
+        ],
+        "members": {
+          "TableName": {},
+          "BackupName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "BackupDetails": {
+            "shape": "S1u"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "CreateGlobalTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "GlobalTableName",
+          "ReplicationGroup"
+        ],
+        "members": {
+          "GlobalTableName": {},
+          "ReplicationGroup": {
+            "shape": "S22"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTableDescription": {
+            "shape": "S26"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "CreateTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "AttributeDefinitions",
+          "TableName",
+          "KeySchema"
+        ],
+        "members": {
+          "AttributeDefinitions": {
+            "shape": "S2o"
+          },
+          "TableName": {},
+          "KeySchema": {
+            "shape": "S2s"
+          },
+          "LocalSecondaryIndexes": {
+            "shape": "S2v"
+          },
+          "GlobalSecondaryIndexes": {
+            "shape": "S31"
+          },
+          "BillingMode": {},
+          "ProvisionedThroughput": {
+            "shape": "S33"
+          },
+          "StreamSpecification": {
+            "shape": "S36"
+          },
+          "SSESpecification": {
+            "shape": "S39"
+          },
+          "Tags": {
+            "shape": "S3c"
+          },
+          "TableClass": {},
+          "DeletionProtectionEnabled": {
+            "type": "boolean"
+          },
+          "ResourcePolicy": {},
+          "OnDemandThroughput": {
+            "shape": "S34"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableDescription": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DeleteBackup": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "BackupArn"
+        ],
+        "members": {
+          "BackupArn": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "BackupDescription": {
+            "shape": "S45"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DeleteItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "Key"
+        ],
+        "members": {
+          "TableName": {},
+          "Key": {
+            "shape": "S14"
+          },
+          "Expected": {
+            "shape": "S4i"
+          },
+          "ConditionalOperator": {},
+          "ReturnValues": {},
+          "ReturnConsumedCapacity": {},
+          "ReturnItemCollectionMetrics": {},
+          "ConditionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          },
+          "ExpressionAttributeValues": {
+            "shape": "S4q"
+          },
+          "ReturnValuesOnConditionCheckFailure": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sr"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          },
+          "ItemCollectionMetrics": {
+            "shape": "S1n"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DeleteResourcePolicy": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "ExpectedRevisionId": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "RevisionId": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DeleteTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableDescription": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeBackup": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "BackupArn"
+        ],
+        "members": {
+          "BackupArn": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "BackupDescription": {
+            "shape": "S45"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeContinuousBackups": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ContinuousBackupsDescription": {
+            "shape": "S53"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeContributorInsights": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {},
+          "IndexName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "IndexName": {},
+          "ContributorInsightsRuleList": {
+            "type": "list",
+            "member": {}
+          },
+          "ContributorInsightsStatus": {},
+          "LastUpdateDateTime": {
+            "type": "timestamp"
+          },
+          "FailureException": {
+            "type": "structure",
+            "members": {
+              "ExceptionName": {},
+              "ExceptionDescription": {}
+            }
+          }
+        }
+      }
+    },
+    "DescribeEndpoints": {
+      "input": {
+        "type": "structure",
+        "members": {}
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "Endpoints"
+        ],
+        "members": {
+          "Endpoints": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Address",
+                "CachePeriodInMinutes"
+              ],
+              "members": {
+                "Address": {},
+                "CachePeriodInMinutes": {
+                  "type": "long"
+                }
+              }
+            }
+          }
+        }
+      },
+      "endpointoperation": true
+    },
+    "DescribeExport": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ExportArn"
+        ],
+        "members": {
+          "ExportArn": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ExportDescription": {
+            "shape": "S5o"
+          }
+        }
+      }
+    },
+    "DescribeGlobalTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "GlobalTableName"
+        ],
+        "members": {
+          "GlobalTableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTableDescription": {
+            "shape": "S26"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeGlobalTableSettings": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "GlobalTableName"
+        ],
+        "members": {
+          "GlobalTableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTableName": {},
+          "ReplicaSettings": {
+            "shape": "S6d"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeImport": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ImportArn"
+        ],
+        "members": {
+          "ImportArn": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "ImportTableDescription"
+        ],
+        "members": {
+          "ImportTableDescription": {
+            "shape": "S6r"
+          }
+        }
+      }
+    },
+    "DescribeKinesisStreamingDestination": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "KinesisDataStreamDestinations": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "StreamArn": {},
+                "DestinationStatus": {},
+                "DestinationStatusDescription": {},
+                "ApproximateCreationDateTimePrecision": {}
+              }
+            }
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeLimits": {
+      "input": {
+        "type": "structure",
+        "members": {}
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "AccountMaxReadCapacityUnits": {
+            "type": "long"
+          },
+          "AccountMaxWriteCapacityUnits": {
+            "type": "long"
+          },
+          "TableMaxReadCapacityUnits": {
+            "type": "long"
+          },
+          "TableMaxWriteCapacityUnits": {
+            "type": "long"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Table": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DescribeTableReplicaAutoScaling": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableAutoScalingDescription": {
+            "shape": "S7k"
+          }
+        }
+      }
+    },
+    "DescribeTimeToLive": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TimeToLiveDescription": {
+            "shape": "S4e"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "DisableKinesisStreamingDestination": {
+      "input": {
+        "shape": "S7r"
+      },
+      "output": {
+        "shape": "S7t"
+      },
+      "endpointdiscovery": {}
+    },
+    "EnableKinesisStreamingDestination": {
+      "input": {
+        "shape": "S7r"
+      },
+      "output": {
+        "shape": "S7t"
+      },
+      "endpointdiscovery": {}
+    },
+    "ExecuteStatement": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "Statement"
+        ],
+        "members": {
+          "Statement": {},
+          "Parameters": {
+            "shape": "S5"
+          },
+          "ConsistentRead": {
+            "type": "boolean"
+          },
+          "NextToken": {},
+          "ReturnConsumedCapacity": {},
+          "Limit": {
+            "type": "integer"
+          },
+          "ReturnValuesOnConditionCheckFailure": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Items": {
+            "shape": "S1b"
+          },
+          "NextToken": {},
+          "ConsumedCapacity": {
+            "shape": "Su"
+          },
+          "LastEvaluatedKey": {
+            "shape": "S14"
+          }
+        }
+      }
+    },
+    "ExecuteTransaction": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TransactStatements"
+        ],
+        "members": {
+          "TransactStatements": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Statement"
+              ],
+              "members": {
+                "Statement": {},
+                "Parameters": {
+                  "shape": "S5"
+                },
+                "ReturnValuesOnConditionCheckFailure": {}
+              }
+            }
+          },
+          "ClientRequestToken": {
+            "idempotencyToken": true
+          },
+          "ReturnConsumedCapacity": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Responses": {
+            "shape": "S83"
+          },
+          "ConsumedCapacity": {
+            "shape": "St"
+          }
+        }
+      }
+    },
+    "ExportTableToPointInTime": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableArn",
+          "S3Bucket"
+        ],
+        "members": {
+          "TableArn": {},
+          "ExportTime": {
+            "type": "timestamp"
+          },
+          "ClientToken": {
+            "idempotencyToken": true
+          },
+          "S3Bucket": {},
+          "S3BucketOwner": {},
+          "S3Prefix": {},
+          "S3SseAlgorithm": {},
+          "S3SseKmsKeyId": {},
+          "ExportFormat": {},
+          "ExportType": {},
+          "IncrementalExportSpecification": {
+            "shape": "S65"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ExportDescription": {
+            "shape": "S5o"
+          }
+        }
+      }
+    },
+    "GetItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "Key"
+        ],
+        "members": {
+          "TableName": {},
+          "Key": {
+            "shape": "S14"
+          },
+          "AttributesToGet": {
+            "shape": "S15"
+          },
+          "ConsistentRead": {
+            "type": "boolean"
+          },
+          "ReturnConsumedCapacity": {},
+          "ProjectionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Item": {
+            "shape": "Sr"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "GetResourcePolicy": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn"
+        ],
+        "members": {
+          "ResourceArn": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Policy": {},
+          "RevisionId": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "ImportTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "S3BucketSource",
+          "InputFormat",
+          "TableCreationParameters"
+        ],
+        "members": {
+          "ClientToken": {
+            "idempotencyToken": true
+          },
+          "S3BucketSource": {
+            "shape": "S6t"
+          },
+          "InputFormat": {},
+          "InputFormatOptions": {
+            "shape": "S6x"
+          },
+          "InputCompressionType": {},
+          "TableCreationParameters": {
+            "shape": "S73"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "ImportTableDescription"
+        ],
+        "members": {
+          "ImportTableDescription": {
+            "shape": "S6r"
+          }
+        }
+      }
+    },
+    "ListBackups": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "Limit": {
+            "type": "integer"
+          },
+          "TimeRangeLowerBound": {
+            "type": "timestamp"
+          },
+          "TimeRangeUpperBound": {
+            "type": "timestamp"
+          },
+          "ExclusiveStartBackupArn": {},
+          "BackupType": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "BackupSummaries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "TableName": {},
+                "TableId": {},
+                "TableArn": {},
+                "BackupArn": {},
+                "BackupName": {},
+                "BackupCreationDateTime": {
+                  "type": "timestamp"
+                },
+                "BackupExpiryDateTime": {
+                  "type": "timestamp"
+                },
+                "BackupStatus": {},
+                "BackupType": {},
+                "BackupSizeBytes": {
+                  "type": "long"
+                }
+              }
+            }
+          },
+          "LastEvaluatedBackupArn": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "ListContributorInsights": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "NextToken": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ContributorInsightsSummaries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "TableName": {},
+                "IndexName": {},
+                "ContributorInsightsStatus": {}
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListExports": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "TableArn": {},
+          "MaxResults": {
+            "type": "integer"
+          },
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ExportSummaries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "ExportArn": {},
+                "ExportStatus": {},
+                "ExportType": {}
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListGlobalTables": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "ExclusiveStartGlobalTableName": {},
+          "Limit": {
+            "type": "integer"
+          },
+          "RegionName": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTables": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "GlobalTableName": {},
+                "ReplicationGroup": {
+                  "shape": "S22"
+                }
+              }
+            }
+          },
+          "LastEvaluatedGlobalTableName": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "ListImports": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "TableArn": {},
+          "PageSize": {
+            "type": "integer"
+          },
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ImportSummaryList": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "ImportArn": {},
+                "ImportStatus": {},
+                "TableArn": {},
+                "S3BucketSource": {
+                  "shape": "S6t"
+                },
+                "CloudWatchLogGroupArn": {},
+                "InputFormat": {},
+                "StartTime": {
+                  "type": "timestamp"
+                },
+                "EndTime": {
+                  "type": "timestamp"
+                }
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListTables": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "ExclusiveStartTableName": {},
+          "Limit": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableNames": {
+            "type": "list",
+            "member": {}
+          },
+          "LastEvaluatedTableName": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "ListTagsOfResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape": "S3c"
+          },
+          "NextToken": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "PutItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "Item"
+        ],
+        "members": {
+          "TableName": {},
+          "Item": {
+            "shape": "S1h"
+          },
+          "Expected": {
+            "shape": "S4i"
+          },
+          "ReturnValues": {},
+          "ReturnConsumedCapacity": {},
+          "ReturnItemCollectionMetrics": {},
+          "ConditionalOperator": {},
+          "ConditionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          },
+          "ExpressionAttributeValues": {
+            "shape": "S4q"
+          },
+          "ReturnValuesOnConditionCheckFailure": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sr"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          },
+          "ItemCollectionMetrics": {
+            "shape": "S1n"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "PutResourcePolicy": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "Policy"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "Policy": {},
+          "ExpectedRevisionId": {},
+          "ConfirmRemoveSelfResourceAccess": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "RevisionId": {}
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "Query": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {},
+          "IndexName": {},
+          "Select": {},
+          "AttributesToGet": {
+            "shape": "S15"
+          },
+          "Limit": {
+            "type": "integer"
+          },
+          "ConsistentRead": {
+            "type": "boolean"
+          },
+          "KeyConditions": {
+            "type": "map",
+            "key": {},
+            "value": {
+              "shape": "S9l"
+            }
+          },
+          "QueryFilter": {
+            "shape": "S9m"
+          },
+          "ConditionalOperator": {},
+          "ScanIndexForward": {
+            "type": "boolean"
+          },
+          "ExclusiveStartKey": {
+            "shape": "S14"
+          },
+          "ReturnConsumedCapacity": {},
+          "ProjectionExpression": {},
+          "FilterExpression": {},
+          "KeyConditionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          },
+          "ExpressionAttributeValues": {
+            "shape": "S4q"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Items": {
+            "shape": "S1b"
+          },
+          "Count": {
+            "type": "integer"
+          },
+          "ScannedCount": {
+            "type": "integer"
+          },
+          "LastEvaluatedKey": {
+            "shape": "S14"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "RestoreTableFromBackup": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TargetTableName",
+          "BackupArn"
+        ],
+        "members": {
+          "TargetTableName": {},
+          "BackupArn": {},
+          "BillingModeOverride": {},
+          "GlobalSecondaryIndexOverride": {
+            "shape": "S31"
+          },
+          "LocalSecondaryIndexOverride": {
+            "shape": "S2v"
+          },
+          "ProvisionedThroughputOverride": {
+            "shape": "S33"
+          },
+          "OnDemandThroughputOverride": {
+            "shape": "S34"
+          },
+          "SSESpecificationOverride": {
+            "shape": "S39"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableDescription": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "RestoreTableToPointInTime": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TargetTableName"
+        ],
+        "members": {
+          "SourceTableArn": {},
+          "SourceTableName": {},
+          "TargetTableName": {},
+          "UseLatestRestorableTime": {
+            "type": "boolean"
+          },
+          "RestoreDateTime": {
+            "type": "timestamp"
+          },
+          "BillingModeOverride": {},
+          "GlobalSecondaryIndexOverride": {
+            "shape": "S31"
+          },
+          "LocalSecondaryIndexOverride": {
+            "shape": "S2v"
+          },
+          "ProvisionedThroughputOverride": {
+            "shape": "S33"
+          },
+          "OnDemandThroughputOverride": {
+            "shape": "S34"
+          },
+          "SSESpecificationOverride": {
+            "shape": "S39"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableDescription": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "Scan": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "TableName": {},
+          "IndexName": {},
+          "AttributesToGet": {
+            "shape": "S15"
+          },
+          "Limit": {
+            "type": "integer"
+          },
+          "Select": {},
+          "ScanFilter": {
+            "shape": "S9m"
+          },
+          "ConditionalOperator": {},
+          "ExclusiveStartKey": {
+            "shape": "S14"
+          },
+          "ReturnConsumedCapacity": {},
+          "TotalSegments": {
+            "type": "integer"
+          },
+          "Segment": {
+            "type": "integer"
+          },
+          "ProjectionExpression": {},
+          "FilterExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          },
+          "ExpressionAttributeValues": {
+            "shape": "S4q"
+          },
+          "ConsistentRead": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Items": {
+            "shape": "S1b"
+          },
+          "Count": {
+            "type": "integer"
+          },
+          "ScannedCount": {
+            "type": "integer"
+          },
+          "LastEvaluatedKey": {
+            "shape": "S14"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "TagResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "Tags"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "Tags": {
+            "shape": "S3c"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "TransactGetItems": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TransactItems"
+        ],
+        "members": {
+          "TransactItems": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Get"
+              ],
+              "members": {
+                "Get": {
+                  "type": "structure",
+                  "required": [
+                    "Key",
+                    "TableName"
+                  ],
+                  "members": {
+                    "Key": {
+                      "shape": "S14"
+                    },
+                    "TableName": {},
+                    "ProjectionExpression": {},
+                    "ExpressionAttributeNames": {
+                      "shape": "S17"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "ReturnConsumedCapacity": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ConsumedCapacity": {
+            "shape": "St"
+          },
+          "Responses": {
+            "shape": "S83"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "TransactWriteItems": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TransactItems"
+        ],
+        "members": {
+          "TransactItems": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "ConditionCheck": {
+                  "type": "structure",
+                  "required": [
+                    "Key",
+                    "TableName",
+                    "ConditionExpression"
+                  ],
+                  "members": {
+                    "Key": {
+                      "shape": "S14"
+                    },
+                    "TableName": {},
+                    "ConditionExpression": {},
+                    "ExpressionAttributeNames": {
+                      "shape": "S17"
+                    },
+                    "ExpressionAttributeValues": {
+                      "shape": "S4q"
+                    },
+                    "ReturnValuesOnConditionCheckFailure": {}
+                  }
+                },
+                "Put": {
+                  "type": "structure",
+                  "required": [
+                    "Item",
+                    "TableName"
+                  ],
+                  "members": {
+                    "Item": {
+                      "shape": "S1h"
+                    },
+                    "TableName": {},
+                    "ConditionExpression": {},
+                    "ExpressionAttributeNames": {
+                      "shape": "S17"
+                    },
+                    "ExpressionAttributeValues": {
+                      "shape": "S4q"
+                    },
+                    "ReturnValuesOnConditionCheckFailure": {}
+                  }
+                },
+                "Delete": {
+                  "type": "structure",
+                  "required": [
+                    "Key",
+                    "TableName"
+                  ],
+                  "members": {
+                    "Key": {
+                      "shape": "S14"
+                    },
+                    "TableName": {},
+                    "ConditionExpression": {},
+                    "ExpressionAttributeNames": {
+                      "shape": "S17"
+                    },
+                    "ExpressionAttributeValues": {
+                      "shape": "S4q"
+                    },
+                    "ReturnValuesOnConditionCheckFailure": {}
+                  }
+                },
+                "Update": {
+                  "type": "structure",
+                  "required": [
+                    "Key",
+                    "UpdateExpression",
+                    "TableName"
+                  ],
+                  "members": {
+                    "Key": {
+                      "shape": "S14"
+                    },
+                    "UpdateExpression": {},
+                    "TableName": {},
+                    "ConditionExpression": {},
+                    "ExpressionAttributeNames": {
+                      "shape": "S17"
+                    },
+                    "ExpressionAttributeValues": {
+                      "shape": "S4q"
+                    },
+                    "ReturnValuesOnConditionCheckFailure": {}
+                  }
+                }
+              }
+            }
+          },
+          "ReturnConsumedCapacity": {},
+          "ReturnItemCollectionMetrics": {},
+          "ClientRequestToken": {
+            "idempotencyToken": true
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ConsumedCapacity": {
+            "shape": "St"
+          },
+          "ItemCollectionMetrics": {
+            "shape": "S1l"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UntagResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "TagKeys"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "TagKeys": {
+            "type": "list",
+            "member": {}
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateContinuousBackups": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "PointInTimeRecoverySpecification"
+        ],
+        "members": {
+          "TableName": {},
+          "PointInTimeRecoverySpecification": {
+            "type": "structure",
+            "required": [
+              "PointInTimeRecoveryEnabled"
+            ],
+            "members": {
+              "PointInTimeRecoveryEnabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ContinuousBackupsDescription": {
+            "shape": "S53"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateContributorInsights": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "ContributorInsightsAction"
+        ],
+        "members": {
+          "TableName": {},
+          "IndexName": {},
+          "ContributorInsightsAction": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "IndexName": {},
+          "ContributorInsightsStatus": {}
+        }
+      }
+    },
+    "UpdateGlobalTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "GlobalTableName",
+          "ReplicaUpdates"
+        ],
+        "members": {
+          "GlobalTableName": {},
+          "ReplicaUpdates": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "Create": {
+                  "type": "structure",
+                  "required": [
+                    "RegionName"
+                  ],
+                  "members": {
+                    "RegionName": {}
+                  }
+                },
+                "Delete": {
+                  "type": "structure",
+                  "required": [
+                    "RegionName"
+                  ],
+                  "members": {
+                    "RegionName": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTableDescription": {
+            "shape": "S26"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateGlobalTableSettings": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "GlobalTableName"
+        ],
+        "members": {
+          "GlobalTableName": {},
+          "GlobalTableBillingMode": {},
+          "GlobalTableProvisionedWriteCapacityUnits": {
+            "type": "long"
+          },
+          "GlobalTableProvisionedWriteCapacityAutoScalingSettingsUpdate": {
+            "shape": "Sas"
+          },
+          "GlobalTableGlobalSecondaryIndexSettingsUpdate": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "IndexName"
+              ],
+              "members": {
+                "IndexName": {},
+                "ProvisionedWriteCapacityUnits": {
+                  "type": "long"
+                },
+                "ProvisionedWriteCapacityAutoScalingSettingsUpdate": {
+                  "shape": "Sas"
+                }
+              }
+            }
+          },
+          "ReplicaSettingsUpdate": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "RegionName"
+              ],
+              "members": {
+                "RegionName": {},
+                "ReplicaProvisionedReadCapacityUnits": {
+                  "type": "long"
+                },
+                "ReplicaProvisionedReadCapacityAutoScalingSettingsUpdate": {
+                  "shape": "Sas"
+                },
+                "ReplicaGlobalSecondaryIndexSettingsUpdate": {
+                  "type": "list",
+                  "member": {
+                    "type": "structure",
+                    "required": [
+                      "IndexName"
+                    ],
+                    "members": {
+                      "IndexName": {},
+                      "ProvisionedReadCapacityUnits": {
+                        "type": "long"
+                      },
+                      "ProvisionedReadCapacityAutoScalingSettingsUpdate": {
+                        "shape": "Sas"
+                      }
+                    }
+                  }
+                },
+                "ReplicaTableClass": {}
+              }
+            }
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "GlobalTableName": {},
+          "ReplicaSettings": {
+            "shape": "S6d"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateItem": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "Key"
+        ],
+        "members": {
+          "TableName": {},
+          "Key": {
+            "shape": "S14"
+          },
+          "AttributeUpdates": {
+            "type": "map",
+            "key": {},
+            "value": {
+              "type": "structure",
+              "members": {
+                "Value": {
+                  "shape": "S6"
+                },
+                "Action": {}
+              }
+            }
+          },
+          "Expected": {
+            "shape": "S4i"
+          },
+          "ConditionalOperator": {},
+          "ReturnValues": {},
+          "ReturnConsumedCapacity": {},
+          "ReturnItemCollectionMetrics": {},
+          "UpdateExpression": {},
+          "ConditionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          },
+          "ExpressionAttributeValues": {
+            "shape": "S4q"
+          },
+          "ReturnValuesOnConditionCheckFailure": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sr"
+          },
+          "ConsumedCapacity": {
+            "shape": "Su"
+          },
+          "ItemCollectionMetrics": {
+            "shape": "S1n"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateKinesisStreamingDestination": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "StreamArn"
+        ],
+        "members": {
+          "TableName": {},
+          "StreamArn": {},
+          "UpdateKinesisStreamingConfiguration": {
+            "shape": "Sb9"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableName": {},
+          "StreamArn": {},
+          "DestinationStatus": {},
+          "UpdateKinesisStreamingConfiguration": {
+            "shape": "Sb9"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateTable": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "AttributeDefinitions": {
+            "shape": "S2o"
+          },
+          "TableName": {},
+          "BillingMode": {},
+          "ProvisionedThroughput": {
+            "shape": "S33"
+          },
+          "GlobalSecondaryIndexUpdates": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "Update": {
+                  "type": "structure",
+                  "required": [
+                    "IndexName"
+                  ],
+                  "members": {
+                    "IndexName": {},
+                    "ProvisionedThroughput": {
+                      "shape": "S33"
+                    },
+                    "OnDemandThroughput": {
+                      "shape": "S34"
+                    }
+                  }
+                },
+                "Create": {
+                  "type": "structure",
+                  "required": [
+                    "IndexName",
+                    "KeySchema",
+                    "Projection"
+                  ],
+                  "members": {
+                    "IndexName": {},
+                    "KeySchema": {
+                      "shape": "S2s"
+                    },
+                    "Projection": {
+                      "shape": "S2x"
+                    },
+                    "ProvisionedThroughput": {
+                      "shape": "S33"
+                    },
+                    "OnDemandThroughput": {
+                      "shape": "S34"
+                    }
+                  }
+                },
+                "Delete": {
+                  "type": "structure",
+                  "required": [
+                    "IndexName"
+                  ],
+                  "members": {
+                    "IndexName": {}
+                  }
+                }
+              }
+            }
+          },
+          "StreamSpecification": {
+            "shape": "S36"
+          },
+          "SSESpecification": {
+            "shape": "S39"
+          },
+          "ReplicaUpdates": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "Create": {
+                  "type": "structure",
+                  "required": [
+                    "RegionName"
+                  ],
+                  "members": {
+                    "RegionName": {},
+                    "KMSMasterKeyId": {},
+                    "ProvisionedThroughputOverride": {
+                      "shape": "S2d"
+                    },
+                    "OnDemandThroughputOverride": {
+                      "shape": "S2f"
+                    },
+                    "GlobalSecondaryIndexes": {
+                      "shape": "Sbk"
+                    },
+                    "TableClassOverride": {}
+                  }
+                },
+                "Update": {
+                  "type": "structure",
+                  "required": [
+                    "RegionName"
+                  ],
+                  "members": {
+                    "RegionName": {},
+                    "KMSMasterKeyId": {},
+                    "ProvisionedThroughputOverride": {
+                      "shape": "S2d"
+                    },
+                    "OnDemandThroughputOverride": {
+                      "shape": "S2f"
+                    },
+                    "GlobalSecondaryIndexes": {
+                      "shape": "Sbk"
+                    },
+                    "TableClassOverride": {}
+                  }
+                },
+                "Delete": {
+                  "type": "structure",
+                  "required": [
+                    "RegionName"
+                  ],
+                  "members": {
+                    "RegionName": {}
+                  }
+                }
+              }
+            }
+          },
+          "TableClass": {},
+          "DeletionProtectionEnabled": {
+            "type": "boolean"
+          },
+          "OnDemandThroughput": {
+            "shape": "S34"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableDescription": {
+            "shape": "S3j"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    },
+    "UpdateTableReplicaAutoScaling": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName"
+        ],
+        "members": {
+          "GlobalSecondaryIndexUpdates": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "IndexName": {},
+                "ProvisionedWriteCapacityAutoScalingUpdate": {
+                  "shape": "Sas"
+                }
+              }
+            }
+          },
+          "TableName": {},
+          "ProvisionedWriteCapacityAutoScalingUpdate": {
+            "shape": "Sas"
+          },
+          "ReplicaUpdates": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "RegionName"
+              ],
+              "members": {
+                "RegionName": {},
+                "ReplicaGlobalSecondaryIndexUpdates": {
+                  "type": "list",
+                  "member": {
+                    "type": "structure",
+                    "members": {
+                      "IndexName": {},
+                      "ProvisionedReadCapacityAutoScalingUpdate": {
+                        "shape": "Sas"
+                      }
+                    }
+                  }
+                },
+                "ReplicaProvisionedReadCapacityAutoScalingUpdate": {
+                  "shape": "Sas"
+                }
+              }
+            }
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TableAutoScalingDescription": {
+            "shape": "S7k"
+          }
+        }
+      }
+    },
+    "UpdateTimeToLive": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TableName",
+          "TimeToLiveSpecification"
+        ],
+        "members": {
+          "TableName": {},
+          "TimeToLiveSpecification": {
+            "shape": "Sby"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TimeToLiveSpecification": {
+            "shape": "Sby"
+          }
+        }
+      },
+      "endpointdiscovery": {}
+    }
+  },
+  "shapes": {
+    "S5": {
+      "type": "list",
+      "member": {
+        "shape": "S6"
+      }
+    },
+    "S6": {
+      "type": "structure",
+      "members": {
+        "S": {},
+        "N": {},
+        "B": {
+          "type": "blob"
+        },
+        "SS": {
+          "type": "list",
+          "member": {}
+        },
+        "NS": {
+          "type": "list",
+          "member": {}
+        },
+        "BS": {
+          "type": "list",
+          "member": {
+            "type": "blob"
+          }
+        },
+        "M": {
+          "type": "map",
+          "key": {},
+          "value": {
+            "shape": "S6"
+          }
+        },
+        "L": {
+          "type": "list",
+          "member": {
+            "shape": "S6"
+          }
+        },
+        "NULL": {
+          "type": "boolean"
+        },
+        "BOOL": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Sr": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "S6"
+      }
+    },
+    "St": {
+      "type": "list",
+      "member": {
+        "shape": "Su"
+      }
+    },
+    "Su": {
+      "type": "structure",
+      "members": {
+        "TableName": {},
+        "CapacityUnits": {
+          "type": "double"
+        },
+        "ReadCapacityUnits": {
+          "type": "double"
+        },
+        "WriteCapacityUnits": {
+          "type": "double"
+        },
+        "Table": {
+          "shape": "Sx"
+        },
+        "LocalSecondaryIndexes": {
+          "shape": "Sy"
+        },
+        "GlobalSecondaryIndexes": {
+          "shape": "Sy"
+        }
+      }
+    },
+    "Sx": {
+      "type": "structure",
+      "members": {
+        "ReadCapacityUnits": {
+          "type": "double"
+        },
+        "WriteCapacityUnits": {
+          "type": "double"
+        },
+        "CapacityUnits": {
+          "type": "double"
+        }
+      }
+    },
+    "Sy": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "Sx"
+      }
+    },
+    "S11": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "structure",
+        "required": [
+          "Keys"
+        ],
+        "members": {
+          "Keys": {
+            "type": "list",
+            "member": {
+              "shape": "S14"
+            }
+          },
+          "AttributesToGet": {
+            "shape": "S15"
+          },
+          "ConsistentRead": {
+            "type": "boolean"
+          },
+          "ProjectionExpression": {},
+          "ExpressionAttributeNames": {
+            "shape": "S17"
+          }
+        }
+      }
+    },
+    "S14": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "S6"
+      }
+    },
+    "S15": {
+      "type": "list",
+      "member": {}
+    },
+    "S17": {
+      "type": "map",
+      "key": {},
+      "value": {}
+    },
+    "S1b": {
+      "type": "list",
+      "member": {
+        "shape": "Sr"
+      }
+    },
+    "S1d": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "list",
+        "member": {
+          "type": "structure",
+          "members": {
+            "PutRequest": {
+              "type": "structure",
+              "required": [
+                "Item"
+              ],
+              "members": {
+                "Item": {
+                  "shape": "S1h"
+                }
+              }
+            },
+            "DeleteRequest": {
+              "type": "structure",
+              "required": [
+                "Key"
+              ],
+              "members": {
+                "Key": {
+                  "shape": "S14"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "S1h": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "S6"
+      }
+    },
+    "S1l": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "list",
+        "member": {
+          "shape": "S1n"
+        }
+      }
+    },
+    "S1n": {
+      "type": "structure",
+      "members": {
+        "ItemCollectionKey": {
+          "type": "map",
+          "key": {},
+          "value": {
+            "shape": "S6"
+          }
+        },
+        "SizeEstimateRangeGB": {
+          "type": "list",
+          "member": {
+            "type": "double"
+          }
+        }
+      }
+    },
+    "S1u": {
+      "type": "structure",
+      "required": [
+        "BackupArn",
+        "BackupName",
+        "BackupStatus",
+        "BackupType",
+        "BackupCreationDateTime"
+      ],
+      "members": {
+        "BackupArn": {},
+        "BackupName": {},
+        "BackupSizeBytes": {
+          "type": "long"
+        },
+        "BackupStatus": {},
+        "BackupType": {},
+        "BackupCreationDateTime": {
+          "type": "timestamp"
+        },
+        "BackupExpiryDateTime": {
+          "type": "timestamp"
+        }
+      }
+    },
+    "S22": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "members": {
+          "RegionName": {}
+        }
+      }
+    },
+    "S26": {
+      "type": "structure",
+      "members": {
+        "ReplicationGroup": {
+          "shape": "S27"
+        },
+        "GlobalTableArn": {},
+        "CreationDateTime": {
+          "type": "timestamp"
+        },
+        "GlobalTableStatus": {},
+        "GlobalTableName": {}
+      }
+    },
+    "S27": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "members": {
+          "RegionName": {},
+          "ReplicaStatus": {},
+          "ReplicaStatusDescription": {},
+          "ReplicaStatusPercentProgress": {},
+          "KMSMasterKeyId": {},
+          "ProvisionedThroughputOverride": {
+            "shape": "S2d"
+          },
+          "OnDemandThroughputOverride": {
+            "shape": "S2f"
+          },
+          "GlobalSecondaryIndexes": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "IndexName": {},
+                "ProvisionedThroughputOverride": {
+                  "shape": "S2d"
+                },
+                "OnDemandThroughputOverride": {
+                  "shape": "S2f"
+                }
+              }
+            }
+          },
+          "ReplicaInaccessibleDateTime": {
+            "type": "timestamp"
+          },
+          "ReplicaTableClassSummary": {
+            "shape": "S2j"
+          }
+        }
+      }
+    },
+    "S2d": {
+      "type": "structure",
+      "members": {
+        "ReadCapacityUnits": {
+          "type": "long"
+        }
+      }
+    },
+    "S2f": {
+      "type": "structure",
+      "members": {
+        "MaxReadRequestUnits": {
+          "type": "long"
+        }
+      }
+    },
+    "S2j": {
+      "type": "structure",
+      "members": {
+        "TableClass": {},
+        "LastUpdateDateTime": {
+          "type": "timestamp"
+        }
+      }
+    },
+    "S2o": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "AttributeName",
+          "AttributeType"
+        ],
+        "members": {
+          "AttributeName": {},
+          "AttributeType": {}
+        }
+      }
+    },
+    "S2s": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "AttributeName",
+          "KeyType"
+        ],
+        "members": {
+          "AttributeName": {},
+          "KeyType": {}
+        }
+      }
+    },
+    "S2v": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "IndexName",
+          "KeySchema",
+          "Projection"
+        ],
+        "members": {
+          "IndexName": {},
+          "KeySchema": {
+            "shape": "S2s"
+          },
+          "Projection": {
+            "shape": "S2x"
+          }
+        }
+      }
+    },
+    "S2x": {
+      "type": "structure",
+      "members": {
+        "ProjectionType": {},
+        "NonKeyAttributes": {
+          "type": "list",
+          "member": {}
+        }
+      }
+    },
+    "S31": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "IndexName",
+          "KeySchema",
+          "Projection"
+        ],
+        "members": {
+          "IndexName": {},
+          "KeySchema": {
+            "shape": "S2s"
+          },
+          "Projection": {
+            "shape": "S2x"
+          },
+          "ProvisionedThroughput": {
+            "shape": "S33"
+          },
+          "OnDemandThroughput": {
+            "shape": "S34"
+          }
+        }
+      }
+    },
+    "S33": {
+      "type": "structure",
+      "required": [
+        "ReadCapacityUnits",
+        "WriteCapacityUnits"
+      ],
+      "members": {
+        "ReadCapacityUnits": {
+          "type": "long"
+        },
+        "WriteCapacityUnits": {
+          "type": "long"
+        }
+      }
+    },
+    "S34": {
+      "type": "structure",
+      "members": {
+        "MaxReadRequestUnits": {
+          "type": "long"
+        },
+        "MaxWriteRequestUnits": {
+          "type": "long"
+        }
+      }
+    },
+    "S36": {
+      "type": "structure",
+      "required": [
+        "StreamEnabled"
+      ],
+      "members": {
+        "StreamEnabled": {
+          "type": "boolean"
+        },
+        "StreamViewType": {}
+      }
+    },
+    "S39": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "SSEType": {},
+        "KMSMasterKeyId": {}
+      }
+    },
+    "S3c": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "Key",
+          "Value"
+        ],
+        "members": {
+          "Key": {},
+          "Value": {}
+        }
+      }
+    },
+    "S3j": {
+      "type": "structure",
+      "members": {
+        "AttributeDefinitions": {
+          "shape": "S2o"
+        },
+        "TableName": {},
+        "KeySchema": {
+          "shape": "S2s"
+        },
+        "TableStatus": {},
+        "CreationDateTime": {
+          "type": "timestamp"
+        },
+        "ProvisionedThroughput": {
+          "shape": "S3l"
+        },
+        "TableSizeBytes": {
+          "type": "long"
+        },
+        "ItemCount": {
+          "type": "long"
+        },
+        "TableArn": {},
+        "TableId": {},
+        "BillingModeSummary": {
+          "shape": "S3o"
+        },
+        "LocalSecondaryIndexes": {
+          "type": "list",
+          "member": {
+            "type": "structure",
+            "members": {
+              "IndexName": {},
+              "KeySchema": {
+                "shape": "S2s"
+              },
+              "Projection": {
+                "shape": "S2x"
+              },
+              "IndexSizeBytes": {
+                "type": "long"
+              },
+              "ItemCount": {
+                "type": "long"
+              },
+              "IndexArn": {}
+            }
+          }
+        },
+        "GlobalSecondaryIndexes": {
+          "type": "list",
+          "member": {
+            "type": "structure",
+            "members": {
+              "IndexName": {},
+              "KeySchema": {
+                "shape": "S2s"
+              },
+              "Projection": {
+                "shape": "S2x"
+              },
+              "IndexStatus": {},
+              "Backfilling": {
+                "type": "boolean"
+              },
+              "ProvisionedThroughput": {
+                "shape": "S3l"
+              },
+              "IndexSizeBytes": {
+                "type": "long"
+              },
+              "ItemCount": {
+                "type": "long"
+              },
+              "IndexArn": {},
+              "OnDemandThroughput": {
+                "shape": "S34"
+              }
+            }
+          }
+        },
+        "StreamSpecification": {
+          "shape": "S36"
+        },
+        "LatestStreamLabel": {},
+        "LatestStreamArn": {},
+        "GlobalTableVersion": {},
+        "Replicas": {
+          "shape": "S27"
+        },
+        "RestoreSummary": {
+          "type": "structure",
+          "required": [
+            "RestoreDateTime",
+            "RestoreInProgress"
+          ],
+          "members": {
+            "SourceBackupArn": {},
+            "SourceTableArn": {},
+            "RestoreDateTime": {
+              "type": "timestamp"
+            },
+            "RestoreInProgress": {
+              "type": "boolean"
+            }
+          }
+        },
+        "SSEDescription": {
+          "shape": "S3y"
+        },
+        "ArchivalSummary": {
+          "type": "structure",
+          "members": {
+            "ArchivalDateTime": {
+              "type": "timestamp"
+            },
+            "ArchivalReason": {},
+            "ArchivalBackupArn": {}
+          }
+        },
+        "TableClassSummary": {
+          "shape": "S2j"
+        },
+        "DeletionProtectionEnabled": {
+          "type": "boolean"
+        },
+        "OnDemandThroughput": {
+          "shape": "S34"
+        }
+      }
+    },
+    "S3l": {
+      "type": "structure",
+      "members": {
+        "LastIncreaseDateTime": {
+          "type": "timestamp"
+        },
+        "LastDecreaseDateTime": {
+          "type": "timestamp"
+        },
+        "NumberOfDecreasesToday": {
+          "type": "long"
+        },
+        "ReadCapacityUnits": {
+          "type": "long"
+        },
+        "WriteCapacityUnits": {
+          "type": "long"
+        }
+      }
+    },
+    "S3o": {
+      "type": "structure",
+      "members": {
+        "BillingMode": {},
+        "LastUpdateToPayPerRequestDateTime": {
+          "type": "timestamp"
+        }
+      }
+    },
+    "S3y": {
+      "type": "structure",
+      "members": {
+        "Status": {},
+        "SSEType": {},
+        "KMSMasterKeyArn": {},
+        "InaccessibleEncryptionDateTime": {
+          "type": "timestamp"
+        }
+      }
+    },
+    "S45": {
+      "type": "structure",
+      "members": {
+        "BackupDetails": {
+          "shape": "S1u"
+        },
+        "SourceTableDetails": {
+          "type": "structure",
+          "required": [
+            "TableName",
+            "TableId",
+            "KeySchema",
+            "TableCreationDateTime",
+            "ProvisionedThroughput"
+          ],
+          "members": {
+            "TableName": {},
+            "TableId": {},
+            "TableArn": {},
+            "TableSizeBytes": {
+              "type": "long"
+            },
+            "KeySchema": {
+              "shape": "S2s"
+            },
+            "TableCreationDateTime": {
+              "type": "timestamp"
+            },
+            "ProvisionedThroughput": {
+              "shape": "S33"
+            },
+            "OnDemandThroughput": {
+              "shape": "S34"
+            },
+            "ItemCount": {
+              "type": "long"
+            },
+            "BillingMode": {}
+          }
+        },
+        "SourceTableFeatureDetails": {
+          "type": "structure",
+          "members": {
+            "LocalSecondaryIndexes": {
+              "type": "list",
+              "member": {
+                "type": "structure",
+                "members": {
+                  "IndexName": {},
+                  "KeySchema": {
+                    "shape": "S2s"
+                  },
+                  "Projection": {
+                    "shape": "S2x"
+                  }
+                }
+              }
+            },
+            "GlobalSecondaryIndexes": {
+              "type": "list",
+              "member": {
+                "type": "structure",
+                "members": {
+                  "IndexName": {},
+                  "KeySchema": {
+                    "shape": "S2s"
+                  },
+                  "Projection": {
+                    "shape": "S2x"
+                  },
+                  "ProvisionedThroughput": {
+                    "shape": "S33"
+                  },
+                  "OnDemandThroughput": {
+                    "shape": "S34"
+                  }
+                }
+              }
+            },
+            "StreamDescription": {
+              "shape": "S36"
+            },
+            "TimeToLiveDescription": {
+              "shape": "S4e"
+            },
+            "SSEDescription": {
+              "shape": "S3y"
+            }
+          }
+        }
+      }
+    },
+    "S4e": {
+      "type": "structure",
+      "members": {
+        "TimeToLiveStatus": {},
+        "AttributeName": {}
+      }
+    },
+    "S4i": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "structure",
+        "members": {
+          "Value": {
+            "shape": "S6"
+          },
+          "Exists": {
+            "type": "boolean"
+          },
+          "ComparisonOperator": {},
+          "AttributeValueList": {
+            "shape": "S4m"
+          }
+        }
+      }
+    },
+    "S4m": {
+      "type": "list",
+      "member": {
+        "shape": "S6"
+      }
+    },
+    "S4q": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "S6"
+      }
+    },
+    "S53": {
+      "type": "structure",
+      "required": [
+        "ContinuousBackupsStatus"
+      ],
+      "members": {
+        "ContinuousBackupsStatus": {},
+        "PointInTimeRecoveryDescription": {
+          "type": "structure",
+          "members": {
+            "PointInTimeRecoveryStatus": {},
+            "EarliestRestorableDateTime": {
+              "type": "timestamp"
+            },
+            "LatestRestorableDateTime": {
+              "type": "timestamp"
+            }
+          }
+        }
+      }
+    },
+    "S5o": {
+      "type": "structure",
+      "members": {
+        "ExportArn": {},
+        "ExportStatus": {},
+        "StartTime": {
+          "type": "timestamp"
+        },
+        "EndTime": {
+          "type": "timestamp"
+        },
+        "ExportManifest": {},
+        "TableArn": {},
+        "TableId": {},
+        "ExportTime": {
+          "type": "timestamp"
+        },
+        "ClientToken": {},
+        "S3Bucket": {},
+        "S3BucketOwner": {},
+        "S3Prefix": {},
+        "S3SseAlgorithm": {},
+        "S3SseKmsKeyId": {},
+        "FailureCode": {},
+        "FailureMessage": {},
+        "ExportFormat": {},
+        "BilledSizeBytes": {
+          "type": "long"
+        },
+        "ItemCount": {
+          "type": "long"
+        },
+        "ExportType": {},
+        "IncrementalExportSpecification": {
+          "shape": "S65"
+        }
+      }
+    },
+    "S65": {
+      "type": "structure",
+      "members": {
+        "ExportFromTime": {
+          "type": "timestamp"
+        },
+        "ExportToTime": {
+          "type": "timestamp"
+        },
+        "ExportViewType": {}
+      }
+    },
+    "S6d": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "RegionName"
+        ],
+        "members": {
+          "RegionName": {},
+          "ReplicaStatus": {},
+          "ReplicaBillingModeSummary": {
+            "shape": "S3o"
+          },
+          "ReplicaProvisionedReadCapacityUnits": {
+            "type": "long"
+          },
+          "ReplicaProvisionedReadCapacityAutoScalingSettings": {
+            "shape": "S6f"
+          },
+          "ReplicaProvisionedWriteCapacityUnits": {
+            "type": "long"
+          },
+          "ReplicaProvisionedWriteCapacityAutoScalingSettings": {
+            "shape": "S6f"
+          },
+          "ReplicaGlobalSecondaryIndexSettings": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "IndexName"
+              ],
+              "members": {
+                "IndexName": {},
+                "IndexStatus": {},
+                "ProvisionedReadCapacityUnits": {
+                  "type": "long"
+                },
+                "ProvisionedReadCapacityAutoScalingSettings": {
+                  "shape": "S6f"
+                },
+                "ProvisionedWriteCapacityUnits": {
+                  "type": "long"
+                },
+                "ProvisionedWriteCapacityAutoScalingSettings": {
+                  "shape": "S6f"
+                }
+              }
+            }
+          },
+          "ReplicaTableClassSummary": {
+            "shape": "S2j"
+          }
+        }
+      }
+    },
+    "S6f": {
+      "type": "structure",
+      "members": {
+        "MinimumUnits": {
+          "type": "long"
+        },
+        "MaximumUnits": {
+          "type": "long"
+        },
+        "AutoScalingDisabled": {
+          "type": "boolean"
+        },
+        "AutoScalingRoleArn": {},
+        "ScalingPolicies": {
+          "type": "list",
+          "member": {
+            "type": "structure",
+            "members": {
+              "PolicyName": {},
+              "TargetTrackingScalingPolicyConfiguration": {
+                "type": "structure",
+                "required": [
+                  "TargetValue"
+                ],
+                "members": {
+                  "DisableScaleIn": {
+                    "type": "boolean"
+                  },
+                  "ScaleInCooldown": {
+                    "type": "integer"
+                  },
+                  "ScaleOutCooldown": {
+                    "type": "integer"
+                  },
+                  "TargetValue": {
+                    "type": "double"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "S6r": {
+      "type": "structure",
+      "members": {
+        "ImportArn": {},
+        "ImportStatus": {},
+        "TableArn": {},
+        "TableId": {},
+        "ClientToken": {},
+        "S3BucketSource": {
+          "shape": "S6t"
+        },
+        "ErrorCount": {
+          "type": "long"
+        },
+        "CloudWatchLogGroupArn": {},
+        "InputFormat": {},
+        "InputFormatOptions": {
+          "shape": "S6x"
+        },
+        "InputCompressionType": {},
+        "TableCreationParameters": {
+          "shape": "S73"
+        },
+        "StartTime": {
+          "type": "timestamp"
+        },
+        "EndTime": {
+          "type": "timestamp"
+        },
+        "ProcessedSizeBytes": {
+          "type": "long"
+        },
+        "ProcessedItemCount": {
+          "type": "long"
+        },
+        "ImportedItemCount": {
+          "type": "long"
+        },
+        "FailureCode": {},
+        "FailureMessage": {}
+      }
+    },
+    "S6t": {
+      "type": "structure",
+      "required": [
+        "S3Bucket"
+      ],
+      "members": {
+        "S3BucketOwner": {},
+        "S3Bucket": {},
+        "S3KeyPrefix": {}
+      }
+    },
+    "S6x": {
+      "type": "structure",
+      "members": {
+        "Csv": {
+          "type": "structure",
+          "members": {
+            "Delimiter": {},
+            "HeaderList": {
+              "type": "list",
+              "member": {}
+            }
+          }
+        }
+      }
+    },
+    "S73": {
+      "type": "structure",
+      "required": [
+        "TableName",
+        "AttributeDefinitions",
+        "KeySchema"
+      ],
+      "members": {
+        "TableName": {},
+        "AttributeDefinitions": {
+          "shape": "S2o"
+        },
+        "KeySchema": {
+          "shape": "S2s"
+        },
+        "BillingMode": {},
+        "ProvisionedThroughput": {
+          "shape": "S33"
+        },
+        "OnDemandThroughput": {
+          "shape": "S34"
+        },
+        "SSESpecification": {
+          "shape": "S39"
+        },
+        "GlobalSecondaryIndexes": {
+          "shape": "S31"
+        }
+      }
+    },
+    "S7k": {
+      "type": "structure",
+      "members": {
+        "TableName": {},
+        "TableStatus": {},
+        "Replicas": {
+          "type": "list",
+          "member": {
+            "type": "structure",
+            "members": {
+              "RegionName": {},
+              "GlobalSecondaryIndexes": {
+                "type": "list",
+                "member": {
+                  "type": "structure",
+                  "members": {
+                    "IndexName": {},
+                    "IndexStatus": {},
+                    "ProvisionedReadCapacityAutoScalingSettings": {
+                      "shape": "S6f"
+                    },
+                    "ProvisionedWriteCapacityAutoScalingSettings": {
+                      "shape": "S6f"
+                    }
+                  }
+                }
+              },
+              "ReplicaProvisionedReadCapacityAutoScalingSettings": {
+                "shape": "S6f"
+              },
+              "ReplicaProvisionedWriteCapacityAutoScalingSettings": {
+                "shape": "S6f"
+              },
+              "ReplicaStatus": {}
+            }
+          }
+        }
+      }
+    },
+    "S7r": {
+      "type": "structure",
+      "required": [
+        "TableName",
+        "StreamArn"
+      ],
+      "members": {
+        "TableName": {},
+        "StreamArn": {},
+        "EnableKinesisStreamingConfiguration": {
+          "shape": "S7s"
+        }
+      }
+    },
+    "S7s": {
+      "type": "structure",
+      "members": {
+        "ApproximateCreationDateTimePrecision": {}
+      }
+    },
+    "S7t": {
+      "type": "structure",
+      "members": {
+        "TableName": {},
+        "StreamArn": {},
+        "DestinationStatus": {},
+        "EnableKinesisStreamingConfiguration": {
+          "shape": "S7s"
+        }
+      }
+    },
+    "S83": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "members": {
+          "Item": {
+            "shape": "Sr"
+          }
+        }
+      }
+    },
+    "S9l": {
+      "type": "structure",
+      "required": [
+        "ComparisonOperator"
+      ],
+      "members": {
+        "AttributeValueList": {
+          "shape": "S4m"
+        },
+        "ComparisonOperator": {}
+      }
+    },
+    "S9m": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "shape": "S9l"
+      }
+    },
+    "Sas": {
+      "type": "structure",
+      "members": {
+        "MinimumUnits": {
+          "type": "long"
+        },
+        "MaximumUnits": {
+          "type": "long"
+        },
+        "AutoScalingDisabled": {
+          "type": "boolean"
+        },
+        "AutoScalingRoleArn": {},
+        "ScalingPolicyUpdate": {
+          "type": "structure",
+          "required": [
+            "TargetTrackingScalingPolicyConfiguration"
+          ],
+          "members": {
+            "PolicyName": {},
+            "TargetTrackingScalingPolicyConfiguration": {
+              "type": "structure",
+              "required": [
+                "TargetValue"
+              ],
+              "members": {
+                "DisableScaleIn": {
+                  "type": "boolean"
+                },
+                "ScaleInCooldown": {
+                  "type": "integer"
+                },
+                "ScaleOutCooldown": {
+                  "type": "integer"
+                },
+                "TargetValue": {
+                  "type": "double"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Sb9": {
+      "type": "structure",
+      "members": {
+        "ApproximateCreationDateTimePrecision": {}
+      }
+    },
+    "Sbk": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "IndexName"
+        ],
+        "members": {
+          "IndexName": {},
+          "ProvisionedThroughputOverride": {
+            "shape": "S2d"
+          },
+          "OnDemandThroughputOverride": {
+            "shape": "S2f"
+          }
+        }
+      }
+    },
+    "Sby": {
+      "type": "structure",
+      "required": [
+        "Enabled",
+        "AttributeName"
+      ],
+      "members": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "AttributeName": {}
+      }
+    }
+  }
+}
+},{}],4:[function(require,module,exports){
+module.exports={
+  "pagination": {
+    "BatchGetItem": {
+      "input_token": "RequestItems",
+      "output_token": "UnprocessedKeys"
+    },
+    "ListContributorInsights": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken"
+    },
+    "ListExports": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken"
+    },
+    "ListImports": {
+      "input_token": "NextToken",
+      "limit_key": "PageSize",
+      "output_token": "NextToken"
+    },
+    "ListTables": {
+      "input_token": "ExclusiveStartTableName",
+      "limit_key": "Limit",
+      "output_token": "LastEvaluatedTableName",
+      "result_key": "TableNames"
+    },
+    "Query": {
+      "input_token": "ExclusiveStartKey",
+      "limit_key": "Limit",
+      "output_token": "LastEvaluatedKey",
+      "result_key": "Items"
+    },
+    "Scan": {
+      "input_token": "ExclusiveStartKey",
+      "limit_key": "Limit",
+      "output_token": "LastEvaluatedKey",
+      "result_key": "Items"
+    }
+  }
+}
+},{}],5:[function(require,module,exports){
+module.exports={
+  "version": 2,
+  "waiters": {
+    "TableExists": {
+      "delay": 20,
+      "operation": "DescribeTable",
+      "maxAttempts": 25,
+      "acceptors": [
+        {
+          "expected": "ACTIVE",
+          "matcher": "path",
+          "state": "success",
+          "argument": "Table.TableStatus"
+        },
+        {
+          "expected": "ResourceNotFoundException",
+          "matcher": "error",
+          "state": "retry"
+        }
+      ]
+    },
+    "TableNotExists": {
+      "delay": 20,
+      "operation": "DescribeTable",
+      "maxAttempts": 25,
+      "acceptors": [
+        {
+          "expected": "ResourceNotFoundException",
+          "matcher": "error",
+          "state": "success"
+        }
+      ]
+    }
+  }
+}
+
+},{}],6:[function(require,module,exports){
 module.exports={
   "version": "2.0",
   "metadata": {
@@ -37106,7 +40527,7 @@ module.exports={
     }
   }
 }
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports={
   "pagination": {
     "DescribeAccountAttributes": {
@@ -37992,7 +41413,7 @@ module.exports={
     }
   }
 }
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports={
   "version": 2,
   "waiters": {
@@ -38720,7 +42141,7 @@ module.exports={
   }
 }
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports={
   "version": "2.0",
   "metadata": {
@@ -40705,7 +44126,7 @@ module.exports={
     }
   }
 }
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports={
   "pagination": {
     "ListCustomVerificationEmailTemplates": {
@@ -40724,7 +44145,7 @@ module.exports={
     }
   }
 }
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports={
   "version": 2,
   "waiters": {
@@ -40744,7 +44165,7 @@ module.exports={
   }
 }
 
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports={
   "version": "2.0",
   "metadata": {
@@ -43923,7 +47344,7 @@ module.exports={
     }
   }
 }
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports={
   "pagination": {
     "ListAliases": {
@@ -43994,7 +47415,7 @@ module.exports={
     }
   }
 }
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports={
   "version": 2,
   "waiters": {
@@ -44148,7 +47569,7 @@ module.exports={
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports={
   "acm": {
     "name": "ACM",
@@ -45589,7 +49010,7 @@ module.exports={
     "name": "PCS"
   }
 }
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports={
   "version": "2.0",
   "metadata": {
@@ -53698,7 +57119,7 @@ module.exports={
     }
   }
 }
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports={
   "pagination": {
     "ListBuckets": {
@@ -53774,7 +57195,7 @@ module.exports={
     }
   }
 }
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports={
   "version": 2,
   "waiters": {
@@ -53849,7 +57270,1821 @@ module.exports={
   }
 }
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
+module.exports={
+  "version": "2.0",
+  "metadata": {
+    "apiVersion": "2010-03-31",
+    "endpointPrefix": "sns",
+    "protocol": "query",
+    "protocols": [
+      "query"
+    ],
+    "serviceAbbreviation": "Amazon SNS",
+    "serviceFullName": "Amazon Simple Notification Service",
+    "serviceId": "SNS",
+    "signatureVersion": "v4",
+    "uid": "sns-2010-03-31",
+    "xmlNamespace": "http://sns.amazonaws.com/doc/2010-03-31/",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
+  },
+  "operations": {
+    "AddPermission": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "Label",
+          "AWSAccountId",
+          "ActionName"
+        ],
+        "members": {
+          "TopicArn": {},
+          "Label": {},
+          "AWSAccountId": {
+            "type": "list",
+            "member": {}
+          },
+          "ActionName": {
+            "type": "list",
+            "member": {}
+          }
+        }
+      }
+    },
+    "CheckIfPhoneNumberIsOptedOut": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "phoneNumber"
+        ],
+        "members": {
+          "phoneNumber": {
+            "shape": "S9"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "CheckIfPhoneNumberIsOptedOutResult",
+        "type": "structure",
+        "members": {
+          "isOptedOut": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ConfirmSubscription": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "Token"
+        ],
+        "members": {
+          "TopicArn": {},
+          "Token": {},
+          "AuthenticateOnUnsubscribe": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ConfirmSubscriptionResult",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {}
+        }
+      }
+    },
+    "CreatePlatformApplication": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "Name",
+          "Platform",
+          "Attributes"
+        ],
+        "members": {
+          "Name": {},
+          "Platform": {},
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "CreatePlatformApplicationResult",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {}
+        }
+      }
+    },
+    "CreatePlatformEndpoint": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PlatformApplicationArn",
+          "Token"
+        ],
+        "members": {
+          "PlatformApplicationArn": {},
+          "Token": {},
+          "CustomUserData": {},
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "CreatePlatformEndpointResult",
+        "type": "structure",
+        "members": {
+          "EndpointArn": {}
+        }
+      }
+    },
+    "CreateSMSSandboxPhoneNumber": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PhoneNumber"
+        ],
+        "members": {
+          "PhoneNumber": {
+            "shape": "So"
+          },
+          "LanguageCode": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "CreateSMSSandboxPhoneNumberResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "CreateTopic": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "Name"
+        ],
+        "members": {
+          "Name": {},
+          "Attributes": {
+            "shape": "St"
+          },
+          "Tags": {
+            "shape": "Sw"
+          },
+          "DataProtectionPolicy": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "CreateTopicResult",
+        "type": "structure",
+        "members": {
+          "TopicArn": {}
+        }
+      }
+    },
+    "DeleteEndpoint": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "EndpointArn"
+        ],
+        "members": {
+          "EndpointArn": {}
+        }
+      }
+    },
+    "DeletePlatformApplication": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PlatformApplicationArn"
+        ],
+        "members": {
+          "PlatformApplicationArn": {}
+        }
+      }
+    },
+    "DeleteSMSSandboxPhoneNumber": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PhoneNumber"
+        ],
+        "members": {
+          "PhoneNumber": {
+            "shape": "So"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "DeleteSMSSandboxPhoneNumberResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "DeleteTopic": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn"
+        ],
+        "members": {
+          "TopicArn": {}
+        }
+      }
+    },
+    "GetDataProtectionPolicy": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn"
+        ],
+        "members": {
+          "ResourceArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "GetDataProtectionPolicyResult",
+        "type": "structure",
+        "members": {
+          "DataProtectionPolicy": {}
+        }
+      }
+    },
+    "GetEndpointAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "EndpointArn"
+        ],
+        "members": {
+          "EndpointArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "GetEndpointAttributesResult",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      }
+    },
+    "GetPlatformApplicationAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PlatformApplicationArn"
+        ],
+        "members": {
+          "PlatformApplicationArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "GetPlatformApplicationAttributesResult",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      }
+    },
+    "GetSMSAttributes": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "attributes": {
+            "type": "list",
+            "member": {}
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "GetSMSAttributesResult",
+        "type": "structure",
+        "members": {
+          "attributes": {
+            "shape": "Sj"
+          }
+        }
+      }
+    },
+    "GetSMSSandboxAccountStatus": {
+      "input": {
+        "type": "structure",
+        "members": {}
+      },
+      "output": {
+        "resultWrapper": "GetSMSSandboxAccountStatusResult",
+        "type": "structure",
+        "required": [
+          "IsInSandbox"
+        ],
+        "members": {
+          "IsInSandbox": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "GetSubscriptionAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "SubscriptionArn"
+        ],
+        "members": {
+          "SubscriptionArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "GetSubscriptionAttributesResult",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "S1j"
+          }
+        }
+      }
+    },
+    "GetTopicAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn"
+        ],
+        "members": {
+          "TopicArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "GetTopicAttributesResult",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "St"
+          }
+        }
+      }
+    },
+    "ListEndpointsByPlatformApplication": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PlatformApplicationArn"
+        ],
+        "members": {
+          "PlatformApplicationArn": {},
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListEndpointsByPlatformApplicationResult",
+        "type": "structure",
+        "members": {
+          "Endpoints": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "EndpointArn": {},
+                "Attributes": {
+                  "shape": "Sj"
+                }
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListOriginationNumbers": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "NextToken": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "ListOriginationNumbersResult",
+        "type": "structure",
+        "members": {
+          "NextToken": {},
+          "PhoneNumbers": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "CreatedAt": {
+                  "type": "timestamp"
+                },
+                "PhoneNumber": {
+                  "shape": "S9"
+                },
+                "Status": {},
+                "Iso2CountryCode": {},
+                "RouteType": {},
+                "NumberCapabilities": {
+                  "type": "list",
+                  "member": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ListPhoneNumbersOptedOut": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "nextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListPhoneNumbersOptedOutResult",
+        "type": "structure",
+        "members": {
+          "phoneNumbers": {
+            "type": "list",
+            "member": {
+              "shape": "S9"
+            }
+          },
+          "nextToken": {}
+        }
+      }
+    },
+    "ListPlatformApplications": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListPlatformApplicationsResult",
+        "type": "structure",
+        "members": {
+          "PlatformApplications": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "PlatformApplicationArn": {},
+                "Attributes": {
+                  "shape": "Sj"
+                }
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListSMSSandboxPhoneNumbers": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "NextToken": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "ListSMSSandboxPhoneNumbersResult",
+        "type": "structure",
+        "required": [
+          "PhoneNumbers"
+        ],
+        "members": {
+          "PhoneNumbers": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "PhoneNumber": {
+                  "shape": "So"
+                },
+                "Status": {}
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListSubscriptions": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListSubscriptionsResult",
+        "type": "structure",
+        "members": {
+          "Subscriptions": {
+            "shape": "S2h"
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListSubscriptionsByTopic": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn"
+        ],
+        "members": {
+          "TopicArn": {},
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListSubscriptionsByTopicResult",
+        "type": "structure",
+        "members": {
+          "Subscriptions": {
+            "shape": "S2h"
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListTagsForResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn"
+        ],
+        "members": {
+          "ResourceArn": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListTagsForResourceResult",
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape": "Sw"
+          }
+        }
+      }
+    },
+    "ListTopics": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "NextToken": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "ListTopicsResult",
+        "type": "structure",
+        "members": {
+          "Topics": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "TopicArn": {}
+              }
+            }
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "OptInPhoneNumber": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "phoneNumber"
+        ],
+        "members": {
+          "phoneNumber": {
+            "shape": "S9"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "OptInPhoneNumberResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "Publish": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "Message"
+        ],
+        "members": {
+          "TopicArn": {},
+          "TargetArn": {},
+          "PhoneNumber": {
+            "shape": "S9"
+          },
+          "Message": {},
+          "Subject": {},
+          "MessageStructure": {},
+          "MessageAttributes": {
+            "shape": "S31"
+          },
+          "MessageDeduplicationId": {},
+          "MessageGroupId": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "PublishResult",
+        "type": "structure",
+        "members": {
+          "MessageId": {},
+          "SequenceNumber": {}
+        }
+      }
+    },
+    "PublishBatch": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "PublishBatchRequestEntries"
+        ],
+        "members": {
+          "TopicArn": {},
+          "PublishBatchRequestEntries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "Message"
+              ],
+              "members": {
+                "Id": {},
+                "Message": {},
+                "Subject": {},
+                "MessageStructure": {},
+                "MessageAttributes": {
+                  "shape": "S31"
+                },
+                "MessageDeduplicationId": {},
+                "MessageGroupId": {}
+              }
+            }
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "PublishBatchResult",
+        "type": "structure",
+        "members": {
+          "Successful": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "Id": {},
+                "MessageId": {},
+                "SequenceNumber": {}
+              }
+            }
+          },
+          "Failed": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "Code",
+                "SenderFault"
+              ],
+              "members": {
+                "Id": {},
+                "Code": {},
+                "Message": {},
+                "SenderFault": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "PutDataProtectionPolicy": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "DataProtectionPolicy"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "DataProtectionPolicy": {}
+        }
+      }
+    },
+    "RemovePermission": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "Label"
+        ],
+        "members": {
+          "TopicArn": {},
+          "Label": {}
+        }
+      }
+    },
+    "SetEndpointAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "EndpointArn",
+          "Attributes"
+        ],
+        "members": {
+          "EndpointArn": {},
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      }
+    },
+    "SetPlatformApplicationAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PlatformApplicationArn",
+          "Attributes"
+        ],
+        "members": {
+          "PlatformApplicationArn": {},
+          "Attributes": {
+            "shape": "Sj"
+          }
+        }
+      }
+    },
+    "SetSMSAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "attributes"
+        ],
+        "members": {
+          "attributes": {
+            "shape": "Sj"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "SetSMSAttributesResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "SetSubscriptionAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "SubscriptionArn",
+          "AttributeName"
+        ],
+        "members": {
+          "SubscriptionArn": {},
+          "AttributeName": {},
+          "AttributeValue": {}
+        }
+      }
+    },
+    "SetTopicAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "AttributeName"
+        ],
+        "members": {
+          "TopicArn": {},
+          "AttributeName": {},
+          "AttributeValue": {}
+        }
+      }
+    },
+    "Subscribe": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TopicArn",
+          "Protocol"
+        ],
+        "members": {
+          "TopicArn": {},
+          "Protocol": {},
+          "Endpoint": {},
+          "Attributes": {
+            "shape": "S1j"
+          },
+          "ReturnSubscriptionArn": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "SubscribeResult",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {}
+        }
+      }
+    },
+    "TagResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "Tags"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "Tags": {
+            "shape": "Sw"
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "TagResourceResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "Unsubscribe": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "SubscriptionArn"
+        ],
+        "members": {
+          "SubscriptionArn": {}
+        }
+      }
+    },
+    "UntagResource": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "ResourceArn",
+          "TagKeys"
+        ],
+        "members": {
+          "ResourceArn": {},
+          "TagKeys": {
+            "type": "list",
+            "member": {}
+          }
+        }
+      },
+      "output": {
+        "resultWrapper": "UntagResourceResult",
+        "type": "structure",
+        "members": {}
+      }
+    },
+    "VerifySMSSandboxPhoneNumber": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "PhoneNumber",
+          "OneTimePassword"
+        ],
+        "members": {
+          "PhoneNumber": {
+            "shape": "So"
+          },
+          "OneTimePassword": {}
+        }
+      },
+      "output": {
+        "resultWrapper": "VerifySMSSandboxPhoneNumberResult",
+        "type": "structure",
+        "members": {}
+      }
+    }
+  },
+  "shapes": {
+    "S9": {
+      "type": "string",
+      "sensitive": true
+    },
+    "Sj": {
+      "type": "map",
+      "key": {},
+      "value": {}
+    },
+    "So": {
+      "type": "string",
+      "sensitive": true
+    },
+    "St": {
+      "type": "map",
+      "key": {},
+      "value": {}
+    },
+    "Sw": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "Key",
+          "Value"
+        ],
+        "members": {
+          "Key": {},
+          "Value": {}
+        }
+      }
+    },
+    "S1j": {
+      "type": "map",
+      "key": {},
+      "value": {}
+    },
+    "S2h": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {},
+          "Owner": {},
+          "Protocol": {},
+          "Endpoint": {},
+          "TopicArn": {}
+        }
+      }
+    },
+    "S31": {
+      "type": "map",
+      "key": {
+        "locationName": "Name"
+      },
+      "value": {
+        "locationName": "Value",
+        "type": "structure",
+        "required": [
+          "DataType"
+        ],
+        "members": {
+          "DataType": {},
+          "StringValue": {},
+          "BinaryValue": {
+            "type": "blob"
+          }
+        }
+      }
+    }
+  }
+}
+},{}],20:[function(require,module,exports){
+module.exports={
+  "pagination": {
+    "ListEndpointsByPlatformApplication": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "result_key": "Endpoints"
+    },
+    "ListOriginationNumbers": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "PhoneNumbers"
+    },
+    "ListPhoneNumbersOptedOut": {
+      "input_token": "nextToken",
+      "output_token": "nextToken",
+      "result_key": "phoneNumbers"
+    },
+    "ListPlatformApplications": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "result_key": "PlatformApplications"
+    },
+    "ListSMSSandboxPhoneNumbers": {
+      "input_token": "NextToken",
+      "limit_key": "MaxResults",
+      "output_token": "NextToken",
+      "result_key": "PhoneNumbers"
+    },
+    "ListSubscriptions": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "result_key": "Subscriptions"
+    },
+    "ListSubscriptionsByTopic": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "result_key": "Subscriptions"
+    },
+    "ListTopics": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "result_key": "Topics"
+    }
+  }
+}
+},{}],21:[function(require,module,exports){
+module.exports={
+  "version": "2.0",
+  "metadata": {
+    "apiVersion": "2012-11-05",
+    "awsQueryCompatible": {},
+    "endpointPrefix": "sqs",
+    "jsonVersion": "1.0",
+    "protocol": "json",
+    "protocols": [
+      "json"
+    ],
+    "serviceAbbreviation": "Amazon SQS",
+    "serviceFullName": "Amazon Simple Queue Service",
+    "serviceId": "SQS",
+    "signatureVersion": "v4",
+    "targetPrefix": "AmazonSQS",
+    "uid": "sqs-2012-11-05"
+  },
+  "operations": {
+    "AddPermission": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Label",
+          "AWSAccountIds",
+          "Actions"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Label": {},
+          "AWSAccountIds": {
+            "type": "list",
+            "member": {},
+            "flattened": true
+          },
+          "Actions": {
+            "type": "list",
+            "member": {},
+            "flattened": true
+          }
+        }
+      }
+    },
+    "CancelMessageMoveTask": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "TaskHandle"
+        ],
+        "members": {
+          "TaskHandle": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "ApproximateNumberOfMessagesMoved": {
+            "type": "long"
+          }
+        }
+      }
+    },
+    "ChangeMessageVisibility": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "ReceiptHandle",
+          "VisibilityTimeout"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "ReceiptHandle": {},
+          "VisibilityTimeout": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "ChangeMessageVisibilityBatch": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Entries"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Entries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "ReceiptHandle"
+              ],
+              "members": {
+                "Id": {},
+                "ReceiptHandle": {},
+                "VisibilityTimeout": {
+                  "type": "integer"
+                }
+              }
+            },
+            "flattened": true
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "Successful",
+          "Failed"
+        ],
+        "members": {
+          "Successful": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id"
+              ],
+              "members": {
+                "Id": {}
+              }
+            },
+            "flattened": true
+          },
+          "Failed": {
+            "shape": "Sg"
+          }
+        }
+      }
+    },
+    "CreateQueue": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueName"
+        ],
+        "members": {
+          "QueueName": {},
+          "Attributes": {
+            "shape": "Sk"
+          },
+          "tags": {
+            "shape": "Sm"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "QueueUrl": {}
+        }
+      }
+    },
+    "DeleteMessage": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "ReceiptHandle"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "ReceiptHandle": {}
+        }
+      }
+    },
+    "DeleteMessageBatch": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Entries"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Entries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "ReceiptHandle"
+              ],
+              "members": {
+                "Id": {},
+                "ReceiptHandle": {}
+              }
+            },
+            "flattened": true
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "Successful",
+          "Failed"
+        ],
+        "members": {
+          "Successful": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id"
+              ],
+              "members": {
+                "Id": {}
+              }
+            },
+            "flattened": true
+          },
+          "Failed": {
+            "shape": "Sg"
+          }
+        }
+      }
+    },
+    "DeleteQueue": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {}
+        }
+      }
+    },
+    "GetQueueAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "AttributeNames": {
+            "shape": "Sz"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape": "Sk"
+          }
+        }
+      }
+    },
+    "GetQueueUrl": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueName"
+        ],
+        "members": {
+          "QueueName": {},
+          "QueueOwnerAWSAccountId": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "QueueUrl": {}
+        }
+      }
+    },
+    "ListDeadLetterSourceQueues": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "NextToken": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "queueUrls"
+        ],
+        "members": {
+          "queueUrls": {
+            "shape": "S17"
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "ListMessageMoveTasks": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "SourceArn"
+        ],
+        "members": {
+          "SourceArn": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Results": {
+            "flattened": true,
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "TaskHandle": {},
+                "Status": {},
+                "SourceArn": {},
+                "DestinationArn": {},
+                "MaxNumberOfMessagesPerSecond": {
+                  "type": "integer"
+                },
+                "ApproximateNumberOfMessagesMoved": {
+                  "type": "long"
+                },
+                "ApproximateNumberOfMessagesToMove": {
+                  "type": "long"
+                },
+                "FailureReason": {},
+                "StartedTimestamp": {
+                  "type": "long"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ListQueueTags": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape": "Sm"
+          }
+        }
+      }
+    },
+    "ListQueues": {
+      "input": {
+        "type": "structure",
+        "members": {
+          "QueueNamePrefix": {},
+          "NextToken": {},
+          "MaxResults": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "QueueUrls": {
+            "shape": "S17"
+          },
+          "NextToken": {}
+        }
+      }
+    },
+    "PurgeQueue": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {}
+        }
+      }
+    },
+    "ReceiveMessage": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "AttributeNames": {
+            "shape": "Sz",
+            "deprecated": true,
+            "deprecatedMessage": "AttributeNames has been replaced by MessageSystemAttributeNames"
+          },
+          "MessageSystemAttributeNames": {
+            "type": "list",
+            "member": {},
+            "flattened": true
+          },
+          "MessageAttributeNames": {
+            "type": "list",
+            "member": {},
+            "flattened": true
+          },
+          "MaxNumberOfMessages": {
+            "type": "integer"
+          },
+          "VisibilityTimeout": {
+            "type": "integer"
+          },
+          "WaitTimeSeconds": {
+            "type": "integer"
+          },
+          "ReceiveRequestAttemptId": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "Messages": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "members": {
+                "MessageId": {},
+                "ReceiptHandle": {},
+                "MD5OfBody": {},
+                "Body": {},
+                "Attributes": {
+                  "type": "map",
+                  "key": {},
+                  "value": {},
+                  "flattened": true
+                },
+                "MD5OfMessageAttributes": {},
+                "MessageAttributes": {
+                  "shape": "S1r"
+                }
+              }
+            },
+            "flattened": true
+          }
+        }
+      }
+    },
+    "RemovePermission": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Label"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Label": {}
+        }
+      }
+    },
+    "SendMessage": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "MessageBody"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "MessageBody": {},
+          "DelaySeconds": {
+            "type": "integer"
+          },
+          "MessageAttributes": {
+            "shape": "S1r"
+          },
+          "MessageSystemAttributes": {
+            "shape": "S1y"
+          },
+          "MessageDeduplicationId": {},
+          "MessageGroupId": {}
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "MD5OfMessageBody": {},
+          "MD5OfMessageAttributes": {},
+          "MD5OfMessageSystemAttributes": {},
+          "MessageId": {},
+          "SequenceNumber": {}
+        }
+      }
+    },
+    "SendMessageBatch": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Entries"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Entries": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "MessageBody"
+              ],
+              "members": {
+                "Id": {},
+                "MessageBody": {},
+                "DelaySeconds": {
+                  "type": "integer"
+                },
+                "MessageAttributes": {
+                  "shape": "S1r"
+                },
+                "MessageSystemAttributes": {
+                  "shape": "S1y"
+                },
+                "MessageDeduplicationId": {},
+                "MessageGroupId": {}
+              }
+            },
+            "flattened": true
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "required": [
+          "Successful",
+          "Failed"
+        ],
+        "members": {
+          "Successful": {
+            "type": "list",
+            "member": {
+              "type": "structure",
+              "required": [
+                "Id",
+                "MessageId",
+                "MD5OfMessageBody"
+              ],
+              "members": {
+                "Id": {},
+                "MessageId": {},
+                "MD5OfMessageBody": {},
+                "MD5OfMessageAttributes": {},
+                "MD5OfMessageSystemAttributes": {},
+                "SequenceNumber": {}
+              }
+            },
+            "flattened": true
+          },
+          "Failed": {
+            "shape": "Sg"
+          }
+        }
+      }
+    },
+    "SetQueueAttributes": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Attributes"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Attributes": {
+            "shape": "Sk"
+          }
+        }
+      }
+    },
+    "StartMessageMoveTask": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "SourceArn"
+        ],
+        "members": {
+          "SourceArn": {},
+          "DestinationArn": {},
+          "MaxNumberOfMessagesPerSecond": {
+            "type": "integer"
+          }
+        }
+      },
+      "output": {
+        "type": "structure",
+        "members": {
+          "TaskHandle": {}
+        }
+      }
+    },
+    "TagQueue": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "Tags"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "Tags": {
+            "shape": "Sm"
+          }
+        }
+      }
+    },
+    "UntagQueue": {
+      "input": {
+        "type": "structure",
+        "required": [
+          "QueueUrl",
+          "TagKeys"
+        ],
+        "members": {
+          "QueueUrl": {},
+          "TagKeys": {
+            "type": "list",
+            "member": {},
+            "flattened": true
+          }
+        }
+      }
+    }
+  },
+  "shapes": {
+    "Sg": {
+      "type": "list",
+      "member": {
+        "type": "structure",
+        "required": [
+          "Id",
+          "SenderFault",
+          "Code"
+        ],
+        "members": {
+          "Id": {},
+          "SenderFault": {
+            "type": "boolean"
+          },
+          "Code": {},
+          "Message": {}
+        }
+      },
+      "flattened": true
+    },
+    "Sk": {
+      "type": "map",
+      "key": {},
+      "value": {},
+      "flattened": true
+    },
+    "Sm": {
+      "type": "map",
+      "key": {},
+      "value": {},
+      "flattened": true
+    },
+    "Sz": {
+      "type": "list",
+      "member": {},
+      "flattened": true
+    },
+    "S17": {
+      "type": "list",
+      "member": {},
+      "flattened": true
+    },
+    "S1r": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "structure",
+        "required": [
+          "DataType"
+        ],
+        "members": {
+          "StringValue": {},
+          "BinaryValue": {
+            "type": "blob"
+          },
+          "StringListValues": {
+            "shape": "S1u",
+            "flattened": true
+          },
+          "BinaryListValues": {
+            "shape": "S1v",
+            "flattened": true
+          },
+          "DataType": {}
+        }
+      },
+      "flattened": true
+    },
+    "S1u": {
+      "type": "list",
+      "member": {}
+    },
+    "S1v": {
+      "type": "list",
+      "member": {
+        "type": "blob"
+      }
+    },
+    "S1y": {
+      "type": "map",
+      "key": {},
+      "value": {
+        "type": "structure",
+        "required": [
+          "DataType"
+        ],
+        "members": {
+          "StringValue": {},
+          "BinaryValue": {
+            "type": "blob"
+          },
+          "StringListValues": {
+            "shape": "S1u",
+            "flattened": true
+          },
+          "BinaryListValues": {
+            "shape": "S1v",
+            "flattened": true
+          },
+          "DataType": {}
+        }
+      },
+      "flattened": true
+    }
+  }
+}
+},{}],22:[function(require,module,exports){
+module.exports={
+  "pagination": {
+    "ListDeadLetterSourceQueues": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "limit_key": "MaxResults",
+      "result_key": "queueUrls"
+    },
+    "ListQueues": {
+      "input_token": "NextToken",
+      "output_token": "NextToken",
+      "limit_key": "MaxResults",
+      "result_key": "QueueUrls"
+    }
+  }
+}
+
+},{}],23:[function(require,module,exports){
 module.exports={
   "version": "2.0",
   "metadata": {
@@ -54187,13 +59422,13 @@ module.exports={
     }
   }
 }
-},{}],17:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports={
   "pagination": {
   }
 }
 
-},{}],18:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 require('../lib/node_loader');
 var AWS = require('../lib/core');
 var Service = AWS.Service;
@@ -54213,7 +59448,7 @@ Object.defineProperty(apiLoader.services['cognitoidentity'], '2014-06-30', {
 
 module.exports = AWS.CognitoIdentity;
 
-},{"../apis/cognito-identity-2014-06-30.min.json":1,"../apis/cognito-identity-2014-06-30.paginators.json":2,"../lib/core":30,"../lib/node_loader":27}],19:[function(require,module,exports){
+},{"../apis/cognito-identity-2014-06-30.min.json":1,"../apis/cognito-identity-2014-06-30.paginators.json":2,"../lib/core":37,"../lib/node_loader":34}],26:[function(require,module,exports){
 require('../lib/node_loader');
 var AWS = require('../lib/core');
 var Service = AWS.Service;
@@ -54234,7 +59469,7 @@ Object.defineProperty(apiLoader.services['sts'], '2011-06-15', {
 
 module.exports = AWS.STS;
 
-},{"../apis/sts-2011-06-15.min.json":16,"../apis/sts-2011-06-15.paginators.json":17,"../lib/core":30,"../lib/node_loader":27,"../lib/services/sts":79}],20:[function(require,module,exports){
+},{"../apis/sts-2011-06-15.min.json":23,"../apis/sts-2011-06-15.paginators.json":24,"../lib/core":37,"../lib/node_loader":34,"../lib/services/sts":94}],27:[function(require,module,exports){
 function apiLoader(svc, version) {
   if (!apiLoader.services.hasOwnProperty(svc)) {
     throw new Error('InvalidService: Failed to load api for ' + svc);
@@ -54255,7 +59490,7 @@ apiLoader.services = {};
  */
 module.exports = apiLoader;
 
-},{}],21:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var Hmac = require('./browserHmac');
 var Md5 = require('./browserMd5');
 var Sha1 = require('./browserSha1');
@@ -54294,7 +59529,7 @@ module.exports = exports = {
     }
   };
 
-},{"./browserHmac":23,"./browserMd5":24,"./browserSha1":25,"./browserSha256":26}],22:[function(require,module,exports){
+},{"./browserHmac":30,"./browserMd5":31,"./browserSha1":32,"./browserSha256":33}],29:[function(require,module,exports){
 var Buffer = require('buffer/').Buffer;
 
 /**
@@ -54361,7 +59596,7 @@ module.exports = exports = {
     convertToBuffer: convertToBuffer,
 };
 
-},{"buffer/":102}],23:[function(require,module,exports){
+},{"buffer/":117}],30:[function(require,module,exports){
 var hashUtils = require('./browserHashUtils');
 
 /**
@@ -54428,7 +59663,7 @@ function bufferFromSecret(hashCtor, secret) {
     return buffer;
 }
 
-},{"./browserHashUtils":22}],24:[function(require,module,exports){
+},{"./browserHashUtils":29}],31:[function(require,module,exports){
 var hashUtils = require('./browserHashUtils');
 var Buffer = require('buffer/').Buffer;
 
@@ -54612,7 +59847,7 @@ function ii(a, b, c, d, x, s, t) {
     return cmn(c ^ (b | (~d)), a, b, x, s, t);
 }
 
-},{"./browserHashUtils":22,"buffer/":102}],25:[function(require,module,exports){
+},{"./browserHashUtils":29,"buffer/":117}],32:[function(require,module,exports){
 var Buffer = require('buffer/').Buffer;
 var hashUtils = require('./browserHashUtils');
 
@@ -54780,7 +60015,7 @@ Sha1.prototype.processBlock = function processBlock() {
     }
 };
 
-},{"./browserHashUtils":22,"buffer/":102}],26:[function(require,module,exports){
+},{"./browserHashUtils":29,"buffer/":117}],33:[function(require,module,exports){
 var Buffer = require('buffer/').Buffer;
 var hashUtils = require('./browserHashUtils');
 
@@ -55021,7 +60256,7 @@ Sha256.prototype.hashBuffer = function () {
     state[7] += state7;
 };
 
-},{"./browserHashUtils":22,"buffer/":102}],27:[function(require,module,exports){
+},{"./browserHashUtils":29,"buffer/":117}],34:[function(require,module,exports){
 (function (process){(function (){
 var util = require('./util');
 
@@ -55064,7 +60299,7 @@ if (typeof process === 'undefined') {
 }
 
 }).call(this)}).call(this,require('_process'))
-},{"./browserCryptoLib":21,"./core":30,"./credentials":31,"./credentials/chainable_temporary_credentials":32,"./credentials/cognito_identity_credentials":33,"./credentials/credential_provider_chain":34,"./credentials/saml_credentials":35,"./credentials/temporary_credentials":36,"./credentials/web_identity_credentials":37,"./event-stream/buffered-create-event-stream":39,"./http/xhr":47,"./realclock/browserClock":65,"./util":90,"./xml/browser_parser":91,"_process":107,"buffer/":102,"querystring/":114,"url/":116}],28:[function(require,module,exports){
+},{"./browserCryptoLib":28,"./core":37,"./credentials":38,"./credentials/chainable_temporary_credentials":39,"./credentials/cognito_identity_credentials":40,"./credentials/credential_provider_chain":41,"./credentials/saml_credentials":42,"./credentials/temporary_credentials":43,"./credentials/web_identity_credentials":44,"./event-stream/buffered-create-event-stream":52,"./http/xhr":60,"./realclock/browserClock":78,"./util":105,"./xml/browser_parser":106,"_process":122,"buffer/":117,"querystring/":129,"url/":131}],35:[function(require,module,exports){
 var AWS = require('./core');
 require('./credentials');
 require('./credentials/credential_provider_chain');
@@ -55773,7 +61008,7 @@ AWS.Config = AWS.util.inherit({
  */
 AWS.config = new AWS.Config();
 
-},{"./core":30,"./credentials":31,"./credentials/credential_provider_chain":34}],29:[function(require,module,exports){
+},{"./core":37,"./credentials":38,"./credentials/credential_provider_chain":41}],36:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('./core');
 /**
@@ -55844,7 +61079,7 @@ function resolveRegionalEndpointsFlag(originalConfig, options) {
 module.exports = resolveRegionalEndpointsFlag;
 
 }).call(this)}).call(this,require('_process'))
-},{"./core":30,"_process":107}],30:[function(require,module,exports){
+},{"./core":37,"_process":122}],37:[function(require,module,exports){
 /**
  * The main AWS namespace
  */
@@ -55867,7 +61102,7 @@ AWS.util.update(AWS, {
   /**
    * @constant
    */
-  VERSION: '2.1692.0',
+  VERSION: '2.1693.0',
 
   /**
    * @api private
@@ -55956,7 +61191,7 @@ AWS.util.memoizedProperty(AWS, 'endpointCache', function() {
   return new AWS.EndpointCache(AWS.config.endpointCacheSize);
 }, true);
 
-},{"../vendor/endpoint-cache":127,"./api_loader":20,"./config":28,"./event_listeners":45,"./http":46,"./json/builder":48,"./json/parser":49,"./maintenance_mode_message":50,"./model/api":51,"./model/operation":53,"./model/paginator":54,"./model/resource_waiter":55,"./model/shape":56,"./param_validator":57,"./protocol/json":59,"./protocol/query":60,"./protocol/rest":61,"./protocol/rest_json":62,"./protocol/rest_xml":63,"./request":69,"./resource_waiter":70,"./response":71,"./sequential_executor":73,"./service":74,"./signers/request_signer":82,"./util":90,"./xml/builder":92}],31:[function(require,module,exports){
+},{"../vendor/endpoint-cache":142,"./api_loader":27,"./config":35,"./event_listeners":58,"./http":59,"./json/builder":61,"./json/parser":62,"./maintenance_mode_message":63,"./model/api":64,"./model/operation":66,"./model/paginator":67,"./model/resource_waiter":68,"./model/shape":69,"./param_validator":70,"./protocol/json":72,"./protocol/query":73,"./protocol/rest":74,"./protocol/rest_json":75,"./protocol/rest_xml":76,"./request":82,"./resource_waiter":83,"./response":84,"./sequential_executor":86,"./service":87,"./signers/request_signer":97,"./util":105,"./xml/builder":107}],38:[function(require,module,exports){
 var AWS = require('./core');
 
 /**
@@ -56204,7 +61439,7 @@ AWS.Credentials.deletePromisesFromClass = function deletePromisesFromClass() {
 
 AWS.util.addPromises(AWS.Credentials);
 
-},{"./core":30}],32:[function(require,module,exports){
+},{"./core":37}],39:[function(require,module,exports){
 var AWS = require('../core');
 var STS = require('../../clients/sts');
 
@@ -56406,7 +61641,7 @@ AWS.ChainableTemporaryCredentials = AWS.util.inherit(AWS.Credentials, {
   }
 });
 
-},{"../../clients/sts":19,"../core":30}],33:[function(require,module,exports){
+},{"../../clients/sts":26,"../core":37}],40:[function(require,module,exports){
 var AWS = require('../core');
 var CognitoIdentity = require('../../clients/cognitoidentity');
 var STS = require('../../clients/sts');
@@ -56802,7 +62037,7 @@ AWS.CognitoIdentityCredentials = AWS.util.inherit(AWS.Credentials, {
   })()
 });
 
-},{"../../clients/cognitoidentity":18,"../../clients/sts":19,"../core":30}],34:[function(require,module,exports){
+},{"../../clients/cognitoidentity":25,"../../clients/sts":26,"../core":37}],41:[function(require,module,exports){
 var AWS = require('../core');
 
 /**
@@ -56984,7 +62219,7 @@ AWS.CredentialProviderChain.deletePromisesFromClass = function deletePromisesFro
 
 AWS.util.addPromises(AWS.CredentialProviderChain);
 
-},{"../core":30}],35:[function(require,module,exports){
+},{"../core":37}],42:[function(require,module,exports){
 var AWS = require('../core');
 var STS = require('../../clients/sts');
 
@@ -57080,7 +62315,7 @@ AWS.SAMLCredentials = AWS.util.inherit(AWS.Credentials, {
 
 });
 
-},{"../../clients/sts":19,"../core":30}],36:[function(require,module,exports){
+},{"../../clients/sts":26,"../core":37}],43:[function(require,module,exports){
 var AWS = require('../core');
 var STS = require('../../clients/sts');
 
@@ -57211,7 +62446,7 @@ AWS.TemporaryCredentials = AWS.util.inherit(AWS.Credentials, {
 
 });
 
-},{"../../clients/sts":19,"../core":30}],37:[function(require,module,exports){
+},{"../../clients/sts":26,"../core":37}],44:[function(require,module,exports){
 var AWS = require('../core');
 var STS = require('../../clients/sts');
 
@@ -57328,7 +62563,7 @@ AWS.WebIdentityCredentials = AWS.util.inherit(AWS.Credentials, {
 
 });
 
-},{"../../clients/sts":19,"../core":30}],38:[function(require,module,exports){
+},{"../../clients/sts":26,"../core":37}],45:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('./core');
 var util = require('./util');
@@ -57709,7 +62944,1146 @@ module.exports = {
 };
 
 }).call(this)}).call(this,require('_process'))
-},{"./core":30,"./util":90,"_process":107}],39:[function(require,module,exports){
+},{"./core":37,"./util":105,"_process":122}],46:[function(require,module,exports){
+var AWS = require('../core');
+var util = AWS.util;
+var typeOf = require('./types').typeOf;
+var DynamoDBSet = require('./set');
+var NumberValue = require('./numberValue');
+
+AWS.DynamoDB.Converter = {
+  /**
+   * Convert a JavaScript value to its equivalent DynamoDB AttributeValue type
+   *
+   * @param data [any] The data to convert to a DynamoDB AttributeValue
+   * @param options [map]
+   * @option options convertEmptyValues [Boolean] Whether to automatically
+   *                                              convert empty strings, blobs,
+   *                                              and sets to `null`
+   * @option options wrapNumbers [Boolean]  Whether to return numbers as a
+   *                                        NumberValue object instead of
+   *                                        converting them to native JavaScript
+   *                                        numbers. This allows for the safe
+   *                                        round-trip transport of numbers of
+   *                                        arbitrary size.
+   * @return [map] An object in the Amazon DynamoDB AttributeValue format
+   *
+   * @see AWS.DynamoDB.Converter.marshall AWS.DynamoDB.Converter.marshall to
+   *    convert entire records (rather than individual attributes)
+   */
+  input: function convertInput(data, options) {
+    options = options || {};
+    var type = typeOf(data);
+    if (type === 'Object') {
+      return formatMap(data, options);
+    } else if (type === 'Array') {
+      return formatList(data, options);
+    } else if (type === 'Set') {
+      return formatSet(data, options);
+    } else if (type === 'String') {
+      if (data.length === 0 && options.convertEmptyValues) {
+        return convertInput(null);
+      }
+      return { S: data };
+    } else if (type === 'Number' || type === 'NumberValue') {
+      return { N: data.toString() };
+    } else if (type === 'Binary') {
+      if (data.length === 0 && options.convertEmptyValues) {
+        return convertInput(null);
+      }
+      return { B: data };
+    } else if (type === 'Boolean') {
+      return { BOOL: data };
+    } else if (type === 'null') {
+      return { NULL: true };
+    } else if (type !== 'undefined' && type !== 'Function') {
+      // this value has a custom constructor
+      return formatMap(data, options);
+    }
+  },
+
+  /**
+   * Convert a JavaScript object into a DynamoDB record.
+   *
+   * @param data [any] The data to convert to a DynamoDB record
+   * @param options [map]
+   * @option options convertEmptyValues [Boolean] Whether to automatically
+   *                                              convert empty strings, blobs,
+   *                                              and sets to `null`
+   * @option options wrapNumbers [Boolean]  Whether to return numbers as a
+   *                                        NumberValue object instead of
+   *                                        converting them to native JavaScript
+   *                                        numbers. This allows for the safe
+   *                                        round-trip transport of numbers of
+   *                                        arbitrary size.
+   *
+   * @return [map] An object in the DynamoDB record format.
+   *
+   * @example Convert a JavaScript object into a DynamoDB record
+   *  var marshalled = AWS.DynamoDB.Converter.marshall({
+   *    string: 'foo',
+   *    list: ['fizz', 'buzz', 'pop'],
+   *    map: {
+   *      nestedMap: {
+   *        key: 'value',
+   *      }
+   *    },
+   *    number: 123,
+   *    nullValue: null,
+   *    boolValue: true,
+   *    stringSet: new DynamoDBSet(['foo', 'bar', 'baz'])
+   *  });
+   */
+  marshall: function marshallItem(data, options) {
+    return AWS.DynamoDB.Converter.input(data, options).M;
+  },
+
+  /**
+   * Convert a DynamoDB AttributeValue object to its equivalent JavaScript type.
+   *
+   * @param data [map] An object in the Amazon DynamoDB AttributeValue format
+   * @param options [map]
+   * @option options convertEmptyValues [Boolean] Whether to automatically
+   *                                              convert empty strings, blobs,
+   *                                              and sets to `null`
+   * @option options wrapNumbers [Boolean]  Whether to return numbers as a
+   *                                        NumberValue object instead of
+   *                                        converting them to native JavaScript
+   *                                        numbers. This allows for the safe
+   *                                        round-trip transport of numbers of
+   *                                        arbitrary size.
+   *
+   * @return [Object|Array|String|Number|Boolean|null]
+   *
+   * @see AWS.DynamoDB.Converter.unmarshall AWS.DynamoDB.Converter.unmarshall to
+   *    convert entire records (rather than individual attributes)
+   */
+  output: function convertOutput(data, options) {
+    options = options || {};
+    var list, map, i;
+    for (var type in data) {
+      var values = data[type];
+      if (type === 'M') {
+        map = {};
+        for (var key in values) {
+          map[key] = convertOutput(values[key], options);
+        }
+        return map;
+      } else if (type === 'L') {
+        list = [];
+        for (i = 0; i < values.length; i++) {
+          list.push(convertOutput(values[i], options));
+        }
+        return list;
+      } else if (type === 'SS') {
+        list = [];
+        for (i = 0; i < values.length; i++) {
+          list.push(values[i] + '');
+        }
+        return new DynamoDBSet(list);
+      } else if (type === 'NS') {
+        list = [];
+        for (i = 0; i < values.length; i++) {
+          list.push(convertNumber(values[i], options.wrapNumbers));
+        }
+        return new DynamoDBSet(list);
+      } else if (type === 'BS') {
+        list = [];
+        for (i = 0; i < values.length; i++) {
+          list.push(AWS.util.buffer.toBuffer(values[i]));
+        }
+        return new DynamoDBSet(list);
+      } else if (type === 'S') {
+        return values + '';
+      } else if (type === 'N') {
+        return convertNumber(values, options.wrapNumbers);
+      } else if (type === 'B') {
+        return util.buffer.toBuffer(values);
+      } else if (type === 'BOOL') {
+        return (values === 'true' || values === 'TRUE' || values === true);
+      } else if (type === 'NULL') {
+        return null;
+      }
+    }
+  },
+
+  /**
+   * Convert a DynamoDB record into a JavaScript object.
+   *
+   * @param data [any] The DynamoDB record
+   * @param options [map]
+   * @option options convertEmptyValues [Boolean] Whether to automatically
+   *                                              convert empty strings, blobs,
+   *                                              and sets to `null`
+   * @option options wrapNumbers [Boolean]  Whether to return numbers as a
+   *                                        NumberValue object instead of
+   *                                        converting them to native JavaScript
+   *                                        numbers. This allows for the safe
+   *                                        round-trip transport of numbers of
+   *                                        arbitrary size.
+   *
+   * @return [map] An object whose properties have been converted from
+   *    DynamoDB's AttributeValue format into their corresponding native
+   *    JavaScript types.
+   *
+   * @example Convert a record received from a DynamoDB stream
+   *  var unmarshalled = AWS.DynamoDB.Converter.unmarshall({
+   *    string: {S: 'foo'},
+   *    list: {L: [{S: 'fizz'}, {S: 'buzz'}, {S: 'pop'}]},
+   *    map: {
+   *      M: {
+   *        nestedMap: {
+   *          M: {
+   *            key: {S: 'value'}
+   *          }
+   *        }
+   *      }
+   *    },
+   *    number: {N: '123'},
+   *    nullValue: {NULL: true},
+   *    boolValue: {BOOL: true}
+   *  });
+   */
+  unmarshall: function unmarshall(data, options) {
+    return AWS.DynamoDB.Converter.output({M: data}, options);
+  }
+};
+
+/**
+ * @api private
+ * @param data [Array]
+ * @param options [map]
+ */
+function formatList(data, options) {
+  var list = {L: []};
+  for (var i = 0; i < data.length; i++) {
+    list['L'].push(AWS.DynamoDB.Converter.input(data[i], options));
+  }
+  return list;
+}
+
+/**
+ * @api private
+ * @param value [String]
+ * @param wrapNumbers [Boolean]
+ */
+function convertNumber(value, wrapNumbers) {
+  return wrapNumbers ? new NumberValue(value) : Number(value);
+}
+
+/**
+ * @api private
+ * @param data [map]
+ * @param options [map]
+ */
+function formatMap(data, options) {
+  var map = {M: {}};
+  for (var key in data) {
+    var formatted = AWS.DynamoDB.Converter.input(data[key], options);
+    if (formatted !== void 0) {
+      map['M'][key] = formatted;
+    }
+  }
+  return map;
+}
+
+/**
+ * @api private
+ */
+function formatSet(data, options) {
+  options = options || {};
+  var values = data.values;
+  if (options.convertEmptyValues) {
+    values = filterEmptySetValues(data);
+    if (values.length === 0) {
+      return AWS.DynamoDB.Converter.input(null);
+    }
+  }
+
+  var map = {};
+  switch (data.type) {
+    case 'String': map['SS'] = values; break;
+    case 'Binary': map['BS'] = values; break;
+    case 'Number': map['NS'] = values.map(function (value) {
+      return value.toString();
+    });
+  }
+  return map;
+}
+
+/**
+ * @api private
+ */
+function filterEmptySetValues(set) {
+    var nonEmptyValues = [];
+    var potentiallyEmptyTypes = {
+        String: true,
+        Binary: true,
+        Number: false
+    };
+    if (potentiallyEmptyTypes[set.type]) {
+        for (var i = 0; i < set.values.length; i++) {
+            if (set.values[i].length === 0) {
+                continue;
+            }
+            nonEmptyValues.push(set.values[i]);
+        }
+
+        return nonEmptyValues;
+    }
+
+    return set.values;
+}
+
+/**
+ * @api private
+ */
+module.exports = AWS.DynamoDB.Converter;
+
+},{"../core":37,"./numberValue":48,"./set":49,"./types":51}],47:[function(require,module,exports){
+var AWS = require('../core');
+var Translator = require('./translator');
+var DynamoDBSet = require('./set');
+
+/**
+ * The document client simplifies working with items in Amazon DynamoDB
+ * by abstracting away the notion of attribute values. This abstraction
+ * annotates native JavaScript types supplied as input parameters, as well
+ * as converts annotated response data to native JavaScript types.
+ *
+ * ## Marshalling Input and Unmarshalling Response Data
+ *
+ * The document client affords developers the use of native JavaScript types
+ * instead of `AttributeValue`s to simplify the JavaScript development
+ * experience with Amazon DynamoDB. JavaScript objects passed in as parameters
+ * are marshalled into `AttributeValue` shapes required by Amazon DynamoDB.
+ * Responses from DynamoDB are unmarshalled into plain JavaScript objects
+ * by the `DocumentClient`. The `DocumentClient`, does not accept
+ * `AttributeValue`s in favor of native JavaScript types.
+ *
+ * |                             JavaScript Type                            | DynamoDB AttributeValue |
+ * |:----------------------------------------------------------------------:|-------------------------|
+ * | String                                                                 | S                       |
+ * | Number                                                                 | N                       |
+ * | Boolean                                                                | BOOL                    |
+ * | null                                                                   | NULL                    |
+ * | Array                                                                  | L                       |
+ * | Object                                                                 | M                       |
+ * | Buffer, File, Blob, ArrayBuffer, DataView, and JavaScript typed arrays | B                       |
+ *
+ * ## Support for Sets
+ *
+ * The `DocumentClient` offers a convenient way to create sets from
+ * JavaScript Arrays. The type of set is inferred from the first element
+ * in the array. DynamoDB supports string, number, and binary sets. To
+ * learn more about supported types see the
+ * [Amazon DynamoDB Data Model Documentation](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html)
+ * For more information see {AWS.DynamoDB.DocumentClient.createSet}
+ *
+ */
+AWS.DynamoDB.DocumentClient = AWS.util.inherit({
+
+  /**
+   * Creates a DynamoDB document client with a set of configuration options.
+   *
+   * @option options params [map] An optional map of parameters to bind to every
+   *   request sent by this service object.
+   * @option options service [AWS.DynamoDB] An optional pre-configured instance
+   *  of the AWS.DynamoDB service object. This instance's config will be
+   *  copied to a new instance used by this client. You should not need to
+   *  retain a reference to the input object, and may destroy it or allow it
+   *  to be garbage collected.
+   * @option options convertEmptyValues [Boolean] set to true if you would like
+   *  the document client to convert empty values (0-length strings, binary
+   *  buffers, and sets) to be converted to NULL types when persisting to
+   *  DynamoDB.
+   * @option options wrapNumbers [Boolean] Set to true to return numbers as a
+   *  NumberValue object instead of converting them to native JavaScript numbers.
+   *  This allows for the safe round-trip transport of numbers of arbitrary size.
+   * @see AWS.DynamoDB.constructor
+   *
+   */
+  constructor: function DocumentClient(options) {
+    var self = this;
+    self.options = options || {};
+    self.configure(self.options);
+  },
+
+  /**
+   * @api private
+   */
+  configure: function configure(options) {
+    var self = this;
+    self.service = options.service;
+    self.bindServiceObject(options);
+    self.attrValue = options.attrValue =
+      self.service.api.operations.putItem.input.members.Item.value.shape;
+  },
+
+  /**
+   * @api private
+   */
+  bindServiceObject: function bindServiceObject(options) {
+    var self = this;
+    options = options || {};
+
+    if (!self.service) {
+      self.service = new AWS.DynamoDB(options);
+    } else {
+      var config = AWS.util.copy(self.service.config);
+      self.service = new self.service.constructor.__super__(config);
+      self.service.config.params =
+        AWS.util.merge(self.service.config.params || {}, options.params);
+    }
+  },
+
+  /**
+   * @api private
+   */
+  makeServiceRequest: function(operation, params, callback) {
+    var self = this;
+    var request = self.service[operation](params);
+    self.setupRequest(request);
+    self.setupResponse(request);
+    if (typeof callback === 'function') {
+      request.send(callback);
+    }
+    return request;
+  },
+
+  /**
+   * @api private
+   */
+  serviceClientOperationsMap: {
+    batchGet: 'batchGetItem',
+    batchWrite: 'batchWriteItem',
+    delete: 'deleteItem',
+    get: 'getItem',
+    put: 'putItem',
+    query: 'query',
+    scan: 'scan',
+    update: 'updateItem',
+    transactGet: 'transactGetItems',
+    transactWrite: 'transactWriteItems'
+  },
+
+  /**
+   * Returns the attributes of one or more items from one or more tables
+   * by delegating to `AWS.DynamoDB.batchGetItem()`.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.batchGetItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.batchGetItem
+   * @example Get items from multiple tables
+   *  var params = {
+   *    RequestItems: {
+   *      'Table-1': {
+   *        Keys: [
+   *          {
+   *             HashKey: 'haskey',
+   *             NumberRangeKey: 1
+   *          }
+   *        ]
+   *      },
+   *      'Table-2': {
+   *        Keys: [
+   *          { foo: 'bar' },
+   *        ]
+   *      }
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.batchGet(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  batchGet: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['batchGet'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Puts or deletes multiple items in one or more tables by delegating
+   * to `AWS.DynamoDB.batchWriteItem()`.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.batchWriteItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.batchWriteItem
+   * @example Write to and delete from a table
+   *  var params = {
+   *    RequestItems: {
+   *      'Table-1': [
+   *        {
+   *          DeleteRequest: {
+   *            Key: { HashKey: 'someKey' }
+   *          }
+   *        },
+   *        {
+   *          PutRequest: {
+   *            Item: {
+   *              HashKey: 'anotherKey',
+   *              NumAttribute: 1,
+   *              BoolAttribute: true,
+   *              ListAttribute: [1, 'two', false],
+   *              MapAttribute: { foo: 'bar' }
+   *            }
+   *          }
+   *        }
+   *      ]
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.batchWrite(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  batchWrite: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['batchWrite'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Deletes a single item in a table by primary key by delegating to
+   * `AWS.DynamoDB.deleteItem()`
+   *
+   * Supply the same parameters as {AWS.DynamoDB.deleteItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.deleteItem
+   * @example Delete an item from a table
+   *  var params = {
+   *    TableName : 'Table',
+   *    Key: {
+   *      HashKey: 'hashkey',
+   *      NumberRangeKey: 1
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.delete(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  delete: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['delete'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Returns a set of attributes for the item with the given primary key
+   * by delegating to `AWS.DynamoDB.getItem()`.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.getItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.getItem
+   * @example Get an item from a table
+   *  var params = {
+   *    TableName : 'Table',
+   *    Key: {
+   *      HashKey: 'hashkey'
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.get(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  get: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['get'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Creates a new item, or replaces an old item with a new item by
+   * delegating to `AWS.DynamoDB.putItem()`.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.putItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.putItem
+   * @example Create a new item in a table
+   *  var params = {
+   *    TableName : 'Table',
+   *    Item: {
+   *       HashKey: 'haskey',
+   *       NumAttribute: 1,
+   *       BoolAttribute: true,
+   *       ListAttribute: [1, 'two', false],
+   *       MapAttribute: { foo: 'bar'},
+   *       NullAttribute: null
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.put(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  put: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['put'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Edits an existing item's attributes, or adds a new item to the table if
+   * it does not already exist by delegating to `AWS.DynamoDB.updateItem()`.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.updateItem} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.updateItem
+   * @example Update an item with expressions
+   *  var params = {
+   *    TableName: 'Table',
+   *    Key: { HashKey : 'hashkey' },
+   *    UpdateExpression: 'set #a = :x + :y',
+   *    ConditionExpression: '#a < :MAX',
+   *    ExpressionAttributeNames: {'#a' : 'Sum'},
+   *    ExpressionAttributeValues: {
+   *      ':x' : 20,
+   *      ':y' : 45,
+   *      ':MAX' : 100,
+   *    }
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.update(params, function(err, data) {
+   *     if (err) console.log(err);
+   *     else console.log(data);
+   *  });
+   *
+   */
+  update: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['update'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Returns one or more items and item attributes by accessing every item
+   * in a table or a secondary index.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.scan} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.scan
+   * @example Scan the table with a filter expression
+   *  var params = {
+   *    TableName : 'Table',
+   *    FilterExpression : 'Year = :this_year',
+   *    ExpressionAttributeValues : {':this_year' : 2015}
+   *  };
+   *
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  documentClient.scan(params, function(err, data) {
+   *     if (err) console.log(err);
+   *     else console.log(data);
+   *  });
+   *
+   */
+  scan: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['scan'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+   /**
+    * Directly access items from a table by primary key or a secondary index.
+    *
+    * Supply the same parameters as {AWS.DynamoDB.query} with
+    * `AttributeValue`s substituted by native JavaScript types.
+    *
+    * @see AWS.DynamoDB.query
+    * @example Query an index
+    *  var params = {
+    *    TableName: 'Table',
+    *    IndexName: 'Index',
+    *    KeyConditionExpression: 'HashKey = :hkey and RangeKey > :rkey',
+    *    ExpressionAttributeValues: {
+    *      ':hkey': 'key',
+    *      ':rkey': 2015
+    *    }
+    *  };
+    *
+    *  var documentClient = new AWS.DynamoDB.DocumentClient();
+    *
+    *  documentClient.query(params, function(err, data) {
+    *     if (err) console.log(err);
+    *     else console.log(data);
+    *  });
+    *
+    */
+  query: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['query'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Synchronous write operation that groups up to 100 action requests.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.transactWriteItems} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.transactWriteItems
+   * @example Get items from multiple tables
+   *  var params = {
+   *    TransactItems: [{
+   *      Put: {
+   *        TableName : 'Table0',
+   *        Item: {
+   *          HashKey: 'haskey',
+   *          NumAttribute: 1,
+   *          BoolAttribute: true,
+   *          ListAttribute: [1, 'two', false],
+   *          MapAttribute: { foo: 'bar'},
+   *          NullAttribute: null
+   *        }
+   *      }
+   *    }, {
+   *      Update: {
+   *        TableName: 'Table1',
+   *        Key: { HashKey : 'hashkey' },
+   *        UpdateExpression: 'set #a = :x + :y',
+   *        ConditionExpression: '#a < :MAX',
+   *        ExpressionAttributeNames: {'#a' : 'Sum'},
+   *        ExpressionAttributeValues: {
+   *          ':x' : 20,
+   *          ':y' : 45,
+   *          ':MAX' : 100,
+   *        }
+   *      }
+   *    }]
+   *  };
+   *
+   *  documentClient.transactWrite(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   */
+  transactWrite: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['transactWrite'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Atomically retrieves multiple items from one or more tables (but not from indexes)
+   * in a single account and region.
+   *
+   * Supply the same parameters as {AWS.DynamoDB.transactGetItems} with
+   * `AttributeValue`s substituted by native JavaScript types.
+   *
+   * @see AWS.DynamoDB.transactGetItems
+   * @example Get items from multiple tables
+   *  var params = {
+   *    TransactItems: [{
+   *      Get: {
+   *        TableName : 'Table0',
+   *        Key: {
+   *          HashKey: 'hashkey0'
+   *        }
+   *      }
+   *    }, {
+   *      Get: {
+   *        TableName : 'Table1',
+   *        Key: {
+   *          HashKey: 'hashkey1'
+   *        }
+   *      }
+   *    }]
+   *  };
+   *
+   *  documentClient.transactGet(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   */
+  transactGet: function(params, callback) {
+    var operation = this.serviceClientOperationsMap['transactGet'];
+    return this.makeServiceRequest(operation, params, callback);
+  },
+
+  /**
+   * Creates a set of elements inferring the type of set from
+   * the type of the first element. Amazon DynamoDB currently supports
+   * the number sets, string sets, and binary sets. For more information
+   * about DynamoDB data types see the documentation on the
+   * [Amazon DynamoDB Data Model](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html#DataModel.DataTypes).
+   *
+   * @param list [Array] Collection to represent your DynamoDB Set
+   * @param options [map]
+   *  * **validate** [Boolean] set to true if you want to validate the type
+   *    of each element in the set. Defaults to `false`.
+   * @example Creating a number set
+   *  var documentClient = new AWS.DynamoDB.DocumentClient();
+   *
+   *  var params = {
+   *    Item: {
+   *      hashkey: 'hashkey'
+   *      numbers: documentClient.createSet([1, 2, 3]);
+   *    }
+   *  };
+   *
+   *  documentClient.put(params, function(err, data) {
+   *    if (err) console.log(err);
+   *    else console.log(data);
+   *  });
+   *
+   */
+  createSet: function(list, options) {
+    options = options || {};
+    return new DynamoDBSet(list, options);
+  },
+
+  /**
+   * @api private
+   */
+  getTranslator: function() {
+    return new Translator(this.options);
+  },
+
+  /**
+   * @api private
+   */
+  setupRequest: function setupRequest(request) {
+    var self = this;
+    var translator = self.getTranslator();
+    var operation = request.operation;
+    var inputShape = request.service.api.operations[operation].input;
+    request._events.validate.unshift(function(req) {
+      req.rawParams = AWS.util.copy(req.params);
+      req.params = translator.translateInput(req.rawParams, inputShape);
+    });
+  },
+
+  /**
+   * @api private
+   */
+  setupResponse: function setupResponse(request) {
+    var self = this;
+    var translator = self.getTranslator();
+    var outputShape = self.service.api.operations[request.operation].output;
+    request.on('extractData', function(response) {
+      response.data = translator.translateOutput(response.data, outputShape);
+    });
+
+    var response = request.response;
+    response.nextPage = function(cb) {
+      var resp = this;
+      var req = resp.request;
+      var config;
+      var service = req.service;
+      var operation = req.operation;
+      try {
+        config = service.paginationConfig(operation, true);
+      } catch (e) { resp.error = e; }
+
+      if (!resp.hasNextPage()) {
+        if (cb) cb(resp.error, null);
+        else if (resp.error) throw resp.error;
+        return null;
+      }
+
+      var params = AWS.util.copy(req.rawParams);
+      if (!resp.nextPageTokens) {
+        return cb ? cb(null, null) : null;
+      } else {
+        var inputTokens = config.inputToken;
+        if (typeof inputTokens === 'string') inputTokens = [inputTokens];
+        for (var i = 0; i < inputTokens.length; i++) {
+          params[inputTokens[i]] = resp.nextPageTokens[i];
+        }
+        return self[operation](params, cb);
+      }
+    };
+  }
+
+});
+
+/**
+ * @api private
+ */
+module.exports = AWS.DynamoDB.DocumentClient;
+
+},{"../core":37,"./set":49,"./translator":50}],48:[function(require,module,exports){
+var util = require('../core').util;
+
+/**
+ * An object recognizable as a numeric value that stores the underlying number
+ * as a string.
+ *
+ * Intended to be a deserialization target for the DynamoDB Document Client when
+ * the `wrapNumbers` flag is set. This allows for numeric values that lose
+ * precision when converted to JavaScript's `number` type.
+ */
+var DynamoDBNumberValue = util.inherit({
+  constructor: function NumberValue(value) {
+    this.wrapperName = 'NumberValue';
+    this.value = value.toString();
+  },
+
+  /**
+   * Render the underlying value as a number when converting to JSON.
+   */
+  toJSON: function () {
+    return this.toNumber();
+  },
+
+  /**
+   * Convert the underlying value to a JavaScript number.
+   */
+  toNumber: function () {
+    return Number(this.value);
+  },
+
+  /**
+   * Return a string representing the unaltered value provided to the
+   * constructor.
+   */
+  toString: function () {
+    return this.value;
+  }
+});
+
+/**
+ * @api private
+ */
+module.exports = DynamoDBNumberValue;
+
+},{"../core":37}],49:[function(require,module,exports){
+var util = require('../core').util;
+var typeOf = require('./types').typeOf;
+
+/**
+ * @api private
+ */
+var memberTypeToSetType = {
+  'String': 'String',
+  'Number': 'Number',
+  'NumberValue': 'Number',
+  'Binary': 'Binary'
+};
+
+/**
+ * @api private
+ */
+var DynamoDBSet = util.inherit({
+
+  constructor: function Set(list, options) {
+    options = options || {};
+    this.wrapperName = 'Set';
+    this.initialize(list, options.validate);
+  },
+
+  initialize: function(list, validate) {
+    var self = this;
+    self.values = [].concat(list);
+    self.detectType();
+    if (validate) {
+      self.validate();
+    }
+  },
+
+  detectType: function() {
+    this.type = memberTypeToSetType[typeOf(this.values[0])];
+    if (!this.type) {
+      throw util.error(new Error(), {
+        code: 'InvalidSetType',
+        message: 'Sets can contain string, number, or binary values'
+      });
+    }
+  },
+
+  validate: function() {
+    var self = this;
+    var length = self.values.length;
+    var values = self.values;
+    for (var i = 0; i < length; i++) {
+      if (memberTypeToSetType[typeOf(values[i])] !== self.type) {
+        throw util.error(new Error(), {
+          code: 'InvalidType',
+          message: self.type + ' Set contains ' + typeOf(values[i]) + ' value'
+        });
+      }
+    }
+  },
+
+  /**
+   * Render the underlying values only when converting to JSON.
+   */
+  toJSON: function() {
+    var self = this;
+    return self.values;
+  }
+
+});
+
+/**
+ * @api private
+ */
+module.exports = DynamoDBSet;
+
+},{"../core":37,"./types":51}],50:[function(require,module,exports){
+var util = require('../core').util;
+var convert = require('./converter');
+
+var Translator = function(options) {
+  options = options || {};
+  this.attrValue = options.attrValue;
+  this.convertEmptyValues = Boolean(options.convertEmptyValues);
+  this.wrapNumbers = Boolean(options.wrapNumbers);
+};
+
+Translator.prototype.translateInput = function(value, shape) {
+  this.mode = 'input';
+  return this.translate(value, shape);
+};
+
+Translator.prototype.translateOutput = function(value, shape) {
+  this.mode = 'output';
+  return this.translate(value, shape);
+};
+
+Translator.prototype.translate = function(value, shape) {
+  var self = this;
+  if (!shape || value === undefined) return undefined;
+
+  if (shape.shape === self.attrValue) {
+    return convert[self.mode](value, {
+      convertEmptyValues: self.convertEmptyValues,
+      wrapNumbers: self.wrapNumbers,
+    });
+  }
+  switch (shape.type) {
+    case 'structure': return self.translateStructure(value, shape);
+    case 'map': return self.translateMap(value, shape);
+    case 'list': return self.translateList(value, shape);
+    default: return self.translateScalar(value, shape);
+  }
+};
+
+Translator.prototype.translateStructure = function(structure, shape) {
+  var self = this;
+  if (structure == null) return undefined;
+
+  var struct = {};
+  util.each(structure, function(name, value) {
+    var memberShape = shape.members[name];
+    if (memberShape) {
+      var result = self.translate(value, memberShape);
+      if (result !== undefined) struct[name] = result;
+    }
+  });
+  return struct;
+};
+
+Translator.prototype.translateList = function(list, shape) {
+  var self = this;
+  if (list == null) return undefined;
+
+  var out = [];
+  util.arrayEach(list, function(value) {
+    var result = self.translate(value, shape.member);
+    if (result === undefined) out.push(null);
+    else out.push(result);
+  });
+  return out;
+};
+
+Translator.prototype.translateMap = function(map, shape) {
+  var self = this;
+  if (map == null) return undefined;
+
+  var out = {};
+  util.each(map, function(key, value) {
+    var result = self.translate(value, shape.value);
+    if (result === undefined) out[key] = null;
+    else out[key] = result;
+  });
+  return out;
+};
+
+Translator.prototype.translateScalar = function(value, shape) {
+  return shape.toType(value);
+};
+
+/**
+ * @api private
+ */
+module.exports = Translator;
+
+},{"../core":37,"./converter":46}],51:[function(require,module,exports){
+var util = require('../core').util;
+
+function typeOf(data) {
+  if (data === null && typeof data === 'object') {
+    return 'null';
+  } else if (data !== undefined && isBinary(data)) {
+    return 'Binary';
+  } else if (data !== undefined && data.constructor) {
+    return data.wrapperName || util.typeName(data.constructor);
+  } else if (data !== undefined && typeof data === 'object') {
+    // this object is the result of Object.create(null), hence the absence of a
+    // defined constructor
+    return 'Object';
+  } else {
+    return 'undefined';
+  }
+}
+
+function isBinary(data) {
+  var types = [
+    'Buffer', 'File', 'Blob', 'ArrayBuffer', 'DataView',
+    'Int8Array', 'Uint8Array', 'Uint8ClampedArray',
+    'Int16Array', 'Uint16Array', 'Int32Array', 'Uint32Array',
+    'Float32Array', 'Float64Array'
+  ];
+  if (util.isNode()) {
+    var Stream = util.stream.Stream;
+    if (util.Buffer.isBuffer(data) || data instanceof Stream) {
+      return true;
+    }
+  }
+
+  for (var i = 0; i < types.length; i++) {
+    if (data !== undefined && data.constructor) {
+      if (util.isType(data, types[i])) return true;
+      if (util.typeName(data.constructor) === types[i]) return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * @api private
+ */
+module.exports = {
+  typeOf: typeOf,
+  isBinary: isBinary
+};
+
+},{"../core":37}],52:[function(require,module,exports){
 var eventMessageChunker = require('../event-stream/event-message-chunker').eventMessageChunker;
 var parseEvent = require('./parse-event').parseEvent;
 
@@ -57732,7 +64106,7 @@ module.exports = {
     createEventStream: createEventStream
 };
 
-},{"../event-stream/event-message-chunker":40,"./parse-event":42}],40:[function(require,module,exports){
+},{"../event-stream/event-message-chunker":53,"./parse-event":55}],53:[function(require,module,exports){
 /**
  * Takes in a buffer of event messages and splits them into individual messages.
  * @param {Buffer} buffer
@@ -57764,7 +64138,7 @@ module.exports = {
     eventMessageChunker: eventMessageChunker
 };
 
-},{}],41:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var util = require('../core').util;
 var toBuffer = util.buffer.toBuffer;
 
@@ -57859,7 +64233,7 @@ module.exports = {
     Int64: Int64
 };
 
-},{"../core":30}],42:[function(require,module,exports){
+},{"../core":37}],55:[function(require,module,exports){
 var parseMessage = require('./parse-message').parseMessage;
 
 /**
@@ -57934,7 +64308,7 @@ module.exports = {
     parseEvent: parseEvent
 };
 
-},{"./parse-message":43}],43:[function(require,module,exports){
+},{"./parse-message":56}],56:[function(require,module,exports){
 var Int64 = require('./int64').Int64;
 
 var splitMessage = require('./split-message').splitMessage;
@@ -58064,7 +64438,7 @@ module.exports = {
     parseMessage: parseMessage
 };
 
-},{"./int64":41,"./split-message":44}],44:[function(require,module,exports){
+},{"./int64":54,"./split-message":57}],57:[function(require,module,exports){
 var util = require('../core').util;
 var toBuffer = util.buffer.toBuffer;
 
@@ -58136,7 +64510,7 @@ module.exports = {
     splitMessage: splitMessage
 };
 
-},{"../core":30}],45:[function(require,module,exports){
+},{"../core":37}],58:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('./core');
 var SequentialExecutor = require('./sequential_executor');
@@ -58873,7 +65247,7 @@ AWS.EventListeners = {
 };
 
 }).call(this)}).call(this,require('_process'))
-},{"./core":30,"./discover_endpoint":38,"./protocol/json":59,"./protocol/query":60,"./protocol/rest":61,"./protocol/rest_json":62,"./protocol/rest_xml":63,"./sequential_executor":73,"_process":107,"util":101}],46:[function(require,module,exports){
+},{"./core":37,"./discover_endpoint":45,"./protocol/json":72,"./protocol/query":73,"./protocol/rest":74,"./protocol/rest_json":75,"./protocol/rest_xml":76,"./sequential_executor":86,"_process":122,"util":116}],59:[function(require,module,exports){
 var AWS = require('./core');
 var inherit = AWS.util.inherit;
 
@@ -59113,7 +65487,7 @@ AWS.HttpClient.getInstance = function getInstance() {
   return this.singleton;
 };
 
-},{"./core":30}],47:[function(require,module,exports){
+},{"./core":37}],60:[function(require,module,exports){
 var AWS = require('../core');
 var EventEmitter = require('events').EventEmitter;
 require('../http');
@@ -59251,7 +65625,7 @@ AWS.HttpClient.prototype = AWS.XHRClient.prototype;
  */
 AWS.HttpClient.streamsApiVersion = 1;
 
-},{"../core":30,"../http":46,"events":103}],48:[function(require,module,exports){
+},{"../core":37,"../http":59,"events":118}],61:[function(require,module,exports){
 var util = require('../util');
 
 function JsonBuilder() { }
@@ -59315,7 +65689,7 @@ function translateScalar(value, shape) {
  */
 module.exports = JsonBuilder;
 
-},{"../util":90}],49:[function(require,module,exports){
+},{"../util":105}],62:[function(require,module,exports){
 var util = require('../util');
 
 function JsonParser() { }
@@ -59390,11 +65764,11 @@ function translateScalar(value, shape) {
  */
 module.exports = JsonParser;
 
-},{"../util":90}],50:[function(require,module,exports){
+},{"../util":105}],63:[function(require,module,exports){
 (function (process){(function (){
 var warning = [
-  'The AWS SDK for JavaScript (v2) is in maintenance mode.',
-  ' SDK releases are limited to address critical bug fixes and security issues only.\n',
+  'The AWS SDK for JavaScript (v2) has reached end-of-support.',
+  'It will no longer receive updates or releases.\n',
   'Please migrate your code to use AWS SDK for JavaScript (v3).',
   'For more information, check the blog post at https://a.co/cUPnyil'
 ].join('\n');
@@ -59442,7 +65816,7 @@ setTimeout(function () {
 }, 0);
 
 }).call(this)}).call(this,require('_process'))
-},{"_process":107}],51:[function(require,module,exports){
+},{"_process":122}],64:[function(require,module,exports){
 var Collection = require('./collection');
 var Operation = require('./operation');
 var Shape = require('./shape');
@@ -59533,7 +65907,7 @@ function Api(api, options) {
  */
 module.exports = Api;
 
-},{"../../apis/metadata.json":12,"../util":90,"./collection":52,"./operation":53,"./paginator":54,"./resource_waiter":55,"./shape":56}],52:[function(require,module,exports){
+},{"../../apis/metadata.json":15,"../util":105,"./collection":65,"./operation":66,"./paginator":67,"./resource_waiter":68,"./shape":69}],65:[function(require,module,exports){
 var memoizedProperty = require('../util').memoizedProperty;
 
 function memoize(name, value, factory, nameTr) {
@@ -59559,7 +65933,7 @@ function Collection(iterable, options, factory, nameTr, callback) {
  */
 module.exports = Collection;
 
-},{"../util":90}],53:[function(require,module,exports){
+},{"../util":105}],66:[function(require,module,exports){
 var Shape = require('./shape');
 
 var util = require('../util');
@@ -59680,7 +66054,7 @@ function hasEventStream(topLevelShape) {
  */
 module.exports = Operation;
 
-},{"../util":90,"./shape":56}],54:[function(require,module,exports){
+},{"../util":105,"./shape":69}],67:[function(require,module,exports){
 var property = require('../util').property;
 
 function Paginator(name, paginator) {
@@ -59696,7 +66070,7 @@ function Paginator(name, paginator) {
  */
 module.exports = Paginator;
 
-},{"../util":90}],55:[function(require,module,exports){
+},{"../util":105}],68:[function(require,module,exports){
 var util = require('../util');
 var property = util.property;
 
@@ -59731,7 +66105,7 @@ function ResourceWaiter(name, waiter, options) {
  */
 module.exports = ResourceWaiter;
 
-},{"../util":90}],56:[function(require,module,exports){
+},{"../util":105}],69:[function(require,module,exports){
 var Collection = require('./collection');
 
 var util = require('../util');
@@ -60140,7 +66514,7 @@ Shape.shapes = {
  */
 module.exports = Shape;
 
-},{"../util":90,"./collection":52}],57:[function(require,module,exports){
+},{"../util":105,"./collection":65}],70:[function(require,module,exports){
 var AWS = require('./core');
 
 /**
@@ -60413,7 +66787,7 @@ AWS.ParamValidator = AWS.util.inherit({
   }
 });
 
-},{"./core":30}],58:[function(require,module,exports){
+},{"./core":37}],71:[function(require,module,exports){
 var util =  require('../util');
 var AWS = require('../core');
 
@@ -60504,7 +66878,7 @@ module.exports = {
   populateHostPrefix: populateHostPrefix
 };
 
-},{"../core":30,"../util":90}],59:[function(require,module,exports){
+},{"../core":37,"../util":105}],72:[function(require,module,exports){
 var util = require('../util');
 var JsonBuilder = require('../json/builder');
 var JsonParser = require('../json/parser');
@@ -60608,7 +66982,7 @@ module.exports = {
   extractData: extractData
 };
 
-},{"../json/builder":48,"../json/parser":49,"../util":90,"./helpers":58}],60:[function(require,module,exports){
+},{"../json/builder":61,"../json/parser":62,"../util":105,"./helpers":71}],73:[function(require,module,exports){
 var AWS = require('../core');
 var util = require('../util');
 var QueryParamSerializer = require('../query/query_param_serializer');
@@ -60720,7 +67094,7 @@ module.exports = {
   extractData: extractData
 };
 
-},{"../core":30,"../model/shape":56,"../query/query_param_serializer":64,"../util":90,"./helpers":58}],61:[function(require,module,exports){
+},{"../core":37,"../model/shape":69,"../query/query_param_serializer":77,"../util":105,"./helpers":71}],74:[function(require,module,exports){
 var util = require('../util');
 var populateHostPrefix = require('./helpers').populateHostPrefix;
 
@@ -60870,7 +67244,7 @@ module.exports = {
   generateURI: generateURI
 };
 
-},{"../util":90,"./helpers":58}],62:[function(require,module,exports){
+},{"../util":105,"./helpers":71}],75:[function(require,module,exports){
 var AWS = require('../core');
 var util = require('../util');
 var Rest = require('./rest');
@@ -60979,7 +67353,7 @@ module.exports = {
   unsetContentLength: unsetContentLength
 };
 
-},{"../core":30,"../json/builder":48,"../json/parser":49,"../util":90,"./json":59,"./rest":61}],63:[function(require,module,exports){
+},{"../core":37,"../json/builder":61,"../json/parser":62,"../util":105,"./json":72,"./rest":74}],76:[function(require,module,exports){
 var AWS = require('../core');
 var util = require('../util');
 var Rest = require('./rest');
@@ -61089,7 +67463,7 @@ module.exports = {
   extractData: extractData
 };
 
-},{"../core":30,"../util":90,"./rest":61}],64:[function(require,module,exports){
+},{"../core":37,"../util":105,"./rest":74}],77:[function(require,module,exports){
 var util = require('../util');
 
 function QueryParamSerializer() {
@@ -61177,7 +67551,7 @@ function serializeMember(name, value, rules, fn) {
  */
 module.exports = QueryParamSerializer;
 
-},{"../util":90}],65:[function(require,module,exports){
+},{"../util":105}],78:[function(require,module,exports){
 module.exports = {
   //provide realtime clock for performance measurement
   now: function now() {
@@ -61188,7 +67562,7 @@ module.exports = {
   }
 };
 
-},{}],66:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 function isFipsRegion(region) {
   return typeof region === 'string' && (region.startsWith('fips-') || region.endsWith('-fips'));
 }
@@ -61211,7 +67585,7 @@ module.exports = {
   getRealRegion: getRealRegion
 };
 
-},{}],67:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var util = require('./util');
 var regionConfig = require('./region_config_data.json');
 
@@ -61326,7 +67700,7 @@ module.exports = {
   getEndpointSuffix: getEndpointSuffix,
 };
 
-},{"./region_config_data.json":68,"./util":90}],68:[function(require,module,exports){
+},{"./region_config_data.json":81,"./util":105}],81:[function(require,module,exports){
 module.exports={
   "rules": {
     "*/*": {
@@ -61652,7 +68026,7 @@ module.exports={
   }
 }
 
-},{}],69:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('./core');
 var AcceptorStateMachine = require('./state_machine');
@@ -62465,7 +68839,7 @@ AWS.util.addPromises(AWS.Request);
 AWS.util.mixin(AWS.Request, AWS.SequentialExecutor);
 
 }).call(this)}).call(this,require('_process'))
-},{"./core":30,"./state_machine":89,"_process":107,"jmespath":106}],70:[function(require,module,exports){
+},{"./core":37,"./state_machine":104,"_process":122,"jmespath":121}],83:[function(require,module,exports){
 /**
  * Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -62671,7 +69045,7 @@ AWS.ResourceWaiter = inherit({
   }
 });
 
-},{"./core":30,"jmespath":106}],71:[function(require,module,exports){
+},{"./core":37,"jmespath":121}],84:[function(require,module,exports){
 var AWS = require('./core');
 var inherit = AWS.util.inherit;
 var jmespath = require('jmespath');
@@ -62874,7 +69248,7 @@ AWS.Response = inherit({
 
 });
 
-},{"./core":30,"jmespath":106}],72:[function(require,module,exports){
+},{"./core":37,"jmespath":121}],85:[function(require,module,exports){
 var AWS = require('../core');
 var byteLength = AWS.util.string.byteLength;
 var Buffer = AWS.util.Buffer;
@@ -63608,7 +69982,7 @@ AWS.util.addPromises(AWS.S3.ManagedUpload);
  */
 module.exports = AWS.S3.ManagedUpload;
 
-},{"../core":30}],73:[function(require,module,exports){
+},{"../core":37}],86:[function(require,module,exports){
 var AWS = require('./core');
 
 /**
@@ -63845,7 +70219,7 @@ AWS.SequentialExecutor.prototype.addListener = AWS.SequentialExecutor.prototype.
  */
 module.exports = AWS.SequentialExecutor;
 
-},{"./core":30}],74:[function(require,module,exports){
+},{"./core":37}],87:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('./core');
 var Api = require('./model/api');
@@ -64703,7 +71077,67 @@ AWS.util.mixin(AWS.Service, AWS.SequentialExecutor);
 module.exports = AWS.Service;
 
 }).call(this)}).call(this,require('_process'))
-},{"./core":30,"./model/api":51,"./region/utils":66,"./region_config":67,"_process":107}],75:[function(require,module,exports){
+},{"./core":37,"./model/api":64,"./region/utils":79,"./region_config":80,"_process":122}],88:[function(require,module,exports){
+var AWS = require('../core');
+require('../dynamodb/document_client');
+
+AWS.util.update(AWS.DynamoDB.prototype, {
+  /**
+   * @api private
+   */
+  setupRequestListeners: function setupRequestListeners(request) {
+    if (request.service.config.dynamoDbCrc32) {
+      request.removeListener('extractData', AWS.EventListeners.Json.EXTRACT_DATA);
+      request.addListener('extractData', this.checkCrc32);
+      request.addListener('extractData', AWS.EventListeners.Json.EXTRACT_DATA);
+    }
+  },
+
+  /**
+   * @api private
+   */
+  checkCrc32: function checkCrc32(resp) {
+    if (!resp.httpResponse.streaming && !resp.request.service.crc32IsValid(resp)) {
+      resp.data = null;
+      resp.error = AWS.util.error(new Error(), {
+        code: 'CRC32CheckFailed',
+        message: 'CRC32 integrity check failed',
+        retryable: true
+      });
+      resp.request.haltHandlersOnError();
+      throw (resp.error);
+    }
+  },
+
+  /**
+   * @api private
+   */
+  crc32IsValid: function crc32IsValid(resp) {
+    var crc = resp.httpResponse.headers['x-amz-crc32'];
+    if (!crc) return true; // no (valid) CRC32 header
+    return parseInt(crc, 10) === AWS.util.crypto.crc32(resp.httpResponse.body);
+  },
+
+  /**
+   * @api private
+   */
+  defaultRetryCount: 10,
+
+  /**
+   * @api private
+   */
+  retryDelays: function retryDelays(retryCount, err) {
+    var retryDelayOptions = AWS.util.copy(this.config.retryDelayOptions);
+
+    if (typeof retryDelayOptions.base !== 'number') {
+        retryDelayOptions.base = 50; // default for dynamodb
+    }
+    var delay = AWS.util.calculateRetryDelay(retryCount, retryDelayOptions, err);
+    return delay;
+  }
+});
+
+},{"../core":37,"../dynamodb/document_client":47}],89:[function(require,module,exports){
 var AWS = require('../core');
 
 AWS.util.update(AWS.EC2.prototype, {
@@ -64767,7 +71201,7 @@ AWS.util.update(AWS.EC2.prototype, {
   }
 });
 
-},{"../core":30}],76:[function(require,module,exports){
+},{"../core":37}],90:[function(require,module,exports){
 var AWS = require('../core');
 
 AWS.util.update(AWS.Lambda.prototype, {
@@ -64782,7 +71216,7 @@ AWS.util.update(AWS.Lambda.prototype, {
 });
 
 
-},{"../core":30}],77:[function(require,module,exports){
+},{"../core":37}],91:[function(require,module,exports){
 var AWS = require('../core');
 var v4Credentials = require('../signers/v4_credentials');
 var resolveRegionalEndpointsFlag = require('../config_regional_endpoint');
@@ -66162,7 +72596,7 @@ AWS.S3.deletePromisesFromClass = function deletePromisesFromClass() {
 
 AWS.util.addPromises(AWS.S3);
 
-},{"../config_regional_endpoint":29,"../core":30,"../region_config":67,"../s3/managed_upload":72,"../signers/v4_credentials":88,"./s3util":78}],78:[function(require,module,exports){
+},{"../config_regional_endpoint":36,"../core":37,"../region_config":80,"../s3/managed_upload":85,"../signers/v4_credentials":103,"./s3util":92}],92:[function(require,module,exports){
 (function (process){(function (){
 var AWS = require('../core');
 var regionUtil = require('../region_config');
@@ -66449,7 +72883,140 @@ var s3util = {
 module.exports = s3util;
 
 }).call(this)}).call(this,require('_process'))
-},{"../core":30,"../region_config":67,"_process":107}],79:[function(require,module,exports){
+},{"../core":37,"../region_config":80,"_process":122}],93:[function(require,module,exports){
+var AWS = require('../core');
+
+AWS.util.update(AWS.SQS.prototype, {
+  /**
+   * @api private
+   */
+  setupRequestListeners: function setupRequestListeners(request) {
+    request.addListener('build', this.buildEndpoint);
+
+    if (request.service.config.computeChecksums) {
+      if (request.operation === 'sendMessage') {
+        request.addListener('extractData', this.verifySendMessageChecksum);
+      } else if (request.operation === 'sendMessageBatch') {
+        request.addListener('extractData', this.verifySendMessageBatchChecksum);
+      } else if (request.operation === 'receiveMessage') {
+        request.addListener('extractData', this.verifyReceiveMessageChecksum);
+      }
+    }
+  },
+
+  /**
+   * @api private
+   */
+  verifySendMessageChecksum: function verifySendMessageChecksum(response) {
+    if (!response.data) return;
+
+    var md5 = response.data.MD5OfMessageBody;
+    var body = this.params.MessageBody;
+    var calculatedMd5 = this.service.calculateChecksum(body);
+    if (calculatedMd5 !== md5) {
+      var msg = 'Got "' + response.data.MD5OfMessageBody +
+        '", expecting "' + calculatedMd5 + '".';
+      this.service.throwInvalidChecksumError(response,
+        [response.data.MessageId], msg);
+    }
+  },
+
+  /**
+   * @api private
+   */
+  verifySendMessageBatchChecksum: function verifySendMessageBatchChecksum(response) {
+    if (!response.data) return;
+
+    var service = this.service;
+    var entries = {};
+    var errors = [];
+    var messageIds = [];
+    AWS.util.arrayEach(response.data.Successful, function (entry) {
+      entries[entry.Id] = entry;
+    });
+    AWS.util.arrayEach(this.params.Entries, function (entry) {
+      if (entries[entry.Id]) {
+        var md5 = entries[entry.Id].MD5OfMessageBody;
+        var body = entry.MessageBody;
+        if (!service.isChecksumValid(md5, body)) {
+          errors.push(entry.Id);
+          messageIds.push(entries[entry.Id].MessageId);
+        }
+      }
+    });
+
+    if (errors.length > 0) {
+      service.throwInvalidChecksumError(response, messageIds,
+        'Invalid messages: ' + errors.join(', '));
+    }
+  },
+
+  /**
+   * @api private
+   */
+  verifyReceiveMessageChecksum: function verifyReceiveMessageChecksum(response) {
+    if (!response.data) return;
+
+    var service = this.service;
+    var messageIds = [];
+    AWS.util.arrayEach(response.data.Messages, function(message) {
+      var md5 = message.MD5OfBody;
+      var body = message.Body;
+      if (!service.isChecksumValid(md5, body)) {
+        messageIds.push(message.MessageId);
+      }
+    });
+
+    if (messageIds.length > 0) {
+      service.throwInvalidChecksumError(response, messageIds,
+        'Invalid messages: ' + messageIds.join(', '));
+    }
+  },
+
+  /**
+   * @api private
+   */
+  throwInvalidChecksumError: function throwInvalidChecksumError(response, ids, message) {
+    response.error = AWS.util.error(new Error(), {
+      retryable: true,
+      code: 'InvalidChecksum',
+      messageIds: ids,
+      message: response.request.operation +
+               ' returned an invalid MD5 response. ' + message
+    });
+  },
+
+  /**
+   * @api private
+   */
+  isChecksumValid: function isChecksumValid(checksum, data) {
+    return this.calculateChecksum(data) === checksum;
+  },
+
+  /**
+   * @api private
+   */
+  calculateChecksum: function calculateChecksum(data) {
+    return AWS.util.crypto.md5(data, 'hex');
+  },
+
+  /**
+   * @api private
+   */
+  buildEndpoint: function buildEndpoint(request) {
+    var url = request.httpRequest.params.QueueUrl;
+    if (url) {
+      request.httpRequest.endpoint = new AWS.Endpoint(url);
+
+      // signature version 4 requires the region name to be set,
+      // sqs queue urls contain the region name
+      var matches = request.httpRequest.endpoint.host.match(/^sqs\.(.+?)\./);
+      if (matches) request.httpRequest.region = matches[1];
+    }
+  }
+});
+
+},{"../core":37}],94:[function(require,module,exports){
 var AWS = require('../core');
 var resolveRegionalEndpointsFlag = require('../config_regional_endpoint');
 var ENV_REGIONAL_ENDPOINT_ENABLED = 'AWS_STS_REGIONAL_ENDPOINTS';
@@ -66537,7 +73104,7 @@ AWS.util.update(AWS.STS.prototype, {
 
 });
 
-},{"../config_regional_endpoint":29,"../core":30}],80:[function(require,module,exports){
+},{"../config_regional_endpoint":36,"../core":37}],95:[function(require,module,exports){
 var AWS = require('../core');
 
 /**
@@ -66553,7 +73120,7 @@ AWS.Signers.Bearer = AWS.util.inherit(AWS.Signers.RequestSigner, {
   }
 });
 
-},{"../core":30}],81:[function(require,module,exports){
+},{"../core":37}],96:[function(require,module,exports){
 var AWS = require('../core');
 var inherit = AWS.util.inherit;
 
@@ -66674,7 +73241,7 @@ AWS.Signers.Presign = inherit({
  */
 module.exports = AWS.Signers.Presign;
 
-},{"../core":30}],82:[function(require,module,exports){
+},{"../core":37}],97:[function(require,module,exports){
 var AWS = require('../core');
 
 var inherit = AWS.util.inherit;
@@ -66717,7 +73284,7 @@ require('./s3');
 require('./presign');
 require('./bearer');
 
-},{"../core":30,"./bearer":80,"./presign":81,"./s3":83,"./v2":84,"./v3":85,"./v3https":86,"./v4":87}],83:[function(require,module,exports){
+},{"../core":37,"./bearer":95,"./presign":96,"./s3":98,"./v2":99,"./v3":100,"./v3https":101,"./v4":102}],98:[function(require,module,exports){
 var AWS = require('../core');
 var inherit = AWS.util.inherit;
 
@@ -66894,7 +73461,7 @@ AWS.Signers.S3 = inherit(AWS.Signers.RequestSigner, {
  */
 module.exports = AWS.Signers.S3;
 
-},{"../core":30}],84:[function(require,module,exports){
+},{"../core":37}],99:[function(require,module,exports){
 var AWS = require('../core');
 var inherit = AWS.util.inherit;
 
@@ -66944,7 +73511,7 @@ AWS.Signers.V2 = inherit(AWS.Signers.RequestSigner, {
  */
 module.exports = AWS.Signers.V2;
 
-},{"../core":30}],85:[function(require,module,exports){
+},{"../core":37}],100:[function(require,module,exports){
 var AWS = require('../core');
 var inherit = AWS.util.inherit;
 
@@ -67023,7 +73590,7 @@ AWS.Signers.V3 = inherit(AWS.Signers.RequestSigner, {
  */
 module.exports = AWS.Signers.V3;
 
-},{"../core":30}],86:[function(require,module,exports){
+},{"../core":37}],101:[function(require,module,exports){
 var AWS = require('../core');
 var inherit = AWS.util.inherit;
 
@@ -67050,7 +73617,7 @@ AWS.Signers.V3Https = inherit(AWS.Signers.V3, {
  */
 module.exports = AWS.Signers.V3Https;
 
-},{"../core":30,"./v3":85}],87:[function(require,module,exports){
+},{"../core":37,"./v3":100}],102:[function(require,module,exports){
 var AWS = require('../core');
 var v4Credentials = require('./v4_credentials');
 var inherit = AWS.util.inherit;
@@ -67267,7 +73834,7 @@ AWS.Signers.V4 = inherit(AWS.Signers.RequestSigner, {
  */
 module.exports = AWS.Signers.V4;
 
-},{"../core":30,"./v4_credentials":88}],88:[function(require,module,exports){
+},{"../core":37,"./v4_credentials":103}],103:[function(require,module,exports){
 var AWS = require('../core');
 
 /**
@@ -67369,7 +73936,7 @@ module.exports = {
   }
 };
 
-},{"../core":30}],89:[function(require,module,exports){
+},{"../core":37}],104:[function(require,module,exports){
 function AcceptorStateMachine(states, state) {
   this.currentState = state || null;
   this.states = states || {};
@@ -67416,7 +73983,7 @@ AcceptorStateMachine.prototype.addState = function addState(name, acceptState, f
  */
 module.exports = AcceptorStateMachine;
 
-},{}],90:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 (function (process,setImmediate){(function (){
 /* eslint guard-for-in:0 */
 var AWS;
@@ -68507,7 +75074,7 @@ var util = {
 module.exports = util;
 
 }).call(this)}).call(this,require('_process'),require("timers").setImmediate)
-},{"../apis/metadata.json":12,"./core":30,"_process":107,"fs":98,"timers":115,"uuid":118}],91:[function(require,module,exports){
+},{"../apis/metadata.json":15,"./core":37,"_process":122,"fs":113,"timers":130,"uuid":133}],106:[function(require,module,exports){
 var util = require('../util');
 var Shape = require('../model/shape');
 
@@ -68710,7 +75277,7 @@ function parseUnknown(xml) {
  */
 module.exports = DomXmlParser;
 
-},{"../model/shape":56,"../util":90}],92:[function(require,module,exports){
+},{"../model/shape":69,"../util":105}],107:[function(require,module,exports){
 var util = require('../util');
 var XmlNode = require('./xml-node').XmlNode;
 var XmlText = require('./xml-text').XmlText;
@@ -68814,7 +75381,7 @@ function applyNamespaces(xml, shape, isRoot) {
  */
 module.exports = XmlBuilder;
 
-},{"../util":90,"./xml-node":95,"./xml-text":96}],93:[function(require,module,exports){
+},{"../util":105,"./xml-node":110,"./xml-text":111}],108:[function(require,module,exports){
 /**
  * Escapes characters that can not be in an XML attribute.
  */
@@ -68829,7 +75396,7 @@ module.exports = {
     escapeAttribute: escapeAttribute
 };
 
-},{}],94:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 /**
  * Escapes characters that can not be in an XML element.
  */
@@ -68850,7 +75417,7 @@ module.exports = {
     escapeElement: escapeElement
 };
 
-},{}],95:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 var escapeAttribute = require('./escape-attribute').escapeAttribute;
 
 /**
@@ -68897,7 +75464,7 @@ module.exports = {
     XmlNode: XmlNode
 };
 
-},{"./escape-attribute":93}],96:[function(require,module,exports){
+},{"./escape-attribute":108}],111:[function(require,module,exports){
 var escapeElement = require('./escape-element').escapeElement;
 
 /**
@@ -68919,7 +75486,7 @@ module.exports = {
     XmlText: XmlText
 };
 
-},{"./escape-element":94}],97:[function(require,module,exports){
+},{"./escape-element":109}],112:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -69071,9 +75638,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],98:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 
-},{}],99:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -69098,14 +75665,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],100:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],101:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -69695,7 +76262,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":100,"_process":107,"inherits":99}],102:[function(require,module,exports){
+},{"./support/isBuffer":115,"_process":122,"inherits":114}],117:[function(require,module,exports){
 (function (global,Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
@@ -71488,7 +78055,7 @@ function isnan (val) {
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"base64-js":97,"buffer":102,"ieee754":104,"isarray":105}],103:[function(require,module,exports){
+},{"base64-js":112,"buffer":117,"ieee754":119,"isarray":120}],118:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -71792,7 +78359,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],104:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -71878,14 +78445,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],105:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],106:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 (function(exports) {
   "use strict";
 
@@ -73559,7 +80126,7 @@ module.exports = Array.isArray || function (arr) {
   exports.strictDeepEqual = strictDeepEqual;
 })(typeof exports === "undefined" ? this.jmespath = {} : exports);
 
-},{}],107:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -73745,9 +80312,9 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],108:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 (function (global){(function (){
-/*! https://mths.be/punycode v1.3.2 by @mathias */
+/*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
 
 	/** Detect free variables */
@@ -73813,7 +80380,7 @@ process.umask = function() { return 0; };
 	 * @returns {Error} Throws a `RangeError` with the applicable error message.
 	 */
 	function error(type) {
-		throw RangeError(errors[type]);
+		throw new RangeError(errors[type]);
 	}
 
 	/**
@@ -73960,7 +80527,7 @@ process.umask = function() { return 0; };
 
 	/**
 	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * http://tools.ietf.org/html/rfc3492#section-3.4
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
 	 * @private
 	 */
 	function adapt(delta, numPoints, firstTime) {
@@ -74235,7 +80802,7 @@ process.umask = function() { return 0; };
 		 * @memberOf punycode
 		 * @type String
 		 */
-		'version': '1.3.2',
+		'version': '1.4.1',
 		/**
 		 * An object of methods to convert from JavaScript's internal character
 		 * representation (UCS-2) to Unicode code points, and back.
@@ -74265,21 +80832,24 @@ process.umask = function() { return 0; };
 			return punycode;
 		});
 	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) { // in Node.js or RingoJS v0.8.0+
+		if (module.exports == freeExports) {
+			// in Node.js, io.js, or RingoJS v0.8.0+
 			freeModule.exports = punycode;
-		} else { // in Narwhal or RingoJS v0.7.0-
+		} else {
+			// in Narwhal or RingoJS v0.7.0-
 			for (key in punycode) {
 				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
 			}
 		}
-	} else { // in Rhino or a web browser
+	} else {
+		// in Rhino or a web browser
 		root.punycode = punycode;
 	}
 
 }(this));
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],109:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74365,7 +80935,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],110:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74452,13 +81022,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":109,"./encode":110}],112:[function(require,module,exports){
+},{"./decode":124,"./encode":125}],127:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74540,7 +81110,7 @@ module.exports = function(qs, sep, eq, options) {
   return obj;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -74606,9 +81176,9 @@ module.exports = function(obj, sep, eq, name) {
          encodeURIComponent(stringifyPrimitive(obj));
 };
 
-},{}],114:[function(require,module,exports){
-arguments[4][111][0].apply(exports,arguments)
-},{"./decode":112,"./encode":113,"dup":111}],115:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"./decode":127,"./encode":128,"dup":126}],130:[function(require,module,exports){
 (function (setImmediate,clearImmediate){(function (){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -74687,7 +81257,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this)}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":107,"timers":115}],116:[function(require,module,exports){
+},{"process/browser.js":122,"timers":130}],131:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -75396,7 +81966,7 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":108,"querystring":111}],117:[function(require,module,exports){
+},{"punycode":123,"querystring":126}],132:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75423,7 +81993,7 @@ function bytesToUuid(buf, offset) {
 
 var _default = bytesToUuid;
 exports.default = _default;
-},{}],118:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75463,7 +82033,7 @@ var _v3 = _interopRequireDefault(require("./v4.js"));
 var _v4 = _interopRequireDefault(require("./v5.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./v1.js":122,"./v3.js":123,"./v4.js":125,"./v5.js":126}],119:[function(require,module,exports){
+},{"./v1.js":137,"./v3.js":138,"./v4.js":140,"./v5.js":141}],134:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75688,7 +82258,7 @@ function md5ii(a, b, c, d, x, s, t) {
 
 var _default = md5;
 exports.default = _default;
-},{}],120:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75710,7 +82280,7 @@ function rng() {
 
   return getRandomValues(rnds8);
 }
-},{}],121:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75806,7 +82376,7 @@ function sha1(bytes) {
 
 var _default = sha1;
 exports.default = _default;
-},{}],122:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75914,7 +82484,7 @@ function v1(options, buf, offset) {
 
 var _default = v1;
 exports.default = _default;
-},{"./bytesToUuid.js":117,"./rng.js":120}],123:[function(require,module,exports){
+},{"./bytesToUuid.js":132,"./rng.js":135}],138:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75931,7 +82501,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const v3 = (0, _v.default)('v3', 0x30, _md.default);
 var _default = v3;
 exports.default = _default;
-},{"./md5.js":119,"./v35.js":124}],124:[function(require,module,exports){
+},{"./md5.js":134,"./v35.js":139}],139:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76001,7 +82571,7 @@ function _default(name, version, hashfunc) {
   generateUUID.URL = URL;
   return generateUUID;
 }
-},{"./bytesToUuid.js":117}],125:[function(require,module,exports){
+},{"./bytesToUuid.js":132}],140:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76042,7 +82612,7 @@ function v4(options, buf, offset) {
 
 var _default = v4;
 exports.default = _default;
-},{"./bytesToUuid.js":117,"./rng.js":120}],126:[function(require,module,exports){
+},{"./bytesToUuid.js":132,"./rng.js":135}],141:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76059,7 +82629,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const v5 = (0, _v.default)('v5', 0x50, _sha.default);
 var _default = v5;
 exports.default = _default;
-},{"./sha1.js":121,"./v35.js":124}],127:[function(require,module,exports){
+},{"./sha1.js":136,"./v35.js":139}],142:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var LRU_1 = require("./utils/LRU");
@@ -76132,7 +82702,7 @@ var EndpointCache = /** @class */ (function () {
     return EndpointCache;
 }());
 exports.EndpointCache = EndpointCache;
-},{"./utils/LRU":128}],128:[function(require,module,exports){
+},{"./utils/LRU":143}],143:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var LinkedListNode = /** @class */ (function () {
@@ -76240,8 +82810,8 @@ var LRUCache = /** @class */ (function () {
     return LRUCache;
 }());
 exports.LRUCache = LRUCache;
-},{}],129:[function(require,module,exports){
-// AWS SDK for JavaScript v2.1692.0
+},{}],144:[function(require,module,exports){
+// AWS SDK for JavaScript v2.1693.0
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // License at https://sdk.amazonaws.com/js/BUNDLE_LICENSE.txt
 require('./browser_loader');
@@ -76261,7 +82831,16 @@ if (typeof self !== 'undefined') self.AWS = AWS;
  * @private
  * DO NOT REMOVE
  * browser builder will strip out this line if services are supplied on the command line.
- */if (!Object.prototype.hasOwnProperty.call(AWS, 'EC2')) {
+ */if (!Object.prototype.hasOwnProperty.call(AWS, 'DynamoDB')) {
+  AWS.apiLoader.services['dynamodb'] = {};
+  AWS.DynamoDB = AWS.Service.defineService('dynamodb', [ '2011-12-05', '2012-08-10' ]);
+  require('./services/dynamodb');
+}
+AWS.apiLoader.services['dynamodb']['2012-08-10'] = require('../apis/dynamodb-2012-08-10.min');
+AWS.apiLoader.services['dynamodb']['2012-08-10'].paginators = require('../apis/dynamodb-2012-08-10.paginators').pagination;
+AWS.apiLoader.services['dynamodb']['2012-08-10'].waiters = require('../apis/dynamodb-2012-08-10.waiters2').waiters;
+
+if (!Object.prototype.hasOwnProperty.call(AWS, 'EC2')) {
   AWS.apiLoader.services['ec2'] = {};
   AWS.EC2 = AWS.Service.defineService('ec2', [ '2016-11-15' ]);
   require('./services/ec2');
@@ -76296,6 +82875,21 @@ AWS.apiLoader.services['ses']['2010-12-01'] = require('../apis/email-2010-12-01.
 AWS.apiLoader.services['ses']['2010-12-01'].paginators = require('../apis/email-2010-12-01.paginators').pagination;
 AWS.apiLoader.services['ses']['2010-12-01'].waiters = require('../apis/email-2010-12-01.waiters2').waiters;
 
+if (!Object.prototype.hasOwnProperty.call(AWS, 'SNS')) {
+  AWS.apiLoader.services['sns'] = {};
+  AWS.SNS = AWS.Service.defineService('sns', [ '2010-03-31' ]);
+}
+AWS.apiLoader.services['sns']['2010-03-31'] = require('../apis/sns-2010-03-31.min');
+AWS.apiLoader.services['sns']['2010-03-31'].paginators = require('../apis/sns-2010-03-31.paginators').pagination;
 
-},{"../apis/ec2-2016-11-15.min":3,"../apis/ec2-2016-11-15.paginators":4,"../apis/ec2-2016-11-15.waiters2":5,"../apis/email-2010-12-01.min":6,"../apis/email-2010-12-01.paginators":7,"../apis/email-2010-12-01.waiters2":8,"../apis/lambda-2015-03-31.min":9,"../apis/lambda-2015-03-31.paginators":10,"../apis/lambda-2015-03-31.waiters2":11,"../apis/s3-2006-03-01.min":13,"../apis/s3-2006-03-01.paginators":14,"../apis/s3-2006-03-01.waiters2":15,"./browser_loader":27,"./core":30,"./services/ec2":75,"./services/lambda":76,"./services/s3":77}]},{},[129]);
+if (!Object.prototype.hasOwnProperty.call(AWS, 'SQS')) {
+  AWS.apiLoader.services['sqs'] = {};
+  AWS.SQS = AWS.Service.defineService('sqs', [ '2012-11-05' ]);
+  require('./services/sqs');
+}
+AWS.apiLoader.services['sqs']['2012-11-05'] = require('../apis/sqs-2012-11-05.min');
+AWS.apiLoader.services['sqs']['2012-11-05'].paginators = require('../apis/sqs-2012-11-05.paginators').pagination;
+
+
+},{"../apis/dynamodb-2012-08-10.min":3,"../apis/dynamodb-2012-08-10.paginators":4,"../apis/dynamodb-2012-08-10.waiters2":5,"../apis/ec2-2016-11-15.min":6,"../apis/ec2-2016-11-15.paginators":7,"../apis/ec2-2016-11-15.waiters2":8,"../apis/email-2010-12-01.min":9,"../apis/email-2010-12-01.paginators":10,"../apis/email-2010-12-01.waiters2":11,"../apis/lambda-2015-03-31.min":12,"../apis/lambda-2015-03-31.paginators":13,"../apis/lambda-2015-03-31.waiters2":14,"../apis/s3-2006-03-01.min":16,"../apis/s3-2006-03-01.paginators":17,"../apis/s3-2006-03-01.waiters2":18,"../apis/sns-2010-03-31.min":19,"../apis/sns-2010-03-31.paginators":20,"../apis/sqs-2012-11-05.min":21,"../apis/sqs-2012-11-05.paginators":22,"./browser_loader":34,"./core":37,"./services/dynamodb":88,"./services/ec2":89,"./services/lambda":90,"./services/s3":91,"./services/sqs":93}]},{},[144]);
 
