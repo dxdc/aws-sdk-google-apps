@@ -35,7 +35,7 @@ AWS.XHRGoogleClient = AWS.util.inherit({
       emitter.emit('headers', emitter.statusCode, emitter.headers);
       self.finishRequest(response.getBlob(), emitter);
     } catch (err) {
-      console.error(err);
+      Logger.log(err);
       errCallback(
         AWS.util.error(new Error('Network Failure'), {
           code: 'NetworkingError',
@@ -66,7 +66,7 @@ AWS.XHRGoogleClient = AWS.util.inherit({
         buffer = new AWS.util.Buffer(blob.getDataAsString());
       }
     } catch (e) {
-      console.error(e);
+      Logger.log(e);
       buffer = new AWS.util.Buffer('');
     }
 
