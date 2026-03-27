@@ -36,6 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced non-standard example credentials with AWS-standard `AKIAIOSFODNN7EXAMPLE`
 - Cleaned up `.gitignore` (removed ~60 lines of irrelevant boilerplate)
 - Fixed `package.json` `main` field (pointed to nonexistent `index.js`)
+- **Dependencies**: ESLint 8 → 9 (migrated to flat config), Jest 29 → 30, eslint-config-prettier 9 → 10, replaced `eslint-plugin-json` with official `@eslint/json`
+- **CI/CD**: Node.js 20 → 22, `actions/upload-artifact` v6 → v7
+
+### Fixed
+
+- Timer polyfills (`setTimeout`/`clearTimeout`) crashed when `AwsSdk.gs` loaded before `Polyfill.gs` due to GAS alphabetical file execution order and `var`-hoisting behavior
+- Unused `execSync` import in `build.js`
 
 ## 2.0.1
 
