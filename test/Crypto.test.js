@@ -1,5 +1,6 @@
 const fs = require('fs');
 const vm = require('vm');
+const crypto = require('crypto');
 
 function loadCrypto() {
   const code = fs.readFileSync(`${__dirname}/../src/Crypto.js`, 'utf8');
@@ -14,7 +15,11 @@ function loadCrypto() {
     Uint32Array,
     Uint8ClampedArray,
     Error,
+    parseInt,
     crypto: {},
+    Utilities: {
+      getUuid: () => crypto.randomUUID(),
+    },
   };
   vm.createContext(sandbox);
   vm.runInContext(code, sandbox);
@@ -77,5 +82,26 @@ describe('Crypto polyfill', () => {
 
   test('crypto.getRandomValues is assigned', () => {
     expect(typeof sandbox.crypto.getRandomValues).toBe('function');
+  });
+
+  test('getRandomValues uses Utilities.getUuid()', () => {
+    let callCount = 0;
+    sandbox.Utilities.getUuid = () => {
+      callCount++;
+      return 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d';
+    };
+    const arr = new Uint8Array(32);
+    sandbox.getRandomValues(arr);
+    // 32 bytes needs 2 UUIDs (16 bytes each)
+    expect(callCount).toBe(2);
+  });
+
+  test('getRandomValues produces different values across calls', () => {
+    const arr1 = new Uint8Array(16);
+    const arr2 = new Uint8Array(16);
+    sandbox.getRandomValues(arr1);
+    sandbox.getRandomValues(arr2);
+    // Extremely unlikely to be equal with real random UUIDs
+    expect(arr1.join(',')).not.toBe(arr2.join(','));
   });
 });

@@ -247,8 +247,6 @@ GitHub Actions runs lint, build, and tests on every push and pull request. A sep
 
 **Credentials**: Never hardcode AWS credentials. Use [Script Properties](https://developers.google.com/apps-script/reference/properties/properties-service) or STS temporary credentials.
 
-**Crypto polyfill**: The `Crypto.js` polyfill uses `Math.random()` which is not cryptographically secure. The AWS SDK only uses this for generating request IDs (not for encryption), so this is acceptable.
-
 ## AWS SDK v3
 
 This project uses AWS SDK v2. AWS SDK v3 uses ES Modules, Node.js Streams, and a middleware architecture that are not compatible with Google Apps Script's runtime. See [MIGRATION.md](MIGRATION.md) for details on what has changed between versions of this library.

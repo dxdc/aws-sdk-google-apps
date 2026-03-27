@@ -3,16 +3,9 @@
  *
  * Polyfill for the crypto.getRandomValues API for Google Apps Script.
  *
- * WARNING: NOT CRYPTOGRAPHICALLY SECURE
- * This implementation uses Math.random(), which is a PRNG and not suitable
- * for cryptographic purposes. It is used here solely because GAS does not
- * expose the Web Crypto API. The AWS SDK uses crypto.getRandomValues() for
- * generating unique request IDs, NOT for key generation or encryption, so
- * this is acceptable for that use case.
- *
- * Attribution:
- * Based on the react-native-get-random-values package:
- * https://github.com/LinusU/react-native-get-random-values
+ * Uses Utilities.getUuid() (available natively in GAS) to generate
+ * random bytes. Each UUID v4 provides 16 bytes derived from a
+ * cryptographic random source.
  *
  * @example
  * const randomArray = new Uint8Array(10).fill(0);
@@ -22,19 +15,44 @@
 class TypeMismatchError extends Error {}
 class QuotaExceededError extends Error {}
 
-function getInsecureRandomValues(array) {
-  for (let i = 0, r; i < array.length; i++) {
-    if ((i & 0x03) === 0) {
-      r = Math.random() * 0x100000000;
+/**
+ * Extracts random bytes from a UUID v4 string.
+ * UUID format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx (32 hex chars, 16 bytes)
+ * @param {string} uuid - A UUID v4 string.
+ * @returns {number[]} Array of 16 byte values.
+ */
+function uuidToBytes(uuid) {
+  var hex = uuid.replace(/-/g, '');
+  var bytes = [];
+  for (var i = 0; i < hex.length; i += 2) {
+    bytes.push(parseInt(hex.substr(i, 2), 16));
+  }
+  return bytes;
+}
+
+/**
+ * Fills a typed array's underlying byte buffer with random values
+ * using Utilities.getUuid().
+ * @param {TypedArray} array - The typed array to fill.
+ * @returns {TypedArray} The same array, filled with random values.
+ */
+function fillRandomValues(array) {
+  var byteView = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+  var bytesNeeded = byteView.length;
+  var offset = 0;
+
+  while (offset < bytesNeeded) {
+    var bytes = uuidToBytes(Utilities.getUuid());
+    for (var i = 0; i < bytes.length && offset < bytesNeeded; i++, offset++) {
+      byteView[offset] = bytes[i];
     }
-    array[i] = (r >>> ((i & 0x03) << 3)) & 0xff;
   }
 
   return array;
 }
 
 /**
- * Fills a typed array with pseudo-random values.
+ * Fills a typed array with random values.
  * @param {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Uint8ClampedArray} array - The typed array to fill.
  * @returns {Int8Array|Uint8Array|Int16Array|Uint16Array|Int32Array|Uint32Array|Uint8ClampedArray} The same array, filled with random values.
  * @throws {TypeMismatchError} If the argument is not a typed integer array.
@@ -59,7 +77,7 @@ function getRandomValues(array) {
     throw new QuotaExceededError('Can only request a maximum of 65536 bytes');
   }
 
-  return getInsecureRandomValues(array);
+  return fillRandomValues(array);
 }
 
 var crypto = crypto || {};
