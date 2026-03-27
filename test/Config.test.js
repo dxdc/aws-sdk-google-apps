@@ -8,7 +8,7 @@ function loadConfig() {
   const sandbox = {
     ...global,
     AWS: {
-      Config: jest.fn().mockImplementation(function () {
+      Config: jest.fn().mockImplementation(() => {
         return { update: updateMock };
       }),
       config: { update: updateMock },

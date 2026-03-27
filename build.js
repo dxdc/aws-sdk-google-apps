@@ -20,7 +20,6 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
-const { execSync } = require('child_process');
 
 const SRC_DIR = path.join(__dirname, 'src');
 const SDK_DIR = path.join(__dirname, 'src-sdk');
