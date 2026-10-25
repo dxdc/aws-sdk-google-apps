@@ -59,17 +59,15 @@ function fillRandomValues(array) {
  * @throws {QuotaExceededError} If the array exceeds 65536 bytes.
  */
 function getRandomValues(array) {
-  if (
-    !(
-      array instanceof Int8Array ||
-      array instanceof Uint8Array ||
-      array instanceof Int16Array ||
-      array instanceof Uint16Array ||
-      array instanceof Int32Array ||
-      array instanceof Uint32Array ||
-      array instanceof Uint8ClampedArray
-    )
-  ) {
+  if (!(
+    array instanceof Int8Array ||
+    array instanceof Uint8Array ||
+    array instanceof Int16Array ||
+    array instanceof Uint16Array ||
+    array instanceof Int32Array ||
+    array instanceof Uint32Array ||
+    array instanceof Uint8ClampedArray
+  )) {
     throw new TypeMismatchError(`Expected an integer array, received ${typeof array}`);
   }
 

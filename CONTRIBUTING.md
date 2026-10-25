@@ -99,9 +99,7 @@ function loadModule() {
   const code = fs.readFileSync(`${__dirname}/../src/YourModule.js`, 'utf8');
   const sandbox = {
     ...global,
-    AWS: {
-      /* mock AWS services */
-    },
+    AWS: {/* mock AWS services */},
     Logger: { log: jest.fn() },
   };
   vm.createContext(sandbox);
