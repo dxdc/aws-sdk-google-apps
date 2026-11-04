@@ -267,7 +267,6 @@ I try to reply to everyone needing help using these projects. Obviously, this ta
 - [![PayPal][badge_paypal]][paypal-donations-dxdc] **PayPal**— You can make one-time donations to **dxdc** via PayPal.
 - **Venmo**— You can make one-time donations via Venmo.
   ![Venmo QR Code](/images/venmo.png?raw=true 'Venmo QR Code')
-- **Bitcoin**— You can send me Bitcoin at this address: `33sT6xw3tZWAdP2oL4ygbH5TVpVMfk9VW7`
 
 [badge_paypal]: https://img.shields.io/badge/Donate-PayPal-blue.svg
 [paypal-donations-dxdc]: https://paypal.me/ddcaspi
